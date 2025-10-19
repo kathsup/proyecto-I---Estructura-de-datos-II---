@@ -26,8 +26,6 @@ public:
     QList<QGraphicsRectItem*> obstaculos;     // Colisiones
     QList<QGraphicsItem*> zonasInteractivas;  // Puertas, objetos
     QGraphicsScene *scene = nullptr;
-
-protected:
     QGraphicsPixmapItem *fondo = nullptr;
     QGraphicsPixmapItem *personaje = nullptr;
     QVector<QPixmap> spritesDer, spritesIzq, spritesArriba;

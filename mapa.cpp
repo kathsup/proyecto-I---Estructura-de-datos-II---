@@ -1,5 +1,7 @@
 #include "mapa.h"
 #include "ui_mapa.h"
+#include "nivel2ruleta.h"
+
 
 mapa::mapa(QWidget *parent)
     : QWidget(parent)
@@ -49,6 +51,17 @@ void mapa::keyPressEvent(QKeyEvent *event)
 {
     if(escenario) {
         escenario->manejarTecla(event);
+    }
+
+    // Suponiendo que 'G' es la tecla para entrar al nivel
+    if(event->key() == Qt::Key_G) {
+        // Verificar colisión con algún objeto interactivo
+        for(auto* obj : escenario->zonasInteractivas) {
+            if(escenario->personaje->collidingItems().contains(obj)) {
+                emit solicitarCambioNivel();
+                break;
+            }
+        }
     }
 }
 

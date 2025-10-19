@@ -15,10 +15,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     //agregar nivel 2
     nivel2 = new nivel2Ruleta(this);
+    //nivel2->setObjectName("nivel2");
     ui->stackedWidget->addWidget(nivel2);
 
     Mapa = new mapa(this);
     ui->stackedWidget->addWidget(Mapa);
+
+    connect(Mapa, &mapa::solicitarCambioNivel, [this]() {
+        ui->stackedWidget->setCurrentWidget(nivel2); // mostrar nivel 2
+        nivel2->inicializarNivel(); // inicializar el nivel si es necesario
+    });
+
 }
 
 
@@ -136,3 +143,8 @@ void MainWindow::on_pushButton_2_clicked()
     nivel2->inicializarNivel();
 }
 
+
+void MainWindow::cambiarDeNivel(QWidget* nuevoNivel)
+{
+    ui->stackedWidget->setCurrentWidget(nuevoNivel);
+}

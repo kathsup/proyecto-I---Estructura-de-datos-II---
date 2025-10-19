@@ -39,5 +39,11 @@ private:
 
     nivel2Ruleta* nivel2; //se agrega el nivel
     mapa* Mapa;
+
+public slots:
+    void cambiarDeNivel(QWidget* nuevoNivel);
+
+
+
 };
 #endif // MAINWINDOW_H

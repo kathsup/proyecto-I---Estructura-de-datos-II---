@@ -27,6 +27,9 @@ protected:
 private:
     Ui::mapa *ui;
     Escenario *escenario;
+
+signals:
+    void solicitarCambioNivel(); // señal para pedir cambio de nivel
 };
 
 #endif // MAPA_H
