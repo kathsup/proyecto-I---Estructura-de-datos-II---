@@ -4,6 +4,13 @@
 
 #include <QMessageBox>
 
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>//para el cambio de niveles
+
+
+#include <QTimer>
+
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,10 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
     Mapa = new mapa(this);
     ui->stackedWidget->addWidget(Mapa);
 
-    connect(Mapa, &mapa::solicitarCambioNivel, [this]() {
-        ui->stackedWidget->setCurrentWidget(nivel2); // mostrar nivel 2
-        nivel2->inicializarNivel(); // inicializar el nivel si es necesario
+    connect(Mapa, &mapa::solicitarCambioNivel, this, [this](){
+        cambiarDeNivel(nivel2); // MainWindow sabe cuál nivel mostrar
     });
+
+
 
 }
 
@@ -131,20 +139,40 @@ void MainWindow::agregarJugador(const QString &nombre) {
     jugadores.append(Jugador(nombre, 0));
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(2);
-}
-
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(nivel2); // mostrar nivel 2
-    nivel2->inicializarNivel();
-}
-
 
 void MainWindow::cambiarDeNivel(QWidget* nuevoNivel)
 {
-    ui->stackedWidget->setCurrentWidget(nuevoNivel);
+    QWidget *overlay = new QWidget(this);
+    overlay->setStyleSheet("background-color: black;");
+    overlay->setGeometry(ui->stackedWidget->geometry());
+    overlay->raise();
+    overlay->show();
+
+    // Fade in (a negro)
+    QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(overlay);
+    overlay->setGraphicsEffect(effect);
+
+    QPropertyAnimation *fadeOut = new QPropertyAnimation(effect, "opacity");
+    fadeOut->setDuration(400);
+    fadeOut->setStartValue(0);
+    fadeOut->setEndValue(1);
+
+    // Cuando termina el fade a negro, cambiamos la escena
+    connect(fadeOut, &QPropertyAnimation::finished, this, [=]() {
+        ui->stackedWidget->setCurrentWidget(nuevoNivel);
+
+        if (auto* nivel = qobject_cast<nivel2Ruleta*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }
+
+        // Fade out (de negro al juego)
+        QPropertyAnimation *fadeIn = new QPropertyAnimation(effect, "opacity");
+        fadeIn->setDuration(400);
+        fadeIn->setStartValue(1);
+        fadeIn->setEndValue(0);
+        connect(fadeIn, &QPropertyAnimation::finished, overlay, &QWidget::deleteLater);
+        fadeIn->start(QAbstractAnimation::DeleteWhenStopped);
+    });
+
+    fadeOut->start(QAbstractAnimation::DeleteWhenStopped);
 }

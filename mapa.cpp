@@ -41,7 +41,7 @@ void mapa::inicializarNivel()
 };
 objetosInteractivos();
 
-escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(300, 400));
+escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(450, 300));
 this->setFocus();
 
 
@@ -53,20 +53,28 @@ void mapa::keyPressEvent(QKeyEvent *event)
         escenario->manejarTecla(event);
     }
 
-    // Suponiendo que 'G' es la tecla para entrar al nivel
     if(event->key() == Qt::Key_G) {
-        // Verificar colisión con algún objeto interactivo
         for(auto* obj : escenario->zonasInteractivas) {
             if(escenario->personaje->collidingItems().contains(obj)) {
-                emit solicitarCambioNivel();
+                emit solicitarCambioNivel(); // sin pasar nada
                 break;
             }
         }
     }
 }
 
+
 void mapa::objetosInteractivos(){
-    //puerta1
+
+    //nivel 1 video
+    QPixmap pixVideo("C:/Users/Lenovo/Downloads/objetoVideoMapa.png");
+    QGraphicsPixmapItem* video = escenario->scene->addPixmap(
+        pixVideo.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        );
+    video->setPos(140, 300);
+
+
+    //nivel 2 ruleta
     QPixmap pixRuleta("C:/Users/Lenovo/Downloads/objetoRuletaMapa.png");
     QGraphicsPixmapItem* ruleta = escenario->scene->addPixmap(
         pixRuleta.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
@@ -74,8 +82,28 @@ void mapa::objetosInteractivos(){
             ruleta->setPos(250, 85);
 
 
-    // Lo agregas a la lista de interacciones
+    //nivel 3 batalla
+    QPixmap pixBatalla("C:/Users/Lenovo/Downloads/objetoBatallaMapa.png");
+    QGraphicsPixmapItem* batalla = escenario->scene->addPixmap(
+        pixBatalla.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        );
+    batalla->setPos(530, 430);
+
+
+    //nivel 4 casa
+    QPixmap pixCasa("C:/Users/Lenovo/Downloads/objetoCasaMapa.png");
+    QGraphicsPixmapItem* casa = escenario->scene->addPixmap(
+        pixCasa.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        );
+    casa->setPos(650, 140);
+
+
+    // agregar a lista de interacciones
+    escenario->zonasInteractivas.append(video);
     escenario->zonasInteractivas.append(ruleta);
+    escenario->zonasInteractivas.append(batalla);
+    escenario->zonasInteractivas.append(casa);
+
 
 
 }
