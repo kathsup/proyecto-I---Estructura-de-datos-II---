@@ -23,6 +23,19 @@
     </rect>
    </property>
   </widget>
+  <widget class="QPushButton" name="btnGirarRuleta">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>520</y>
+     <width>101</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Girar</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

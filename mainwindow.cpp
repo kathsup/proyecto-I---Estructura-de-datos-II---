@@ -88,7 +88,7 @@ void MainWindow::iniciarConfiguracion(){
         );
 
     //line edit
-    ui->lineNombre->setPlaceholderText("                           INGRESA TU USUARIO");
+    ui->lineNombre->setPlaceholderText("        INGRESA TU USUARIO");
 }
 
 void MainWindow::on_btnComenzar_clicked()

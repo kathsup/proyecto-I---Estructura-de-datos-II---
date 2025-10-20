@@ -78,6 +78,13 @@ QPushButton:hover {
         <height>41</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>Segoe Print</family>
+        <pointsize>12</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
      </widget>
     </widget>
    </widget>
