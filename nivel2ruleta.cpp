@@ -42,6 +42,8 @@ void nivel2Ruleta::inicializarNivel()
     QPixmap pixFondo("C:/Users/Lenovo/Downloads/fondo.png");
     escenario->inicializar(ui->graphicsViewRuleta, pixFondo);
 
+     ui->graphicsViewRuleta->setFocusPolicy(Qt::NoFocus);
+
     // Crear el personaje
     QVector<QPixmap> spritesDer = {
         QPixmap("C:/Users/Lenovo/Downloads/hada1AD.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
