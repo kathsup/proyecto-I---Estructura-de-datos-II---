@@ -208,7 +208,7 @@ void MainWindow::on_btnComenzar_clicked()
         agregarJugador(usser);
         // obtener puntero al nuevo jugador (último elemento)
         jugadorActual = jugadores.last();
-        QMessageBox::information(this, "Nuevo jugador", "Se ha creado el jugador: " + jugadorActual.nombre);
+        //QMessageBox::information(this, "Nuevo jugador", "Se ha creado el jugador: " + jugadorActual.nombre);
     }
 
     // 4) Limpiar input, ir al mapa (ejemplo) y mantener foco si quieres

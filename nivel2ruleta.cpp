@@ -174,7 +174,7 @@ void nivel2Ruleta::objetosInteractivos() {
     puertasAbiertas["Política"] = false;
     puertasAbiertas["Ciencia"] = false;
 
-    // Agregar a zonas interactivas (si lo necesitas)
+    // Agregar a zonas interactivas
     for (auto puerta : puertas.values()) {
         escenario->zonasInteractivas.append(puerta);
     }
