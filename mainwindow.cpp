@@ -43,6 +43,19 @@ MainWindow::MainWindow(QWidget *parent)
     room = new Cuarto(this);
     ui->stackedWidget->addWidget(room);
 
+    //juegos de la ruleta
+    juegoArte = new juego1(this);
+    ui->stackedWidget->addWidget(juegoArte);
+
+    juegoHistoria = new juego2(this);
+    ui->stackedWidget->addWidget(juegoHistoria);
+
+    juegoPolitica = new juego3(this);
+    ui->stackedWidget->addWidget(juegoPolitica);
+
+    juegoCiencia = new juego4(this);
+    ui->stackedWidget->addWidget(juegoCiencia);
+
 
     Mapa = new mapa(this);
     ui->stackedWidget->addWidget(Mapa);
@@ -66,6 +79,19 @@ MainWindow::MainWindow(QWidget *parent)
             cambiarDeNivel(room); // cuando lo tengas creado
         } else if (habitacion == "laboratorio") {
             cambiarDeNivel(lab); // cuando lo tengas creado
+        }
+    });
+
+    //de la ruleta a los juegos
+    connect(nivel2, &nivel2Ruleta::solicitarCambioJuego, this, [this](const QString& juego){
+        if (juego == "Arte") {
+            cambiarDeNivel(juegoArte);
+        } else if (juego == "Historia") {
+            cambiarDeNivel(juegoHistoria);
+        } else if (juego == "Política") {
+            cambiarDeNivel(juegoPolitica);
+        } else if (juego == "Ciencia") {
+            cambiarDeNivel(juegoCiencia);
         }
     });
 
@@ -94,6 +120,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(nivel4, &nivel4Casa::volverAlMapa, this, [this](){
         cambiarDeNivel(Mapa);
     });
+
+    //regresar a la ruleta desde el juego
+    connect(juegoArte, &juego1::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });
+    connect(juegoHistoria, &juego2::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });
+    connect(juegoPolitica, &juego3::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });
+    connect(juegoCiencia, &juego4::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });
 
 }
 
@@ -242,6 +274,18 @@ void MainWindow::cambiarDeNivel(QWidget* nuevoNivel)
             nivel->inicializarNivel();
         }
         else if (auto* nivel = qobject_cast<Laboratorio*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }//juegos de a ruleta
+        else if (auto* nivel = qobject_cast<juego1*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }
+        else if (auto* nivel = qobject_cast<juego2*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }
+        else if (auto* nivel = qobject_cast<juego3*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }
+        else if (auto* nivel = qobject_cast<juego4*>(nuevoNivel)) {
             nivel->inicializarNivel();
         }
 

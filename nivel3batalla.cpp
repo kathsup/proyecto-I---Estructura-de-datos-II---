@@ -24,7 +24,7 @@ void nivel3Batalla::inicializarNivel()
     ui->graphicsViewBatalla->setFocusPolicy(Qt::NoFocus);
 
     // Crear el personaje
-    QVector<QPixmap> spritesDer = {
+   /* QVector<QPixmap> spritesDer = {
         QPixmap("C:/Users/Lenovo/Downloads/hada1AD.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
         QPixmap("C:/Users/Lenovo/Pictures/hada2AD.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
         QPixmap("C:/Users/Lenovo/Downloads/hada3AD.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
@@ -39,12 +39,12 @@ void nivel3Batalla::inicializarNivel()
     QVector<QPixmap> spritesArriba = {
         QPixmap("C:/Users/Lenovo/Downloads/hada4Ar.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
         QPixmap("C:/Users/Lenovo/Downloads/hada5Ar.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-    };
+    };*/
     objetosInteractivos();
 
 
 
-    escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(350, 450));
+  //  escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(350, 450));
     this->setFocus();
 
 
@@ -62,7 +62,17 @@ void nivel3Batalla::keyPressEvent(QKeyEvent *event)
 }
 
 void nivel3Batalla::objetosInteractivos() {
+    QPixmap pixGatoRojo("C:/Users/Lenovo/Downloads/gatoRojo.png");
+    QGraphicsPixmapItem* gatoRojo = escenario->scene->addPixmap(
+        pixGatoRojo.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        );
+    gatoRojo->setPos(350, 450);
 
+    QPixmap pixGatoBlanco("C:/Users/Lenovo/Downloads/gatoBlanco.png");
+    QGraphicsPixmapItem* gatoBlanco = escenario->scene->addPixmap(
+        pixGatoBlanco.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        );
+    gatoBlanco->setPos(650, 450);
 }
 
 

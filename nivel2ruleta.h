@@ -36,6 +36,8 @@ private slots:
 
 signals:
     void volverAlMapa();
+    void solicitarCambioJuego(const QString& juego);
+
 
 
 private:
@@ -50,7 +52,8 @@ private:
     int anguloActual;                  // control del ángulo de giro
     QGraphicsPixmapItem* indicadorTriangulo;
     QMap<QString, QGraphicsPixmapItem*> puertas;
-
+    QMap<QString, bool> puertasAbiertas;
+    bool nivelInicializado = false;
 
 
 };

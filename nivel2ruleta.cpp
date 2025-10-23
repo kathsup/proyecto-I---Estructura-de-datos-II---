@@ -38,6 +38,15 @@ nivel2Ruleta::~nivel2Ruleta()
 
 void nivel2Ruleta::inicializarNivel()
 {
+
+    if (nivelInicializado) {
+        this->setFocus();
+        return;
+    }
+
+    // Marcar como inicializado
+    nivelInicializado = true;
+
     // Configurar el escenario dentro del QGraphicsView del UI
     QPixmap pixFondo("C:/Users/Lenovo/Downloads/fondo.png");
     escenario->inicializar(ui->graphicsViewRuleta, pixFondo);
@@ -119,6 +128,24 @@ void nivel2Ruleta::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Escape) {
         emit volverAlMapa();
     }
+
+    //que se pueda entrar solo si estan abiertas:
+    if (event->key() == Qt::Key_G) {
+        for (auto* obj : escenario->zonasInteractivas) {
+            if (escenario->personaje->collidingItems().contains(obj)) {
+                QString etiqueta = obj->data(0).toString();
+
+                // Verificar si la puerta está abierta
+                if (puertasAbiertas.contains(etiqueta) && puertasAbiertas[etiqueta]) {
+                    emit solicitarCambioJuego(etiqueta);
+                    break;
+                } else if (puertasAbiertas.contains(etiqueta)) {
+                    /*QMessageBox::warning(this, "Puerta cerrada",
+                                         "Esta puerta está cerrada. Debes girar la ruleta.");*/
+                }
+            }
+        }
+    }
 }
 
 void nivel2Ruleta::objetosInteractivos() {
@@ -128,15 +155,24 @@ void nivel2Ruleta::objetosInteractivos() {
     // Crear las puertas y guardarlas en el mapa
     puertas["Arte"] = escenario->scene->addPixmap(pixEscalada);
     puertas["Arte"]->setPos(35, 210);
+    puertas["Arte"]->setData(0, "Arte");
 
     puertas["Historia"] = escenario->scene->addPixmap(pixEscalada);
     puertas["Historia"]->setPos(280, 210);
+    puertas["Historia"]->setData(0, "Historia");
 
     puertas["Política"] = escenario->scene->addPixmap(pixEscalada);
     puertas["Política"]->setPos(535, 210);
+    puertas["Política"]->setData(0, "Política");
 
     puertas["Ciencia"] = escenario->scene->addPixmap(pixEscalada);
     puertas["Ciencia"]->setPos(775, 210);
+    puertas["Ciencia"]->setData(0, "Ciencia");
+
+    puertasAbiertas["Arte"] = false;
+    puertasAbiertas["Historia"] = false;
+    puertasAbiertas["Política"] = false;
+    puertasAbiertas["Ciencia"] = false;
 
     // Agregar a zonas interactivas (si lo necesitas)
     for (auto puerta : puertas.values()) {
@@ -180,7 +216,7 @@ void nivel2Ruleta::iniciarGiro() {
 
 void nivel2Ruleta::elegirOpcionAleatoria() {
     if (opcionesConAngulo.isEmpty()) {
-        QMessageBox::information(this, "Ruleta", "¡Ya se usaron todas las opciones!");
+        /*QMessageBox::information(this, "Ruleta", "¡Ya se usaron todas las opciones!");*/
         return;
     }
 
@@ -226,6 +262,11 @@ void nivel2Ruleta::elegirOpcionAleatoria() {
 
 
             opcionesConAngulo.remove(anguloOpcion);
+
+            //marcar la puerta como abierta:
+            if (puertasAbiertas.contains(opcionElegida)) {
+            puertasAbiertas[opcionElegida] = true;
+        }
 
             if (puertas.contains(opcionElegida)) {
                 QPixmap pixPuertaAbierta("C:/Users/Lenovo/Downloads/puerta abierta.png");

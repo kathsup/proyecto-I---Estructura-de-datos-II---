@@ -11,6 +11,10 @@
 #include "nivel4casa.h"
 #include "cuarto.h"
 #include "laboratorio.h"
+#include "juego1.h"
+#include "juego2.h"
+#include "juego3.h"
+#include "juego4.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -46,6 +50,10 @@ private:
     mapa* Mapa;
     Laboratorio* lab;
     Cuarto* room;
+    juego1* juegoArte;
+    juego2* juegoHistoria;
+    juego3* juegoPolitica;
+    juego4* juegoCiencia;
 
 public slots:
     void cambiarDeNivel(QWidget* nuevoNivel);
