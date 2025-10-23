@@ -20,19 +20,80 @@ MainWindow::MainWindow(QWidget *parent)
 
     iniciarConfiguracion();
 
+    //nivel 1
+    nivel1 = new nivel1Video(this);
+    ui->stackedWidget->addWidget(nivel1);
+
     //agregar nivel 2
     nivel2 = new nivel2Ruleta(this);
-    //nivel2->setObjectName("nivel2");
     ui->stackedWidget->addWidget(nivel2);
+
+    //agregar nivel 3
+    nivel3 = new nivel3Batalla(this);
+    ui->stackedWidget->addWidget(nivel3);
+
+    //agregar nivel 4
+    nivel4 = new nivel4Casa(this);
+    ui->stackedWidget->addWidget(nivel4);
+
+    //habitaciones
+    lab = new Laboratorio(this);
+    ui->stackedWidget->addWidget(lab);
+
+    room = new Cuarto(this);
+    ui->stackedWidget->addWidget(room);
+
 
     Mapa = new mapa(this);
     ui->stackedWidget->addWidget(Mapa);
 
-    connect(Mapa, &mapa::solicitarCambioNivel, this, [this](){
-        cambiarDeNivel(nivel2); // MainWindow sabe cuál nivel mostrar
+    connect(Mapa, &mapa::solicitarCambioNivel, this, [this](int nivel){
+        if (nivel == 1) {
+            cambiarDeNivel(nivel1);
+        } else if (nivel == 2) {
+            cambiarDeNivel(nivel2);
+        } else if (nivel == 3){
+            cambiarDeNivel(nivel3);
+        }
+        else if (nivel == 4){
+            cambiarDeNivel(nivel4);
+        }
     });
 
+    // Después de crear nivel4
+    connect(nivel4, &nivel4Casa::solicitarCambioHabitacion, this, [this](const QString& habitacion){
+        if (habitacion == "cuarto") {
+            cambiarDeNivel(room); // cuando lo tengas creado
+        } else if (habitacion == "laboratorio") {
+            cambiarDeNivel(lab); // cuando lo tengas creado
+        }
+    });
 
+    // Conexiones para regresar al lobby
+    connect(room, &Cuarto::volverAlLobby, this, [this](){
+        cambiarDeNivel(nivel4);
+    });
+
+    connect(lab, &Laboratorio::volverAlLobby, this, [this](){
+        cambiarDeNivel(nivel4);
+    });
+
+    //regresar al mapa
+    connect(nivel1, &nivel1Video::volverAlMapa, this, [this](){
+        cambiarDeNivel(Mapa);
+    });
+
+    connect(nivel2, &nivel2Ruleta::volverAlMapa, this, [this](){
+        cambiarDeNivel(Mapa);
+    });
+
+    connect(nivel3, &nivel3Batalla::volverAlMapa, this, [this](){
+        cambiarDeNivel(Mapa);
+    });
+
+    connect(nivel4, &nivel4Casa::volverAlMapa, this, [this](){
+        cambiarDeNivel(Mapa);
+    });
 
 }
 
@@ -161,7 +222,26 @@ void MainWindow::cambiarDeNivel(QWidget* nuevoNivel)
     connect(fadeOut, &QPropertyAnimation::finished, this, [=]() {
         ui->stackedWidget->setCurrentWidget(nuevoNivel);
 
+        //nivel1
+        if (auto* nivel = qobject_cast<nivel1Video*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }
+        //nivel2
         if (auto* nivel = qobject_cast<nivel2Ruleta*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }
+        //nivel 3
+        if (auto* nivel = qobject_cast<nivel3Batalla*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }
+        //nivel 4
+        if (auto* nivel = qobject_cast<nivel4Casa*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }//habitaciones
+        else if (auto* nivel = qobject_cast<Cuarto*>(nuevoNivel)) {
+            nivel->inicializarNivel();
+        }
+        else if (auto* nivel = qobject_cast<Laboratorio*>(nuevoNivel)) {
             nivel->inicializarNivel();
         }
 

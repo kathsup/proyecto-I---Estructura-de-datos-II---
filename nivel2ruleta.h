@@ -34,6 +34,10 @@ private slots:
     void on_btnGirarRuleta_clicked();
 
 
+signals:
+    void volverAlMapa();
+
+
 private:
     Ui::nivel2Ruleta *ui;
     Escenario *escenario; //la base de cada nivel
@@ -46,9 +50,6 @@ private:
     int anguloActual;                  // control del ángulo de giro
     QGraphicsPixmapItem* indicadorTriangulo;
     QMap<QString, QGraphicsPixmapItem*> puertas;
-
-
-
 
 
 

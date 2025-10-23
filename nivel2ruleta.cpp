@@ -58,7 +58,8 @@ void nivel2Ruleta::inicializarNivel()
     };
 
     QVector<QPixmap> spritesArriba = {
-        QPixmap("C:/Users/Lenovo/Downloads/hada4Ar.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        QPixmap("C:/Users/Lenovo/Downloads/hada4Ar.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
+        QPixmap("C:/Users/Lenovo/Downloads/hada5Ar.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
 };
     objetosInteractivos();
 
@@ -113,6 +114,10 @@ void nivel2Ruleta::keyPressEvent(QKeyEvent *event)
 {
     if(escenario) {
         escenario->manejarTecla(event);
+    }
+
+    if (event->key() == Qt::Key_Escape) {
+        emit volverAlMapa();
     }
 }
 
@@ -218,6 +223,8 @@ void nivel2Ruleta::elegirOpcionAleatoria() {
             ruletaItem->setRotation(anguloActual);
 
             QMessageBox::information(this, "Ruleta", "La puerta elegida es: " + opcionElegida);
+
+
             opcionesConAngulo.remove(anguloOpcion);
 
             if (puertas.contains(opcionElegida)) {

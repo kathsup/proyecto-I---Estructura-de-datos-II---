@@ -15,6 +15,16 @@ qt_add_executable(proyectoUno-EstruII
     jugador.h jugador.cpp
     nivel2ruleta.h nivel2ruleta.cpp nivel2ruleta.ui
     mapa.h mapa.cpp mapa.ui
+    video.h video.cpp video.ui
+    nivel1video.h nivel1video.cpp nivel1video.ui
+    nivel3batalla.h nivel3batalla.cpp nivel3batalla.ui
+    nivel4casa.h nivel4casa.cpp nivel4casa.ui
+    cuarto.h cuarto.cpp cuarto.ui
+    laboratorio.h laboratorio.cpp laboratorio.ui
+    juego1.h juego1.cpp juego1.ui
+    juego2.h juego2.cpp juego2.ui
+    juego3.h juego3.cpp juego3.ui
+    juego4.h juego4.cpp juego4.ui
 )
 
 target_link_libraries(proyectoUno-EstruII

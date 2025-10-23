@@ -1,22 +1,20 @@
-#ifndef MAPA_H
-#define MAPA_H
+#ifndef LABORATORIO_H
+#define LABORATORIO_H
 
 #include <QWidget>
 #include "escenario.h"
-#include <QKeyEvent>
 
 namespace Ui {
-class mapa;
+class Laboratorio;
 }
 
-class mapa : public QWidget
+class Laboratorio : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit mapa(QWidget *parent = nullptr);
-    ~mapa();
-
+    explicit Laboratorio(QWidget *parent = nullptr);
+    ~Laboratorio();
     void inicializarNivel(); //metodo para inicializar nivel
     void objetosInteractivos();
 
@@ -24,12 +22,12 @@ protected:
     // Declarar aquí que se sobrescribe keyPressEvent
     void keyPressEvent(QKeyEvent *event) override;
 
-private:
-    Ui::mapa *ui;
-    Escenario *escenario;
-
 signals:
-    void solicitarCambioNivel(int numeroNivel); // señal para pedir cambio de nivel
+    void volverAlLobby();
+
+private:
+    Ui::Laboratorio *ui;
+    Escenario *escenario;
 };
 
-#endif // MAPA_H
+#endif // LABORATORIO_H

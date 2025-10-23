@@ -1,21 +1,20 @@
-#ifndef MAPA_H
-#define MAPA_H
+#ifndef NIVEL3BATALLA_H
+#define NIVEL3BATALLA_H
 
 #include <QWidget>
 #include "escenario.h"
-#include <QKeyEvent>
 
 namespace Ui {
-class mapa;
+class nivel3Batalla;
 }
 
-class mapa : public QWidget
+class nivel3Batalla : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit mapa(QWidget *parent = nullptr);
-    ~mapa();
+    explicit nivel3Batalla(QWidget *parent = nullptr);
+    ~nivel3Batalla();
 
     void inicializarNivel(); //metodo para inicializar nivel
     void objetosInteractivos();
@@ -24,12 +23,14 @@ protected:
     // Declarar aquí que se sobrescribe keyPressEvent
     void keyPressEvent(QKeyEvent *event) override;
 
+signals:
+    void volverAlMapa();
+
+
 private:
-    Ui::mapa *ui;
+    Ui::nivel3Batalla *ui;
     Escenario *escenario;
 
-signals:
-    void solicitarCambioNivel(int numeroNivel); // señal para pedir cambio de nivel
 };
 
-#endif // MAPA_H
+#endif // NIVEL3BATALLA_H

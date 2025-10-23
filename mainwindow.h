@@ -6,6 +6,11 @@
 #include "jugador.h"
 #include "nivel2Ruleta.h"
 #include "mapa.h"
+#include "nivel1Video.h"
+#include "nivel3batalla.h"
+#include "nivel4casa.h"
+#include "cuarto.h"
+#include "laboratorio.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,7 +40,12 @@ private:
     void agregarJugador(const QString &nombre);
 
     nivel2Ruleta* nivel2; //se agrega el nivel
+    nivel1Video* nivel1;
+    nivel3Batalla* nivel3;
+    nivel4Casa* nivel4;
     mapa* Mapa;
+    Laboratorio* lab;
+    Cuarto* room;
 
 public slots:
     void cambiarDeNivel(QWidget* nuevoNivel);

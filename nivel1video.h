@@ -1,21 +1,20 @@
-#ifndef MAPA_H
-#define MAPA_H
+#ifndef NIVEL1VIDEO_H
+#define NIVEL1VIDEO_H
 
 #include <QWidget>
 #include "escenario.h"
-#include <QKeyEvent>
 
 namespace Ui {
-class mapa;
+class nivel1Video;
 }
 
-class mapa : public QWidget
+class nivel1Video : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit mapa(QWidget *parent = nullptr);
-    ~mapa();
+    explicit nivel1Video(QWidget *parent = nullptr);
+    ~nivel1Video();
 
     void inicializarNivel(); //metodo para inicializar nivel
     void objetosInteractivos();
@@ -24,12 +23,12 @@ protected:
     // Declarar aquí que se sobrescribe keyPressEvent
     void keyPressEvent(QKeyEvent *event) override;
 
-private:
-    Ui::mapa *ui;
-    Escenario *escenario;
-
 signals:
-    void solicitarCambioNivel(int numeroNivel); // señal para pedir cambio de nivel
+    void volverAlMapa();
+
+private:
+    Ui::nivel1Video *ui;
+    Escenario *escenario; //la base de cada nivel
 };
 
-#endif // MAPA_H
+#endif // NIVEL1VIDEO_H

@@ -1,22 +1,20 @@
-#ifndef MAPA_H
-#define MAPA_H
+#ifndef CUARTO_H
+#define CUARTO_H
 
 #include <QWidget>
 #include "escenario.h"
-#include <QKeyEvent>
 
 namespace Ui {
-class mapa;
+class Cuarto;
 }
 
-class mapa : public QWidget
+class Cuarto : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit mapa(QWidget *parent = nullptr);
-    ~mapa();
-
+    explicit Cuarto(QWidget *parent = nullptr);
+    ~Cuarto();
     void inicializarNivel(); //metodo para inicializar nivel
     void objetosInteractivos();
 
@@ -24,12 +22,12 @@ protected:
     // Declarar aquí que se sobrescribe keyPressEvent
     void keyPressEvent(QKeyEvent *event) override;
 
-private:
-    Ui::mapa *ui;
-    Escenario *escenario;
-
 signals:
-    void solicitarCambioNivel(int numeroNivel); // señal para pedir cambio de nivel
+    void volverAlLobby();
+
+private:
+    Ui::Cuarto *ui;
+    Escenario *escenario;
 };
 
-#endif // MAPA_H
+#endif // CUARTO_H

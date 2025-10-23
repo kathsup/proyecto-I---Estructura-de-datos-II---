@@ -1,22 +1,20 @@
-#ifndef MAPA_H
-#define MAPA_H
+#ifndef NIVEL4CASA_H
+#define NIVEL4CASA_H
 
 #include <QWidget>
 #include "escenario.h"
-#include <QKeyEvent>
 
 namespace Ui {
-class mapa;
+class nivel4Casa;
 }
 
-class mapa : public QWidget
+class nivel4Casa : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit mapa(QWidget *parent = nullptr);
-    ~mapa();
-
+    explicit nivel4Casa(QWidget *parent = nullptr);
+    ~nivel4Casa();
     void inicializarNivel(); //metodo para inicializar nivel
     void objetosInteractivos();
 
@@ -24,12 +22,14 @@ protected:
     // Declarar aquí que se sobrescribe keyPressEvent
     void keyPressEvent(QKeyEvent *event) override;
 
-private:
-    Ui::mapa *ui;
-    Escenario *escenario;
-
 signals:
-    void solicitarCambioNivel(int numeroNivel); // señal para pedir cambio de nivel
+    void solicitarCambioHabitacion(const QString& habitacion);
+    void volverAlMapa();
+
+private:
+    Ui::nivel4Casa *ui;
+    Escenario *escenario;
 };
 
-#endif // MAPA_H
+
+#endif // NIVEL4CASA_H
