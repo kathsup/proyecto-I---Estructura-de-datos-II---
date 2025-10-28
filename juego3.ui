@@ -23,6 +23,19 @@
     </rect>
    </property>
   </widget>
+  <widget class="QLabel" name="labelPregunta">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>180</y>
+     <width>361</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

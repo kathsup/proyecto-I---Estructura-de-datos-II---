@@ -1,10 +1,13 @@
 #include "juego3.h"
 #include "ui_juego3.h"
+#include <QMessageBox>
+
 
 juego3::juego3(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::juego3)
     ,escenario(new Escenario(this))
+
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
@@ -44,11 +47,17 @@ void juego3::inicializarNivel()
     objetosInteractivos();
 
     escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(350, 450));
+
+    inicializarPreguntas();
+    cargarPregunta();
+
     this->setFocus();
+
+
 
 }
 
-void juego3::keyPressEvent(QKeyEvent *event)
+/*void juego3::keyPressEvent(QKeyEvent *event)
 {
     if(escenario) {
         escenario->manejarTecla(event);
@@ -58,19 +67,137 @@ void juego3::keyPressEvent(QKeyEvent *event)
         emit volverARuleta();
     }
 
+}*/
+
+void juego3::keyPressEvent(QKeyEvent* event) {
+    if (event->key() == Qt::Key_Escape) {
+        emit volverARuleta();
+    }
+    else if (event->key() == Qt::Key_E) {
+        if (florEnMano) depositarFlor();
+        else {
+            // buscar flor cercana al personaje (colisión simple)
+            for (Flor* f : flores) {
+                if (escenario->personaje->collidesWithItem(f)) {
+                    recogerFlor(f);
+                    break;
+                }
+            }
+            if (florEnMano && escenario->personaje) {
+                actualizarPosicionFlor();
+            }
+        }
+    }
+    else if (escenario) {
+        escenario->manejarTecla(event); // movimiento
+         if (florEnMano) actualizarPosicionFlor();
+    }
 }
+
 
 void juego3::objetosInteractivos() {
     QPixmap pixcanasta1("C:/Users/Lenovo/Downloads/canasta.png");
-    QGraphicsPixmapItem* c1 = escenario->scene->addPixmap(
+    canasta = escenario->scene->addPixmap(
         pixcanasta1.scaled(250, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation)
         );
-    c1->setPos(220, 450);
+    canasta->setPos(220, 450);
 
-    QPixmap pixcanasta2("C:/Users/Lenovo/Downloads/canasta.png");
-    QGraphicsPixmapItem* c2 = escenario->scene->addPixmap(
-        pixcanasta2.scaled(250, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-    c2->setPos(650, 450);
 }
 
+//agregado
+void juego3::inicializarPreguntas() {
+    preguntas = {
+        {"Pregunta 1", {{"A", true}, {"B", false}, {"C", false}, {"D", false}}},
+        {"Pregunta 2", {{"A", false}, {"B", true}, {"C", false}, {"D", false}}},
+        // ... hasta 5 preguntas
+    };
+}
+
+void juego3::cargarPregunta() {
+    // Limpiar flores anteriores
+    for (Flor* f : flores) {
+        escenario->scene->removeItem(f);
+        delete f;
+    }
+    flores.clear();
+    florEnMano = nullptr;
+
+    // Mostrar pregunta (puedes usar QLabel arriba)
+    ui->labelPregunta->setText(preguntas[preguntaActual].texto);
+
+    // Crear flores en el césped
+    int x = 50;
+    for (auto& resp : preguntas[preguntaActual].respuestas) {
+        QPixmap pix("C:/Users/Lenovo/Downloads/flor3.png"); // imagen genérica
+        Flor* f = new Flor(pix.scaled(50,50), resp.texto, resp.esCorrecta);
+        f->setPos(x, 350);
+        escenario->scene->addItem(f);
+        flores.push_back(f);
+        x += 100;
+    }
+}
+
+void juego3::recogerFlor(Flor* flor) {
+    if (!flor) return;
+    florEnMano = flor;
+    flor->setZValue(1); // para que esté por encima
+
+    actualizarPosicionFlor();
+
+}
+
+void juego3::depositarFlor() {
+    if (!florEnMano) return;
+
+    // Verificar si el personaje está cerca de la canasta
+    QPointF posPersonaje = escenario->personaje->pos();
+    QPointF posCanasta = canasta->pos();
+
+    qreal distancia = QLineF(posPersonaje, posCanasta).length();
+
+    if (distancia < 150) { // Ajusta esta distancia según necesites
+        if (florEnMano->esRespuestaCorrecta()) {
+            floresCorrectas++;
+            // Ocultar o remover la flor
+            escenario->scene->removeItem(florEnMano);
+            flores.removeOne(florEnMano);
+            delete florEnMano;
+            florEnMano = nullptr;
+
+            QMessageBox::information(this, "¡Correcto!", "¡Respuesta correcta!");
+        }
+        else {
+            QMessageBox::warning(this, "Incorrecto", "Esa no es la respuesta correcta");
+            florEnMano->setZValue(0);
+            florEnMano = nullptr;
+        }
+
+        // Pasar a siguiente pregunta
+        preguntaActual++;
+        if (preguntaActual < preguntas.size()) {
+            cargarPregunta();
+        } else {
+            finalizarJuego();
+        }
+    }
+    else {
+        QMessageBox::information(this, "Aviso", "Debes estar cerca de la canasta para depositar la flor");
+    }
+}
+
+void juego3::finalizarJuego() {
+    // Por ejemplo, mostrar un mensaje con las flores correctas
+    QMessageBox::information(this, "Juego terminado",
+                             "Has recolectado " + QString::number(floresCorrectas) + " flores correctas de " +
+                                 QString::number(preguntas.size()));
+
+    // Aquí puedes reiniciar, volver a la ruleta o cerrar el juego
+}
+
+void juego3::actualizarPosicionFlor() {
+    if (florEnMano && escenario->personaje) {
+        // Coloca la flor encima del personaje
+        QPointF posPersonaje = escenario->personaje->pos();
+        florEnMano->setPos(posPersonaje.x() + 25, posPersonaje.y() - 30); // ajusta estos valores según necesites
+    }
+}

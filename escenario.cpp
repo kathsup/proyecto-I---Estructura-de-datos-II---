@@ -51,6 +51,8 @@ void Escenario::manejarTecla(QKeyEvent* event) {
     default: return;
     }
 
+
+
     //que no salga de la pantalla
     QRectF sceneRect = scene->sceneRect();
     QPointF sizePersonaje(personaje->pixmap().width(), personaje->pixmap().height());

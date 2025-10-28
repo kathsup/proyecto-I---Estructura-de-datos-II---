@@ -3,6 +3,10 @@
 
 #include <QWidget>
 #include "escenario.h"
+#include "pregunta.h"
+#include "flor.h"
+
+
 
 namespace Ui {
 class juego3;
@@ -28,6 +32,22 @@ signals:
 private:
     Ui::juego3 *ui;
     Escenario *escenario;
+
+    //juego
+    QVector<Pregunta> preguntas;
+    int preguntaActual = 0;
+    int floresCorrectas = 0;
+    Flor* florEnMano = nullptr;
+    QGraphicsPixmapItem* canasta = nullptr;
+    QVector<Flor*> flores; // flores de la pregunta actual
+
+
+    void cargarPregunta();
+    void recogerFlor(Flor* flor);
+    void depositarFlor();
+    void finalizarJuego();
+    void inicializarPreguntas();
+    void actualizarPosicionFlor();
 };
 
 #endif // JUEGO3_H
