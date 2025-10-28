@@ -107,9 +107,11 @@ void juego3::objetosInteractivos() {
 //agregado
 void juego3::inicializarPreguntas() {
     preguntas = {
-        {"Pregunta 1", {{"A", true}, {"B", false}, {"C", false}, {"D", false}}},
-        {"Pregunta 2", {{"A", false}, {"B", true}, {"C", false}, {"D", false}}},
-        // ... hasta 5 preguntas
+        {"Durante el renacimiento, el modelo de gobierno es uno de los siguientes:", {{"Monarquía absoluta", true}, {" Tiranía republicana", false}, {"Democracia participativa", false}, {"Liberalismo político", false}}},
+        {"De los siguientes acontecimientos, selecciones el que inicia el período moderno:", {{"Toma de Constantinopla", false}, {" Tratado de paz de westfalia", true}, {"Toma de la Bastilla", false}, {"La ruta de la seda", false}}},
+        {" Durante el siglo XV, la sociedad se estratifica en tres estamentos definidos", {{"Clase media, baja y alta", false}, {"nobleza, clero y estado llano", true}, {"Artesanos y guardianes ", false}, {"Gobernantes", false}}},
+        {"Aparece el realismo político, que se basaba en un orden establecido, explicación de un sistema y recomendaciones de como gobernar", {{" Tomás Moro", false}, {" Jean Bodín", false}, {"Nicolas Maquiavelo", true}, {"Erasmo de Rotterdam", false}}},
+        {"Terminada la edad media, en el contexto de la política resulta que", {{"La Iglesia resalta su poder", false}, {"La Iglesia pierde el papel rector en la política", true}, {"La Iglesia evangélica se posiciona en la política", false}, {"La política desaparece", false}}},
     };
 }
 
