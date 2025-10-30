@@ -46,7 +46,7 @@ void juego3::inicializarNivel()
 
     objetosInteractivos();
 
-    escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(350, 450));
+    escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(350, 530));
 
     inicializarPreguntas();
     cargarPregunta();
@@ -98,16 +98,16 @@ void juego3::keyPressEvent(QKeyEvent* event) {
 void juego3::objetosInteractivos() {
     QPixmap pixcanasta1("C:/Users/Lenovo/Downloads/canasta.png");
     canasta = escenario->scene->addPixmap(
-        pixcanasta1.scaled(250, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        pixcanasta1.scaled(350, 350, Qt::KeepAspectRatio, Qt::SmoothTransformation)
         );
-    canasta->setPos(220, 450);
+    canasta->setPos(330, 420);
 
 }
 
 //agregado
 void juego3::inicializarPreguntas() {
     preguntas = {
-        {"Durante el renacimiento, el modelo de gobierno es uno de los siguientes:", {{"Monarquía absoluta", true}, {" Tiranía republicana", false}, {"Democracia participativa", false}, {"Liberalismo político", false}}},
+        {"Durante el renacimiento, el modelo de gobierno es uno de los siguientes:", {{"Monarquía \nabsoluta", true}, {" Tiranía republicana", false}, {"Democracia participativa", false}, {"Liberalismo político", false}}},
         {"De los siguientes acontecimientos, selecciones el que inicia el período moderno:", {{"Toma de Constantinopla", false}, {" Tratado de paz de westfalia", true}, {"Toma de la Bastilla", false}, {"La ruta de la seda", false}}},
         {" Durante el siglo XV, la sociedad se estratifica en tres estamentos definidos", {{"Clase media, baja y alta", false}, {"nobleza, clero y estado llano", true}, {"Artesanos y guardianes ", false}, {"Gobernantes", false}}},
         {"Aparece el realismo político, que se basaba en un orden establecido, explicación de un sistema y recomendaciones de como gobernar", {{" Tomás Moro", false}, {" Jean Bodín", false}, {"Nicolas Maquiavelo", true}, {"Erasmo de Rotterdam", false}}},
@@ -128,14 +128,16 @@ void juego3::cargarPregunta() {
     ui->labelPregunta->setText(preguntas[preguntaActual].texto);
 
     // Crear flores en el césped
-    int x = 50;
+    int x = 200;
+    int espaciado = 180;
+
     for (auto& resp : preguntas[preguntaActual].respuestas) {
-        QPixmap pix("C:/Users/Lenovo/Downloads/flor3.png"); // imagen genérica
-        Flor* f = new Flor(pix.scaled(50,50), resp.texto, resp.esCorrecta);
-        f->setPos(x, 350);
+        QPixmap pix("C:/Users/Lenovo/Downloads/flor33.png"); // imagen genérica
+        Flor* f = new Flor(pix.scaled(60,60), resp.texto, resp.esCorrecta);
+        f->setPos(x, 400);
         escenario->scene->addItem(f);
         flores.push_back(f);
-        x += 100;
+        x += espaciado;
     }
 }
 

@@ -22,6 +22,7 @@ private:
     bool correcta;
     bool recolectada;
     bool enCanasta = false;
+    QGraphicsTextItem* textoItem;
 };
 
 #endif // FLOR_H

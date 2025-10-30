@@ -27,6 +27,9 @@ qt_add_executable(proyectoUno-EstruII
     juego4.h juego4.cpp juego4.ui
     flor.h flor.cpp
     pregunta.h
+    personaje.h personaje.cpp
+    npc.h npc.cpp
+    preguntawidget.h preguntawidget.cpp
 )
 
 target_link_libraries(proyectoUno-EstruII
