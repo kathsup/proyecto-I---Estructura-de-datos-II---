@@ -169,9 +169,9 @@ void nivel2Ruleta::objetosInteractivos() {
     puertas["Ciencia"]->setPos(775, 210);
     puertas["Ciencia"]->setData(0, "Ciencia");
 
-    puertasAbiertas["Arte"] = false;
-    puertasAbiertas["Historia"] = false;
-    puertasAbiertas["Política"] = false;
+    puertasAbiertas["Arte"] = true;
+    puertasAbiertas["Historia"] = true;
+    puertasAbiertas["Política"] = true;
     puertasAbiertas["Ciencia"] = false;
 
     // Agregar a zonas interactivas

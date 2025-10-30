@@ -4,6 +4,7 @@
 #include <QTimer>
 #include "preguntawidget.h"
 #include <QPropertyAnimation>
+#include "mensajewidget.h"
 
 juego1::juego1(QWidget *parent)
     : QWidget(parent)
@@ -197,7 +198,7 @@ void juego1::verificarCofre()
         if (!yaInteractuo) {
             yaInteractuo = true;
 
-            if (llavesObtenidas >= 5) {
+            /*if (llavesObtenidas >= 5) {
                 // ¡Éxito! Tiene las 5 llaves
                 cofreAbierto = true;
 
@@ -216,6 +217,48 @@ void juego1::verificarCofre()
                 QMessageBox::warning(this, "Cofre cerrado",
                                      QString("Necesitas 5 llaves para abrir el cofre.\n\nTienes: %1/5 llaves\n\nResponde correctamente todas las preguntas!").arg(llavesObtenidas));
                 emit volverARuleta();
+            }*/
+
+            if (llavesObtenidas >= 5) {
+                // ¡Éxito! Tiene las 5 llaves
+                cofreAbierto = true;
+
+                // Cambiar imagen del cofre a abierto
+                cofre->setPixmap(QPixmap("C:/Users/Lenovo/Downloads/cofreAbierto.png").scaled(80, 80));
+
+                // Mostrar mensaje de victoria con tu MensajeWidget
+                MensajeWidget* mensaje = new MensajeWidget(
+                    "¡FELICIDADES! Has obtenido las 5 llaves.\n\n"
+                    "¡Ganaste 1 punto!\n\n¡Nivel completado!",
+                    "C:/Users/Lenovo/Downloads/restanguloPreg.png",
+                    this
+                    );
+
+                // Centrar el mensaje en pantalla
+                mensaje->move((width() - mensaje->width()) / 2+250, (height() - mensaje->height()) / 2);
+                mensaje->show();
+
+                // Esperar unos segundos y luego volver a la ruleta
+                QTimer::singleShot(2500, this, [this]() {
+                    emit volverARuleta();
+                });
+            }
+            else {
+                // Mostrar mensaje personalizado en lugar de QMessageBox
+                MensajeWidget* mensaje = new MensajeWidget(
+                    QString("Necesitas 5 llaves para abrir el cofre.\n\nTienes: %1/5 llaves\n\nResponde correctamente todas las preguntas!").arg(llavesObtenidas),
+                    "C:/Users/Lenovo/Downloads/restanguloPreg.png",
+                    this
+                    );
+
+                // Centrar el mensaje en la pantalla (ajusta si quieres moverlo un poco)
+                mensaje->move((width() - mensaje->width()) / 2+250, (height() - mensaje->height()) / 2);
+                mensaje->show();
+
+                // Llamar a volverARuleta después de un momento (por ejemplo, 2.5 segundos)
+                QTimer::singleShot(2500, this, [this]() {
+                    emit volverARuleta();
+                });
             }
 
             // Resetear el flag después de un segundo
@@ -223,6 +266,10 @@ void juego1::verificarCofre()
         }
     }
 }
+
+
+
+
 
 
 void juego1::objetosInteractivos() {

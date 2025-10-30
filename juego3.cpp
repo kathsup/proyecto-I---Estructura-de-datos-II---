@@ -234,7 +234,16 @@ void juego3::inicializarNivel()
     escenario->inicializar(ui->graphicsViewJ3, pixFondo);
 
     ui->graphicsViewJ3->setFocusPolicy(Qt::NoFocus);
-    ui->labelPregunta->setStyleSheet("background-color: #ffc1e3;");
+
+
+    ui->labelPregunta->setStyleSheet("background-color: #ffc1e3;"); // ya lo tienes
+    QFont font;
+    font.setFamily("Arial");
+    font.setPointSize(8);
+    font.setBold(true);
+    ui->labelPregunta->setFont(font);
+    ui->labelPregunta->setStyleSheet("background-color: #ffc1e3; color: #2c0e4a;"); // mismo color que opciones
+
 
     // Crear el personaje con sus sprites
     QVector<QPixmap> spritesDer = {
@@ -413,11 +422,11 @@ void juego3::depositarFlor()
             }
         } else {
             MensajeWidget* mensaje = new MensajeWidget(
-                "Esa no es la respuesta correcta.\nPasando a la siguiente pregunta...",
+                "Esa no es la respuesta correcta.",
                 "C:/Users/Lenovo/Downloads/restanguloPreg.png",
                 this
                 );
-            mensaje->move((width() - mensaje->width()) / 2 - 10, (height() - mensaje->height()) / 2);
+            mensaje->move((width() - mensaje->width()) / 2 + 250, (height() - mensaje->height()) / 2);
             mensaje->show();
 
             florEnMano->mostrarTexto(true);
@@ -437,7 +446,7 @@ void juego3::depositarFlor()
             "C:/Users/Lenovo/Downloads/restanguloPreg.png",
             this
             );
-        mensaje->move((width() - mensaje->width()) / 2 - 10, (height() - mensaje->height()) / 2);
+        mensaje->move((width() - mensaje->width()) / 2 + 250, (height() - mensaje->height()) / 2);
         mensaje->show();
     }
 }
@@ -451,7 +460,7 @@ void juego3::finalizarJuego()
             "C:/Users/Lenovo/Downloads/restanguloPreg.png",
             this
             );
-        mensaje->move((width() - mensaje->width()) / 2 - 10, (height() - mensaje->height()) / 2);
+        mensaje->move((width() - mensaje->width()) / 2 + 250, (height() - mensaje->height()) / 2);
         mensaje->show();
     } else {
         MensajeWidget* mensaje = new MensajeWidget(
@@ -460,7 +469,7 @@ void juego3::finalizarJuego()
             "C:/Users/Lenovo/Downloads/restanguloPreg.png",
             this
             );
-        mensaje->move((width() - mensaje->width()) / 2 - 10, (height() - mensaje->height()) / 2);
+        mensaje->move((width() - mensaje->width()) / 2 + 250, (height() - mensaje->height()) / 2);
         mensaje->show();
     }
 
@@ -473,6 +482,6 @@ void juego3::actualizarPosicionFlor()
 {
     if (florEnMano && escenario->personaje) {
         QPointF posPersonaje = escenario->personaje->pos();
-        florEnMano->setPos(posPersonaje.x() + 20, posPersonaje.y() - 50);
+        florEnMano->setPos(posPersonaje.x() + 60, posPersonaje.y() + 50);
     }
 }
