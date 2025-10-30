@@ -30,6 +30,7 @@ qt_add_executable(proyectoUno-EstruII
     personaje.h personaje.cpp
     npc.h npc.cpp
     preguntawidget.h preguntawidget.cpp
+    mensajewidget.h mensajewidget.cpp
 )
 
 target_link_libraries(proyectoUno-EstruII
