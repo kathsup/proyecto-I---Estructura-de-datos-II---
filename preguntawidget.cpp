@@ -7,7 +7,7 @@
 #include <QDebug>
 
 PreguntaWidget::PreguntaWidget(QString pregunta, QStringList opciones, QString respuestaCorrecta, QGraphicsScene *scene, QString idNPC)
-    : correcta(respuestaCorrecta), npcId(idNPC), escena(scene), mensajeResultado(nullptr)
+    : correcta(respuestaCorrecta), npcId(idNPC), escena(scene), mensajeResultado(nullptr),respuestaFueCorrecta(false)
 {
     // IMPORTANTE: No capturar eventos de mouse en el grupo
     setHandlesChildEvents(false);
@@ -16,14 +16,14 @@ PreguntaWidget::PreguntaWidget(QString pregunta, QStringList opciones, QString r
     QGraphicsPixmapItem *fondo = new QGraphicsPixmapItem(
         QPixmap("C:/Users/Lenovo/Downloads/restanguloPreg.png").scaled(600, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation)
         );
-    fondo->setPos(220, 250);
+    fondo->setPos(280, 250);
     addToGroup(fondo);
 
     // Texto de la pregunta
     QGraphicsTextItem *texto = new QGraphicsTextItem(pregunta);
     texto->setFont(QFont("Arial", 10, QFont::Bold));
     texto->setDefaultTextColor(Qt::white);
-    texto->setPos(290, 315);
+    texto->setPos(400, 315);
     texto->setTextWidth(520); // Para que el texto se ajuste
     addToGroup(texto);
 
@@ -128,6 +128,7 @@ void PreguntaWidget::verificarRespuesta() {
 
     // Verificar si la respuesta es correcta
     bool esCorrecto = (boton->text() == correcta);
+    respuestaFueCorrecta = esCorrecto;
 
     qDebug() << "Respuesta correcta:" << esCorrecto;
 
@@ -173,11 +174,13 @@ void PreguntaWidget::verificarRespuesta() {
     mostrarResultado(esCorrecto);
 
     // Emitir señales
-    if (esCorrecto) {
+   /* if (esCorrecto) {
         emit respuestaCorrecta();
     } else {
         emit respuestaIncorrecta();
-    }
+    }*/
+
+    //emit preguntaRespondida(npcId, esCorrecto);
 
     // Cerrar el cuadro después de 2 segundos
     QTimer::singleShot(2000, this, &PreguntaWidget::cerrarCuadro);
@@ -208,7 +211,7 @@ void PreguntaWidget::cerrarCuadro() {
     qDebug() << "Cerrando cuadro de pregunta";
 
     // Emitir señal de que la pregunta fue respondida
-    emit preguntaRespondida(npcId);
+    emit preguntaRespondida(npcId, respuestaFueCorrecta);
 
     // Eliminar este widget de la escena
     if (escena && this->scene() == escena) {

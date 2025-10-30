@@ -18,10 +18,15 @@ public:
                    QGraphicsScene *scene,
                    QString idNPC);
 
+
+
 signals:
+    /*void respuestaCorrecta();
+    void respuestaIncorrecta();
+    void preguntaRespondida(QString idNPC);*/
+    void preguntaRespondida(QString npcId, bool esCorrecta);
     void respuestaCorrecta();
     void respuestaIncorrecta();
-    void preguntaRespondida(QString idNPC);
 
 private slots:
     void verificarRespuesta();
@@ -33,6 +38,8 @@ private:
     QList<QGraphicsProxyWidget*> proxies;
     QGraphicsTextItem *mensajeResultado;
     QGraphicsScene *escena;
+
+    bool respuestaFueCorrecta;
 
     void mostrarResultado(bool esCorrecto);
     void cerrarCuadro();

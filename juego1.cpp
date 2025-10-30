@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include "preguntawidget.h"
+#include <QPropertyAnimation>
 
 juego1::juego1(QWidget *parent)
     : QWidget(parent)
@@ -46,8 +47,16 @@ void juego1::inicializarNivel()
     objetosInteractivos();
     zonasColision();
 
-
     escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(85, 300));
+
+    // NUEVO: Inicializar sistema de llaves
+    inicializarLlaves();
+
+    // NUEVO: Crear el cofre cerrado
+    cofre = new QGraphicsPixmapItem(QPixmap("C:/Users/Lenovo/Downloads/cofreCerrado.png").scaled(70, 70));
+    cofre->setPos(790, 200); // Ajusta la posición donde quieras el cofre en tu laberinto
+    escenario->scene->addItem(cofre);
+
     this->setFocus();
 
 
@@ -64,6 +73,8 @@ void juego1::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Escape) {
         emit volverARuleta();
     }
+
+    verificarCofre();
 
     for (NPC* npc : npcs) {
         if (escenario->personaje->collidesWithItem(npc)) {
@@ -110,12 +121,35 @@ void juego1::keyPressEvent(QKeyEvent *event)
                     p = new PreguntaWidget(pregunta, opciones, correcta, escenario->scene, npc->nombre);
                 }
 
-                // Conectar la señal para marcar como respondido
+
+                // Conectar usando función lambda más simple
                 if (p) {
-                    connect(p, &PreguntaWidget::preguntaRespondida, this, [this](QString idNPC) {
-                        npcsRespondidos.insert(idNPC);
-                    });
+                    connect(p, &PreguntaWidget::preguntaRespondida, this,
+                            [this, npc](const QString &idNPC, bool esCorrecta) {
+                                // Marcar como respondido
+                                npcsRespondidos.insert(idNPC);
+
+                                // Si es correcta, dar una llave
+                                if (esCorrecta && llavesObtenidas < 5) {
+                                    actualizarLlave(llavesObtenidas);
+                                    llavesObtenidas++;
+                                }
+
+                                // Animar desaparición del NPC
+                                QPropertyAnimation *fadeOut = new QPropertyAnimation(npc, "opacity");
+                                fadeOut->setDuration(500);
+                                fadeOut->setStartValue(1.0);
+                                fadeOut->setEndValue(0.0);
+                                fadeOut->start(QAbstractAnimation::DeleteWhenStopped);
+
+                                QTimer::singleShot(500, npc, [npc]() {
+                                    npc->setVisible(false);
+                                });
+                            }
+                            );
                 }
+
+
 
                 // Si quieres que se vuelva a poder hablar después de moverse un poco
                 QTimer::singleShot(1000, [=]() { ultimoNPC = ""; });
@@ -123,6 +157,73 @@ void juego1::keyPressEvent(QKeyEvent *event)
         }
     }
 }
+
+void juego1::inicializarLlaves()
+{
+    // Crear 5 labels con iconos de llaves en blanco y negro
+    for (int i = 0; i < 5; i++) {
+        QLabel *llave = new QLabel(this);
+        llave->setPixmap(QPixmap("C:/Users/Lenovo/Downloads/llaveGris.png").scaled(40, 40, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        llave->setGeometry(20 + (i * 50), 20, 40, 40); // Posición horizontal en la parte superior
+        llave->setStyleSheet("background-color: transparent;"); // Fondo transparente
+        llave->show();
+        iconosLlaves.append(llave);
+    }
+}
+
+// NUEVA FUNCIÓN: Actualizar una llave específica a dorado
+void juego1::actualizarLlave(int indice)
+{
+    if (indice >= 0 && indice < iconosLlaves.size()) {
+        iconosLlaves[indice]->setPixmap(
+            QPixmap("C:/Users/Lenovo/Downloads/llaveColor.jpg").scaled(40, 40, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+            );
+    }
+}
+
+// NUEVA FUNCIÓN: Verificar interacción con el cofre
+void juego1::verificarCofre()
+{
+    if (!cofre || cofreAbierto) return;
+
+    if (npcsRespondidos.size() < 5) {
+        return; // No hacer nada si no ha terminado
+    }
+
+    // Verificar colisión con el cofre
+    if (escenario->personaje->collidesWithItem(cofre)) {
+        static bool yaInteractuo = false; // Evitar múltiples mensajes
+
+        if (!yaInteractuo) {
+            yaInteractuo = true;
+
+            if (llavesObtenidas >= 5) {
+                // ¡Éxito! Tiene las 5 llaves
+                cofreAbierto = true;
+
+                // Cambiar imagen del cofre a abierto
+                cofre->setPixmap(QPixmap("C:/Users/Lenovo/Downloads/cofreAbierto.png").scaled(80, 80));
+
+                // Mostrar mensaje de victoria
+                QMessageBox::information(this, "¡Felicidades!",
+                                         "¡Has obtenido las 5 llaves!\n¡Ganaste 1 punto!\n\n¡Nivel completado!");
+
+                // Aquí puedes emitir una señal o volver a la ruleta
+                emit volverARuleta();
+
+            } else {
+                // No tiene suficientes llaves
+                QMessageBox::warning(this, "Cofre cerrado",
+                                     QString("Necesitas 5 llaves para abrir el cofre.\n\nTienes: %1/5 llaves\n\nResponde correctamente todas las preguntas!").arg(llavesObtenidas));
+                emit volverARuleta();
+            }
+
+            // Resetear el flag después de un segundo
+            QTimer::singleShot(1000, [&]() { yaInteractuo = false; });
+        }
+    }
+}
+
 
 void juego1::objetosInteractivos() {
     NPC* uno = new NPC("C:/Users/Lenovo/Downloads/npc1.png", "npc1");
@@ -132,7 +233,7 @@ void juego1::objetosInteractivos() {
     NPC* cinco = new NPC("C:/Users/Lenovo/Downloads/npc5.png", "npc5");
 
     // Posiciones dentro del laberinto
-    uno->setPos(800, 200);
+    uno->setPos(940, 310);
     dos->setPos(700, 550);
     tres->setPos(650, 300);
     cuatro->setPos(260, 150);
