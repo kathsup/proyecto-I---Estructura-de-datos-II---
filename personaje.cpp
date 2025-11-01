@@ -14,11 +14,11 @@ Personaje::Personaje(const QVector<QPixmap>& der,
     setZValue(1); // para que quede encima del fondo
 }
 
-void Personaje::mover(int tecla, const QList<QGraphicsItem*>& obstaculos)
+void Personaje::mover(QKeyEvent* event, const QList<QGraphicsItem*>& obstaculos, const QRectF& limites)
 {
     QPointF nuevaPos = pos();
 
-    switch(tecla) {
+    switch (event->key()) {
     case Qt::Key_Left:
         nuevaPos.setX(nuevaPos.x() - paso);
         direccionActual = "izquierda";
@@ -33,26 +33,30 @@ void Personaje::mover(int tecla, const QList<QGraphicsItem*>& obstaculos)
         break;
     case Qt::Key_Down:
         nuevaPos.setY(nuevaPos.y() + paso);
-        direccionActual = "derecha";
+        direccionActual = "derecha"; // puedes cambiar a "abajo" si tienes sprites abajo
         break;
     default:
         return;
     }
 
-    // Guardar posición previa por si hay colisión
+    // Evitar salir del escenario
+    if (!limites.contains(QRectF(nuevaPos, boundingRect().size()))) {
+        return;
+    }
+
+    // Guardar posición previa
     QPointF posAnterior = pos();
     setPos(nuevaPos);
 
     // Verificar colisiones
     for (auto* item : collidingItems()) {
         if (obstaculos.contains(item)) {
-            // si choca, regresar al punto anterior
             setPos(posAnterior);
             return;
         }
     }
 
-    // Cambiar sprite (animación)
+    // Animación
     QVector<QPixmap>* spritesActuales = nullptr;
     if (direccionActual == "derecha") spritesActuales = &spritesDer;
     else if (direccionActual == "izquierda") spritesActuales = &spritesIzq;
@@ -64,7 +68,8 @@ void Personaje::mover(int tecla, const QList<QGraphicsItem*>& obstaculos)
     }
 }
 
-void Personaje::setDireccionActual(const QString& direccion)
+
+/*void Personaje::setDireccionActual(const QString& direccion)
 {
     direccionActual = direccion;
-}
+}*/

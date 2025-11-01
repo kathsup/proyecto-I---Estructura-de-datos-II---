@@ -15,8 +15,9 @@ public:
               const QVector<QPixmap>& spritesArriba,
               QPointF posicionInicial);
 
-    void mover(int tecla, const QList<QGraphicsItem*>& obstaculos);
-    void setDireccionActual(const QString& direccion);
+    void mover(QKeyEvent* event, const QList<QGraphicsItem*>& obstaculos, const QRectF& limites);
+
+    //void setDireccionActual(const QString& direccion);
 
 private:
     QVector<QPixmap> spritesDer;

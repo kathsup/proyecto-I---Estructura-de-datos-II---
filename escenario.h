@@ -1,4 +1,4 @@
-#ifndef ESCENARIO_H
+/*#ifndef ESCENARIO_H
 #define ESCENARIO_H
 
 #include <QObject>
@@ -35,6 +35,43 @@ public:
 
     virtual void configurarColisiones() {}
     virtual void configurarInteracciones() {}
+};
+
+#endif // ESCENARIO_H
+*/
+
+#ifndef ESCENARIO_H
+#define ESCENARIO_H
+
+#include <QObject>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QPixmap>
+#include <QList>
+#include "personaje.h"
+
+class Escenario : public QObject
+{
+    Q_OBJECT
+public:
+    explicit Escenario(QObject* parent = nullptr);
+    ~Escenario();
+
+    void inicializar(QGraphicsView* vista, const QPixmap& pixFondo = QPixmap());
+    void crearPersonaje(const QVector<QPixmap>& der,
+                        const QVector<QPixmap>& izq,
+                        const QVector<QPixmap>& arriba,
+                        QPointF posicionInicial);
+    void manejarTecla(QKeyEvent* event);
+
+    QGraphicsScene* scene;
+    Personaje* personaje = nullptr;
+    QList<QGraphicsItem*> obstaculos;
+    QList<QGraphicsItem*> zonasInteractivas;
+
+
+private:
+    QGraphicsPixmapItem* fondo = nullptr;
 };
 
 #endif // ESCENARIO_H

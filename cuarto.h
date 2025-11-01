@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "escenario.h"
+#include "personaje.h"
 
 namespace Ui {
 class Cuarto;
@@ -28,6 +29,7 @@ signals:
 private:
     Ui::Cuarto *ui;
     Escenario *escenario;
+    Personaje *personaje;
 };
 
 #endif // CUARTO_H

@@ -20,7 +20,7 @@ juego1::~juego1()
     delete ui;
 }
 
-void juego1::inicializarNivel()
+/*void juego1::inicializarNivel()
 {
     // Configurar el escenario dentro del QGraphicsView del UI
     QPixmap pixFondo("C:/Users/Lenovo/Downloads/laberinto.png");
@@ -153,6 +153,122 @@ void juego1::keyPressEvent(QKeyEvent *event)
 
 
                 // Si quieres que se vuelva a poder hablar después de moverse un poco
+                QTimer::singleShot(1000, [=]() { ultimoNPC = ""; });
+            }
+        }
+    }
+}*/
+
+void juego1::inicializarNivel()
+{
+    // 🟢 Fondo
+    QPixmap pixFondo("C:/Users/Lenovo/Downloads/laberinto.png");
+    escenario->inicializar(ui->graphicsViewJ1, pixFondo);
+    ui->graphicsViewJ1->setFocusPolicy(Qt::NoFocus);
+
+    // 🟢 Reiniciar progreso
+    llavesObtenidas = 0;
+    cofreAbierto = false;
+    npcsRespondidos.clear();
+
+    // 🧚 Crear sprites del hada
+    QVector<QPixmap> spritesDer = {
+        QPixmap("C:/Users/Lenovo/Downloads/hada1AD.png").scaled(80,80),
+        QPixmap("C:/Users/Lenovo/Pictures/hada2AD.png").scaled(80,80),
+        QPixmap("C:/Users/Lenovo/Downloads/hada3AD.png").scaled(80,80)
+    };
+
+    QVector<QPixmap> spritesIzq = {
+        QPixmap("C:/Users/Lenovo/Pictures/hada1Iz.png").scaled(80,80),
+        QPixmap("C:/Users/Lenovo/Pictures/hada2Iz.png").scaled(80,80),
+        QPixmap("C:/Users/Lenovo/Pictures/hada3Iz.png").scaled(80,80)
+    };
+
+    QVector<QPixmap> spritesArriba = {
+        QPixmap("C:/Users/Lenovo/Downloads/hada4Ar.png").scaled(80,80),
+        QPixmap("C:/Users/Lenovo/Downloads/hada5Ar.png").scaled(80,80)
+    };
+
+    // 🧭 Crear personaje (posición inicial)
+    escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(85, 300));
+
+    // 🗝️ Llaves y cofre
+    inicializarLlaves();
+    cofre = new QGraphicsPixmapItem(QPixmap("C:/Users/Lenovo/Downloads/cofreCerrado.png").scaled(70, 70));
+    cofre->setPos(790, 200);
+    escenario->scene->addItem(cofre);
+
+    // 🤝 NPCs y colisiones
+    objetosInteractivos();
+    zonasColision();
+
+    this->setFocus();
+}
+
+void juego1::keyPressEvent(QKeyEvent *event)
+{
+    if (escenario)
+        escenario->manejarTecla(event);
+
+    if (event->key() == Qt::Key_Escape)
+        emit volverARuleta();
+
+    verificarCofre();
+
+    for (NPC* npc : npcs) {
+        if (escenario->personaje->collidesWithItem(npc)) {
+            if (npcsRespondidos.contains(npc->nombre)) continue;
+
+            static QString ultimoNPC = "";
+            if (ultimoNPC != npc->nombre) {
+                ultimoNPC = npc->nombre;
+
+                PreguntaWidget *p = nullptr;
+
+                // 🧠 Preguntas
+                if (npc->nombre == "npc1") {
+                    p = new PreguntaWidget("Uno de los siguientes personajes fue\nel encargado de pintar la Capilla Sixtina:",
+                                           {"Miguel Ángel", "Donatello", "Leonardo Da Vinci", "Francis Bacon"},
+                                           "Miguel Ángel", escenario->scene, npc->nombre);
+                }
+                else if (npc->nombre == "npc2") {
+                    p = new PreguntaWidget("Genio del renacimiento que esculpió\nel Moisés, el David y la Pietá:",
+                                           {"Miguel Ángel Buonarroti", "Leonardo Da Vinci", "Rafael Sanzio", "Galileo Galilei"},
+                                           "Miguel Ángel Buonarroti", escenario->scene, npc->nombre);
+                }
+                else if (npc->nombre == "npc3") {
+                    p = new PreguntaWidget("Durante el renacimiento el estilo artístico\nque impregnó el arte, la filosofía,\nla pintura y la escritura fue el:",
+                                           {"El Gótico", "El Barroco", "El Clasicismo", "El Romanticismo"},
+                                           "El Clasicismo", escenario->scene, npc->nombre);
+                }
+                else if (npc->nombre == "npc4") {
+                    p = new PreguntaWidget("Durante el renacimiento surge una nueva\nvisión del hombre reflejada en el arte,\nla política y las ciencias, llamada:",
+                                           {"Antropocentrismo", "Humanismo", "Paradigma antropológico", "Teocentrismo"},
+                                           "Humanismo", escenario->scene, npc->nombre);
+                }
+                else if (npc->nombre == "npc5") {
+                    p = new PreguntaWidget("Cuatro genios del renacimiento fueron\nllevados a la pantalla en los comics de:",
+                                           {"Las Tortugas Ninjas", "Los Caballeros del Zodiaco", "Los Cuatro Fantásticos", "Attack on Titan"},
+                                           "Las Tortugas Ninjas", escenario->scene, npc->nombre);
+                }
+
+                if (p) {
+                    connect(p, &PreguntaWidget::preguntaRespondida, this,
+                            [this, npc](const QString &idNPC, bool esCorrecta) {
+                                npcsRespondidos.insert(idNPC);
+                                if (esCorrecta && llavesObtenidas < 5) {
+                                    actualizarLlave(llavesObtenidas);
+                                    llavesObtenidas++;
+                                }
+                                QPropertyAnimation *fadeOut = new QPropertyAnimation(npc, "opacity");
+                                fadeOut->setDuration(500);
+                                fadeOut->setStartValue(1.0);
+                                fadeOut->setEndValue(0.0);
+                                fadeOut->start(QAbstractAnimation::DeleteWhenStopped);
+                                QTimer::singleShot(500, npc, [npc]() { npc->setVisible(false); });
+                            });
+                }
+
                 QTimer::singleShot(1000, [=]() { ultimoNPC = ""; });
             }
         }

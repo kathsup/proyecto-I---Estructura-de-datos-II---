@@ -1,4 +1,4 @@
-#include "escenario.h"
+/*#include "escenario.h"
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
 
@@ -81,5 +81,41 @@ void Escenario::manejarTecla(QKeyEvent* event) {
     if(spritesActuales && !spritesActuales->isEmpty()) {
         currentSprite = (currentSprite+1)%spritesActuales->size();
         personaje->setPixmap((*spritesActuales)[currentSprite]);
+    }
+}
+*/
+
+#include "escenario.h"
+
+Escenario::Escenario(QObject* parent) : QObject(parent) {}
+Escenario::~Escenario() {}
+
+void Escenario::inicializar(QGraphicsView* vista, const QPixmap& pixFondo)
+{
+    scene = new QGraphicsScene();
+    vista->setScene(scene);
+    vista->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    vista->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scene->setSceneRect(0, 0, vista->width(), vista->height());
+
+    if (!pixFondo.isNull()) {
+        fondo = scene->addPixmap(pixFondo.scaled(vista->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        fondo->setZValue(-1);
+    }
+}
+
+void Escenario::crearPersonaje(const QVector<QPixmap>& der,
+                               const QVector<QPixmap>& izq,
+                               const QVector<QPixmap>& arriba,
+                               QPointF posicionInicial)
+{
+    personaje = new Personaje(der, izq, arriba, posicionInicial);
+    scene->addItem(personaje);
+}
+
+void Escenario::manejarTecla(QKeyEvent* event)
+{
+    if (personaje) {
+        personaje->mover(event, obstaculos, scene->sceneRect());
     }
 }

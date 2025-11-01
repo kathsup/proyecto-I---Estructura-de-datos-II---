@@ -40,11 +40,17 @@ void Cuarto::inicializarNivel()
         QPixmap("C:/Users/Lenovo/Downloads/hada4Ar.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
         QPixmap("C:/Users/Lenovo/Downloads/hada5Ar.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
     };
+    objetosInteractivos();
+
+ personaje = new Personaje(spritesDer, spritesIzq, spritesArriba, QPointF(350, 450));
+
+    // ✅ Agregarlo al escenario
+    escenario->agregarPersonaje(personaje);
+
+    // Aquí puedes agregar obstáculos o cofres si quieres
     objetosInteractivos();*/
 
 
-
-    //escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(350, 450));
     this->setFocus();
 
 
