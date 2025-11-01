@@ -74,13 +74,13 @@ PreguntaWidget::PreguntaWidget(QString pregunta, QStringList opciones, QString r
 
         // Conectar la señal CON LAMBDA para debug
         connect(boton, &QPushButton::clicked, this, [this, boton]() {
-            qDebug() << "¡Botón clickeado!" << boton->text();
+          //  qDebug() << "¡Botón clickeado!" << boton->text();
             verificarRespuesta();
         });
 
         // Test alternativo: conectar directamente
         connect(boton, &QPushButton::pressed, [boton]() {
-            qDebug() << "Botón presionado:" << boton->text();
+           // qDebug() << "Botón presionado:" << boton->text();
         });
     }
 
@@ -92,34 +92,34 @@ PreguntaWidget::PreguntaWidget(QString pregunta, QStringList opciones, QString r
     setEnabled(true);
     setZValue(1000); // Poner al frente
 
-    qDebug() << "PreguntaWidget creado con" << botones.size() << "botones";
-    qDebug() << "Posición del grupo:" << pos();
-    qDebug() << "Grupo visible:" << isVisible() << "habilitado:" << isEnabled();
+   // qDebug() << "PreguntaWidget creado con" << botones.size() << "botones";
+    //qDebug() << "Posición del grupo:" << pos();
+    //qDebug() << "Grupo visible:" << isVisible() << "habilitado:" << isEnabled();
 
     // Verificar que los botones estén habilitados
-    for (int i = 0; i < botones.size(); ++i) {
+    /*for (int i = 0; i < botones.size(); ++i) {
         qDebug() << "Botón" << i << ":" << botones[i]->text()
         << "habilitado:" << botones[i]->isEnabled()
         << "visible:" << botones[i]->isVisible();
-    }
+    }*/
 }
 
 void PreguntaWidget::verificarRespuesta() {
     QPushButton *boton = qobject_cast<QPushButton*>(sender());
     if (!boton) {
-        qDebug() << "Error: sender no es un QPushButton";
+       // qDebug() << "Error: sender no es un QPushButton";
         // Intentar obtener el botón de otra manera
         for (auto b : botones) {
             if (b->isDown()) {
                 boton = b;
-                qDebug() << "Botón encontrado por isDown():" << boton->text();
+                //qDebug() << "Botón encontrado por isDown():" << boton->text();
                 break;
             }
         }
         if (!boton) return;
     }
 
-    qDebug() << "=== VERIFICANDO RESPUESTA ===" << boton->text();
+  //  qDebug() << "=== VERIFICANDO RESPUESTA ===" << boton->text();
 
     // Deshabilitar todos los botones inmediatamente
     for (auto b : botones) {
@@ -130,7 +130,7 @@ void PreguntaWidget::verificarRespuesta() {
     bool esCorrecto = (boton->text() == correcta);
     respuestaFueCorrecta = esCorrecto;
 
-    qDebug() << "Respuesta correcta:" << esCorrecto;
+    //qDebug() << "Respuesta correcta:" << esCorrecto;
 
     // Cambiar color del botón seleccionado
     if (esCorrecto) {
@@ -208,7 +208,7 @@ void PreguntaWidget::mostrarResultado(bool esCorrecto) {
 }
 
 void PreguntaWidget::cerrarCuadro() {
-    qDebug() << "Cerrando cuadro de pregunta";
+    //qDebug() << "Cerrando cuadro de pregunta";
 
     // Emitir señal de que la pregunta fue respondida
     emit preguntaRespondida(npcId, respuestaFueCorrecta);

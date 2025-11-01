@@ -5,7 +5,7 @@ MensajeWidget::MensajeWidget(const QString& texto, const QString& rutaFondo, QWi
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
-    setFixedSize(300, 250); // Tamaño del cartel
+    setFixedSize(380, 250); // Tamaño del cartel
 
     // Imagen de fondo
     labelFondo = new QLabel(this);
@@ -17,7 +17,7 @@ MensajeWidget::MensajeWidget(const QString& texto, const QString& rutaFondo, QWi
     labelTexto = new QLabel(texto, this);
     labelTexto->setWordWrap(true);
     labelTexto->setAlignment(Qt::AlignCenter);
-    labelTexto->setStyleSheet("color: white; font-family: 'Arial'; font-size: 12px; font-weight: bold; background: transparent;");
+    labelTexto->setStyleSheet("color: white; font-family: 'Arial'; font-size: 10px; font-weight: bold; background: transparent;");
 
     // Botón cerrar
     botonCerrar = new QPushButton("Cerrar", this);
