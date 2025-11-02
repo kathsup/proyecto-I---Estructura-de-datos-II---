@@ -176,26 +176,6 @@ void juego1::verificarCofre()
         if (!yaInteractuo) {
             yaInteractuo = true;
 
-            /*if (llavesObtenidas >= 5) {
-                // ¡Éxito! Tiene las 5 llaves
-                cofreAbierto = true;
-
-                // Cambiar imagen del cofre a abierto
-                cofre->setPixmap(QPixmap("C:/Users/Lenovo/Downloads/cofreAbierto.png").scaled(80, 80));
-
-                // Mostrar mensaje de victoria
-                QMessageBox::information(this, "¡Felicidades!",
-                                         "¡Has obtenido las 5 llaves!\n¡Ganaste 1 punto!\n\n¡Nivel completado!");
-
-                // Aquí puedes emitir una señal o volver a la ruleta
-                emit volverARuleta();
-
-            } else {
-                // No tiene suficientes llaves
-                QMessageBox::warning(this, "Cofre cerrado",
-                                     QString("Necesitas 5 llaves para abrir el cofre.\n\nTienes: %1/5 llaves\n\nResponde correctamente todas las preguntas!").arg(llavesObtenidas));
-                emit volverARuleta();
-            }*/
 
             if (llavesObtenidas >= 5) {
                 // ¡Éxito! Tiene las 5 llaves
