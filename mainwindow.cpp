@@ -213,11 +213,11 @@ void MainWindow::on_btnComenzar_clicked()
 
     // 4) Limpiar input, ir al mapa (ejemplo) y mantener foco si quieres
     ui->lineNombre->clear();
-    ui->stackedWidget->setCurrentWidget(Mapa);
-    Mapa->inicializarNivel();
+    /*ui->stackedWidget->setCurrentWidget(Mapa);
+    Mapa->inicializarNivel();*/
 
-    /*ui->stackedWidget->setCurrentWidget(juegoPolitica);
-    juegoPolitica->inicializarNivel();*/
+    ui->stackedWidget->setCurrentWidget(juegoCiencia);
+    juegoCiencia->inicializarNivel();
 }
 
 Jugador* MainWindow::buscarJugador(const QString &nombre) {
@@ -303,3 +303,4 @@ void MainWindow::cambiarDeNivel(QWidget* nuevoNivel)
 
     fadeOut->start(QAbstractAnimation::DeleteWhenStopped);
 }
+

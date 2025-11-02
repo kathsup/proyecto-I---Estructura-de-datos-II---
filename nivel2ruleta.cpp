@@ -172,7 +172,7 @@ void nivel2Ruleta::objetosInteractivos() {
     puertasAbiertas["Arte"] = true;
     puertasAbiertas["Historia"] = true;
     puertasAbiertas["Política"] = true;
-    puertasAbiertas["Ciencia"] = false;
+    puertasAbiertas["Ciencia"] = true;
 
     // Agregar a zonas interactivas
     for (auto puerta : puertas.values()) {

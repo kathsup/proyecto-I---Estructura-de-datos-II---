@@ -18,6 +18,15 @@ public:
     void inicializarNivel(); //metodo para inicializar nivel
     void objetosInteractivos();
 
+    QGraphicsRectItem* uno;
+    QGraphicsRectItem* dos;
+    QGraphicsRectItem* tres;
+    QGraphicsRectItem* cuatro;
+    QGraphicsRectItem* cinco;
+    QGraphicsRectItem* seis;
+
+    void zonasColision();
+
 protected:
     // Declarar aquí que se sobrescribe keyPressEvent
     void keyPressEvent(QKeyEvent *event) override;
