@@ -103,6 +103,7 @@ void juego4::mostrarPregunta()
         // Fin del juego
         QGraphicsTextItem* mensajeFinal = new QGraphicsTextItem();
         if (respuestasCorrectas == 5) {
+            emit estrellaObtenida();
             mensajeFinal->setPlainText("¡FELICIDADES!\n¡Llegaste a la cima!");
             mensajeFinal->setDefaultTextColor(QColor("#4CAF50"));
         } else {

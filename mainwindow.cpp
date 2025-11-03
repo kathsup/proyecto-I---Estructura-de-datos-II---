@@ -56,6 +56,12 @@ MainWindow::MainWindow(QWidget *parent)
     juegoCiencia = new juego4(this);
     ui->stackedWidget->addWidget(juegoCiencia);
 
+    //vidas
+    connect(juegoArte, &juego1::estrellaObtenida, nivel2, &nivel2Ruleta::marcarEstrellaObtenida);
+    connect(juegoHistoria, &juego2::estrellaObtenida, nivel2, &nivel2Ruleta::marcarEstrellaObtenida);
+    connect(juegoPolitica, &juego3::estrellaObtenida, nivel2, &nivel2Ruleta::marcarEstrellaObtenida);
+    connect(juegoCiencia, &juego4::estrellaObtenida, nivel2, &nivel2Ruleta::marcarEstrellaObtenida);
+
 
     Mapa = new mapa(this);
     ui->stackedWidget->addWidget(Mapa);

@@ -972,6 +972,9 @@ void juego2::finalizarJuego()
 {
     QString mensaje;
     if (puntosObtenidos == preguntas.size()) {
+
+        emit estrellaObtenida();
+
         mensaje = QString("¡PERFECTO! %1/%2 puntos\n\n¡Has ganado el minijuego!")
                       .arg(puntosObtenidos).arg(preguntas.size());
     } else {

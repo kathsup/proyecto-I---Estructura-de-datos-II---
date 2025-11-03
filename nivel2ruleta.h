@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "escenario.h"
 #include <QKeyEvent>
+#include <QLabel>//vidass
 
 namespace Ui {
 class nivel2Ruleta;
@@ -25,6 +26,11 @@ public:
     void bloquearOpcion(const QString &nombre);
 
     int anguloElegido;
+
+    // vidas
+    void inicializarEstrellas();
+    void actualizarEstrella();
+    void marcarEstrellaObtenida();
 
 protected:
     // Declarar aquí que se sobrescribe keyPressEvent
@@ -54,6 +60,10 @@ private:
     QMap<QString, QGraphicsPixmapItem*> puertas;
     QMap<QString, bool> puertasAbiertas;
     bool nivelInicializado = false;
+
+    //vidas
+    int estrellasObtenidas;
+    QList<QLabel*> iconosEstrellas;
 
 
 };

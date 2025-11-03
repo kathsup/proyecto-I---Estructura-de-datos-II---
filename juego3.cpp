@@ -246,6 +246,8 @@ void juego3::depositarFlor()
 void juego3::finalizarJuego()
 {
     if (floresCorrectas == 5) {
+        emit estrellaObtenida();
+
         MensajeWidget* mensaje = new MensajeWidget(
             "¡FELICIDADES! Has completado la canasta con las 5 flores correctas.\n\n"
             "¡Has ganado el punto del minijuego!",

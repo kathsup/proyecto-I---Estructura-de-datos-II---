@@ -71,6 +71,7 @@ protected:
 
 signals:
     void volverARuleta();
+    void estrellaObtenida();
 
 private:
     Ui::juego4 *ui;

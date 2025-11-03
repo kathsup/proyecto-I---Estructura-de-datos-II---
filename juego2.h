@@ -246,6 +246,7 @@ public:
 
 signals:
     void volverARuleta();
+    void estrellaObtenida();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

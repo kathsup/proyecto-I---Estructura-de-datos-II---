@@ -12,6 +12,7 @@ nivel2Ruleta::nivel2Ruleta(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::nivel2Ruleta)
     ,escenario(new Escenario(this))//incluir el escenario al constructor
+    , estrellasObtenidas(0)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
@@ -28,6 +29,8 @@ nivel2Ruleta::nivel2Ruleta(QWidget *parent)
     timerGiro = new QTimer(this);
     connect(timerGiro, &QTimer::timeout, this, &nivel2Ruleta::rotarRuleta);
     anguloActual = 0;
+
+
 
 }
 
@@ -71,6 +74,9 @@ void nivel2Ruleta::inicializarNivel()
         QPixmap("C:/Users/Lenovo/Downloads/hada5Ar.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
 };
     objetosInteractivos();
+
+    //vidas
+    inicializarEstrellas();
 
     //RULETA
     // Crear la ruleta
@@ -118,6 +124,51 @@ void nivel2Ruleta::inicializarNivel()
 
 
 }
+
+//VIDAS
+void nivel2Ruleta::inicializarEstrellas()
+{
+    // Crear 4 labels con estrellas grises
+    for (int i = 0; i < 4; i++) {
+        QLabel *estrella = new QLabel(this);
+        estrella->setPixmap(
+            QPixmap("C:/Users/Lenovo/Downloads/estrellaGris.png")
+                .scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+            );
+
+        // Posicionar horizontalmente en la parte superior
+        int xPos = 90 + (i * 100);  // Ajusta según tu diseño
+        int yPos = 20;
+
+        estrella->setGeometry(xPos, yPos, 50, 50);
+        estrella->setStyleSheet("background-color: transparent;");
+        estrella->show();
+
+        iconosEstrellas.append(estrella);
+    }
+}
+
+// Actualizar la siguiente estrella a color
+void nivel2Ruleta::actualizarEstrella()
+{
+    if (estrellasObtenidas >= 0 && estrellasObtenidas < iconosEstrellas.size()) {
+        iconosEstrellas[estrellasObtenidas]->setPixmap(
+            QPixmap("C:/Users/Lenovo/Downloads/estrellaColor.png")
+                .scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+            );
+    }
+}
+
+// Marcar que se obtuvo una estrella
+void nivel2Ruleta::marcarEstrellaObtenida()
+{
+    if (estrellasObtenidas < 4) { // Máximo 4 estrellas
+        actualizarEstrella();
+        estrellasObtenidas++;
+    }
+}
+
+
 
 void nivel2Ruleta::keyPressEvent(QKeyEvent *event)
 {

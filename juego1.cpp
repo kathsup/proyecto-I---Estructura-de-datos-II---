@@ -35,20 +35,20 @@ void juego1::inicializarNivel()
 
     // 🧚 Crear sprites del hada
     QVector<QPixmap> spritesDer = {
-        QPixmap("C:/Users/Lenovo/Downloads/hada1AD.png").scaled(80,80),
-        QPixmap("C:/Users/Lenovo/Pictures/hada2AD.png").scaled(80,80),
-        QPixmap("C:/Users/Lenovo/Downloads/hada3AD.png").scaled(80,80)
+        QPixmap("C:/Users/Lenovo/Downloads/hada1AD.png").scaled(70,70),
+        QPixmap("C:/Users/Lenovo/Pictures/hada2AD.png").scaled(70,70),
+        QPixmap("C:/Users/Lenovo/Downloads/hada3AD.png").scaled(70,70)
     };
 
     QVector<QPixmap> spritesIzq = {
-        QPixmap("C:/Users/Lenovo/Pictures/hada1Iz.png").scaled(80,80),
-        QPixmap("C:/Users/Lenovo/Pictures/hada2Iz.png").scaled(80,80),
-        QPixmap("C:/Users/Lenovo/Pictures/hada3Iz.png").scaled(80,80)
+        QPixmap("C:/Users/Lenovo/Pictures/hada1Iz.png").scaled(70,70),
+        QPixmap("C:/Users/Lenovo/Pictures/hada2Iz.png").scaled(70,70),
+        QPixmap("C:/Users/Lenovo/Pictures/hada3Iz.png").scaled(70,70)
     };
 
     QVector<QPixmap> spritesArriba = {
-        QPixmap("C:/Users/Lenovo/Downloads/hada4Ar.png").scaled(80,80),
-        QPixmap("C:/Users/Lenovo/Downloads/hada5Ar.png").scaled(80,80)
+        QPixmap("C:/Users/Lenovo/Downloads/hada4Ar.png").scaled(70,70),
+        QPixmap("C:/Users/Lenovo/Downloads/hada5Ar.png").scaled(70,70)
     };
 
     // 🧭 Crear personaje (posición inicial)
@@ -183,6 +183,7 @@ void juego1::verificarCofre()
 
                 // Cambiar imagen del cofre a abierto
                 cofre->setPixmap(QPixmap("C:/Users/Lenovo/Downloads/cofreAbierto.png").scaled(80, 80));
+                emit estrellaObtenida();
 
                 // Mostrar mensaje de victoria con tu MensajeWidget
                 MensajeWidget* mensaje = new MensajeWidget(
