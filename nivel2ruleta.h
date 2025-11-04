@@ -32,6 +32,14 @@ public:
     void actualizarEstrella();
     void marcarEstrellaObtenida();
 
+    //controlar el flujo
+    void onJuegoCompletado();
+    void verificarFinDeRonda();
+    void mostrarEleccionBando();
+    void ocultarRuleta();
+    void mostrarRuleta();
+    void reiniciarRuleta();
+
 protected:
     // Declarar aquí que se sobrescribe keyPressEvent
     void keyPressEvent(QKeyEvent *event) override;
@@ -43,6 +51,7 @@ private slots:
 signals:
     void volverAlMapa();
     void solicitarCambioJuego(const QString& juego);
+    void irABatalla(QString bando);
 
 
 
@@ -64,6 +73,17 @@ private:
     //vidas
     int estrellasObtenidas;
     QList<QLabel*> iconosEstrellas;
+
+    //controlar el flujo
+    int puertasJugadas;
+    bool eligiendoBando;
+
+    // eleccion de bando
+    QGraphicsPixmapItem* insigniaEmpirista;
+    QGraphicsPixmapItem* insigniaRacionalista;
+    QGraphicsTextItem* textoEleccion;
+    QGraphicsTextItem* textoEmpirista;
+    QGraphicsTextItem* textoRacionalista;
 
 
 };

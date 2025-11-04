@@ -128,10 +128,38 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     //regresar a la ruleta desde el juego
-    connect(juegoArte, &juego1::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });
+    /*connect(juegoArte, &juego1::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });
     connect(juegoHistoria, &juego2::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });
     connect(juegoPolitica, &juego3::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });
-    connect(juegoCiencia, &juego4::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });
+    connect(juegoCiencia, &juego4::volverARuleta, this, [this](){ cambiarDeNivel(nivel2); });*/
+
+    connect(juegoArte, &juego1::volverARuleta, this, [this]() {
+        nivel2->onJuegoCompletado(); // ← AGREGAR ESTO
+        cambiarDeNivel(nivel2);
+    });
+
+    connect(juegoHistoria, &juego2::volverARuleta, this, [this]() {
+        nivel2->onJuegoCompletado(); // ← AGREGAR ESTO
+        cambiarDeNivel(nivel2);
+    });
+
+    connect(juegoPolitica, &juego3::volverARuleta, this, [this]() {
+        nivel2->onJuegoCompletado(); // ← AGREGAR ESTO
+        cambiarDeNivel(nivel2);
+    });
+
+    connect(juegoCiencia, &juego4::volverARuleta, this, [this]() {
+        nivel2->onJuegoCompletado(); // ← AGREGAR ESTO
+        cambiarDeNivel(nivel2);
+    });
+
+    // ========== NUEVA CONEXIÓN ==========
+    // Ir a batalla cuando se elija el bando
+    connect(nivel2, &nivel2Ruleta::irABatalla, this, [this](QString bando) {
+        // Aquí puedes guardar el bando elegido si lo necesitas
+        // Por ejemplo: jugadorActual.bando = bando;
+        cambiarDeNivel(nivel3);
+    });
 
 }
 
