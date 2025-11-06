@@ -51,7 +51,7 @@ private slots:
 signals:
     void volverAlMapa();
     void solicitarCambioJuego(const QString& juego);
-    void irABatalla(QString bando);
+    void irABatalla(QString bandoElegido, int vidasCargadas);
 
 
 

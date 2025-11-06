@@ -32,6 +32,7 @@ public:
 
 private slots:
     void on_btnComenzar_clicked();
+    void irABatalla(QString bando, int vidas);
 
 
 private:

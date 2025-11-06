@@ -350,7 +350,7 @@ void nivel2Ruleta::keyPressEvent(QKeyEvent *event)
                                              "Has elegido el bando: " + bando + "\n\n¡Prepárate para la batalla!");
 
                     // Emitir señal para ir a batalla
-                    emit irABatalla(bando);
+                    emit irABatalla(bando, estrellasObtenidas);
                     return;
                 }
             }

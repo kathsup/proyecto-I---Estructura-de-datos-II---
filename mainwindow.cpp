@@ -155,10 +155,20 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ========== NUEVA CONEXIÓN ==========
     // Ir a batalla cuando se elija el bando
-    connect(nivel2, &nivel2Ruleta::irABatalla, this, [this](QString bando) {
-        // Aquí puedes guardar el bando elegido si lo necesitas
-        // Por ejemplo: jugadorActual.bando = bando;
-        cambiarDeNivel(nivel3);
+    connect(nivel2, &nivel2Ruleta::irABatalla, this, &MainWindow::irABatalla);
+
+    // ========== ✅ NUEVA CONEXIÓN: Batalla terminada ==========
+    connect(nivel3, &nivel3Batalla::batallaTerminada, this, [this](QString ganador) {
+        if (ganador == "JUGADOR") {
+            QMessageBox::information(this, "¡Victoria!",
+                "¡Has ganado la batalla filosófica!\n\n"
+                "Has demostrado tu dominio del conocimiento.");
+        } else {
+            QMessageBox::information(this, "Derrota",
+                "Has sido derrotado en la batalla...\n\n"
+                "Estudia más y vuelve a intentarlo.");
+        }
+        cambiarDeNivel(Mapa);
     });
 
 }
@@ -216,6 +226,19 @@ void MainWindow::iniciarConfiguracion(){
 
     //line edit
     ui->lineNombre->setPlaceholderText("        INGRESA TU USUARIO");
+}
+
+void MainWindow::irABatalla(QString bando, int vidas)
+{
+    qDebug() << "🎮 Iniciando batalla:";
+    qDebug() << "   Bando:" << bando;
+    qDebug() << "   Vidas:" << vidas;
+
+    // CRÍTICO: Configurar ANTES de cambiar de nivel
+    nivel3->configurarBatalla(bando, vidas);
+
+    // Ahora sí cambiar al nivel
+    cambiarDeNivel(nivel3);
 }
 
 void MainWindow::on_btnComenzar_clicked()
