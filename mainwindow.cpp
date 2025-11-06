@@ -159,7 +159,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ========== ✅ NUEVA CONEXIÓN: Batalla terminada ==========
     connect(nivel3, &nivel3Batalla::batallaTerminada, this, [this](QString ganador) {
-        nivel3->detenerMusica();
+        //nivel3->detenerMusica();
         if (ganador == "JUGADOR") {
             QMessageBox::information(this, "¡Victoria!",
                                      "¡Has ganado la batalla filosófica!\n\n"
