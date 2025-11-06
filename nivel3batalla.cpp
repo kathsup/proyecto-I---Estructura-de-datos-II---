@@ -1495,9 +1495,9 @@ void nivel3Batalla::configurarBatalla(QString bandoElegido, int vidas)
     vidasJugador = vidas;
     vidasComputadora = 4;
 
-    qDebug() << "🎮 Batalla configurada:";
+    /*qDebug() << "🎮 Batalla configurada:";
     qDebug() << "   Bando:" << bandoJugador;
-    qDebug() << "   Vidas Jugador:" << vidasJugador;
+    qDebug() << "   Vidas Jugador:" << vidasJugador;*/
 }
 
 void nivel3Batalla::inicializarNivel()
@@ -1532,9 +1532,9 @@ void nivel3Batalla::inicializarNivel()
 
     QString estiloBoton =
         "QPushButton {"
-        "   background-color: #3498db;"
+        "   background-color: #c9aae3;"
         "   color: white;"
-        "   border: 3px solid #2980b9;"
+        "   border: 3px solid #c9aae3;"
         "   border-radius: 10px;"
         "   font-size: 18px;"
         "   font-weight: bold;"
@@ -1542,13 +1542,13 @@ void nivel3Batalla::inicializarNivel()
         "   min-width: 200px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #2980b9;"
+        "   background-color: #bf94e3;"
         "}"
         "QPushButton:pressed {"
-        "   background-color: #1c598a;"
+        "   background-color: #ba85e6;"
         "}"
         "QPushButton:disabled {"
-        "   background-color: #95a5a6;"
+        "   background-color: #ceaee8;"
         "   border-color: #7f8c8d;"
         "}";
 
@@ -1769,8 +1769,8 @@ void nivel3Batalla::mostrarIntroCombate(QString nombreCombate)
 
     textoCombate = new QGraphicsTextItem("COMBATE POR " + nombreCombate.toUpper());
     textoCombate->setFont(QFont("Arial", 28, QFont::Bold));
-    textoCombate->setDefaultTextColor(Qt::yellow);
-    textoCombate->setPos(250, 250);
+    textoCombate->setDefaultTextColor(Qt::blue);
+    textoCombate->setPos(250, 230);
 
     QGraphicsDropShadowEffect* sombra = new QGraphicsDropShadowEffect();
     sombra->setBlurRadius(15);
@@ -1953,9 +1953,9 @@ void nivel3Batalla::procesarRespuestaJugador(QString respuesta)
     if (botonSeleccionado) {
         botonSeleccionado->setStyleSheet(
             "QPushButton {"
-            "   background-color: #f39c12;"
+            "   background-color: #f79ef6;"
             "   color: white;"
-            "   border: 3px solid #d68910;"
+            "   border: 3px solid #c47cc3;"
             "   border-radius: 10px;"
             "   font-size: 18px;"
             "   font-weight: bold;"
@@ -2028,9 +2028,9 @@ void nivel3Batalla::mostrarRespuestasEnBotones()
     // Estilo para respuesta correcta (VERDE)
     QString estiloVerde =
         "QPushButton {"
-        "   background-color: #27ae60;"
+        "   background-color: #84a189;"
         "   color: white;"
-        "   border: 3px solid #229954;"
+        "   border: 3px solid #486e4f;"
         "   border-radius: 10px;"
         "   font-size: 18px;"
         "   font-weight: bold;"
@@ -2040,9 +2040,9 @@ void nivel3Batalla::mostrarRespuestasEnBotones()
     // Estilo para respuesta incorrecta del jugador (ROJO)
     QString estiloRojo =
         "QPushButton {"
-        "   background-color: #e74c3c;"
+        "   background-color: #cf756b;"
         "   color: white;"
-        "   border: 3px solid #c0392b;"
+        "   border: 3px solid #cf6155;"
         "   border-radius: 10px;"
         "   font-size: 18px;"
         "   font-weight: bold;"
@@ -2132,7 +2132,7 @@ void nivel3Batalla::mostrarResultado(QString ganadorRonda, bool acerto)
     QGraphicsTextItem* feedback = new QGraphicsTextItem(mensaje);
     feedback->setFont(QFont("Arial", 26, QFont::Bold));
     feedback->setDefaultTextColor(colorMensaje);
-    feedback->setPos(300, 300);
+    feedback->setPos(300, 230);
     escenario->scene->addItem(feedback);
 
     QTimer::singleShot(2000, this, [this, feedback]() {
@@ -2188,7 +2188,7 @@ void nivel3Batalla::mostrarPantallaFinal(QString ganador)
         QGraphicsTextItem* textoVictoria = new QGraphicsTextItem("VICTORIA");
         textoVictoria->setFont(QFont("Arial", 42, QFont::Bold));
         textoVictoria->setDefaultTextColor(Qt::yellow);
-        textoVictoria->setPos(350, 250);
+        textoVictoria->setPos(350, 230);
         escenario->scene->addItem(textoVictoria);
 
     } else {
@@ -2197,7 +2197,7 @@ void nivel3Batalla::mostrarPantallaFinal(QString ganador)
         QGraphicsTextItem* textoDerrota = new QGraphicsTextItem("DERROTA");
         textoDerrota->setFont(QFont("Arial", 42, QFont::Bold));
         textoDerrota->setDefaultTextColor(Qt::red);
-        textoDerrota->setPos(350, 250);
+        textoDerrota->setPos(350, 230);
         escenario->scene->addItem(textoDerrota);
     }
 
@@ -2208,7 +2208,7 @@ void nivel3Batalla::mostrarPantallaFinal(QString ganador)
         );
     stats->setFont(QFont("Arial", 18));
     stats->setDefaultTextColor(Qt::white);
-    stats->setPos(350, 350);
+    stats->setPos(370, 350);
     escenario->scene->addItem(stats);
 
     QTimer::singleShot(5000, this, [this, ganador]() {
@@ -2269,9 +2269,9 @@ void nivel3Batalla::mostrarBotones()
 {
     QString estiloBoton =
         "QPushButton {"
-        "   background-color: #3498db;"
+        "   background-color: #c9aae3;"
         "   color: white;"
-        "   border: 3px solid #2980b9;"
+        "   border: 3px solid #ceaee8;"
         "   border-radius: 10px;"
         "   font-size: 18px;"
         "   font-weight: bold;"
@@ -2279,11 +2279,14 @@ void nivel3Batalla::mostrarBotones()
         "   min-width: 200px;"
         "}"
         "QPushButton:hover {"
-        "   background-color: #2980b9;"
+        "   background-color: #bf94e3;"
         "}"
         "QPushButton:pressed {"
-        "   background-color: #1c598a;"
+        "   background-color: #ba85e6;"
         "}";
+
+
+
 
     botonA->setStyleSheet(estiloBoton);
     botonB->setStyleSheet(estiloBoton);
