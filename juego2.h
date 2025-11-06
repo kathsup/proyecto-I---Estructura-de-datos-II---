@@ -286,6 +286,7 @@ private:
     QList<QGraphicsTextItem*> textosRespuestas;
     QGraphicsRectItem* fondoPregunta;
     QGraphicsTextItem* textoPuntuacion;
+    QGraphicsRectItem* fondoPuntuacion;
 
     // Métodos de preguntas
     void inicializarPreguntas();

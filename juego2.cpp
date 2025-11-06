@@ -516,6 +516,7 @@ juego2::juego2(QWidget *parent)
     , textoPregunta(nullptr)
     , fondoPregunta(nullptr)
     , textoPuntuacion(nullptr)
+    , fondoPuntuacion(nullptr)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
@@ -807,7 +808,7 @@ void juego2::realizarExplosion()
     animExplosion->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
-// ⭐⭐⭐ NUEVOS MÉTODOS PARA SISTEMA DE PREGUNTAS ⭐⭐⭐
+//  NUEVOS MÉTODOS PARA SISTEMA DE PREGUNTAS
 
 void juego2::inicializarPreguntas()
 {
@@ -862,10 +863,10 @@ void juego2::cargarPregunta()
     // Mostrar pregunta en la escena
     if (!textoPregunta) {
         // Crear fondo para la pregunta
-        fondoPregunta = escenario->scene->addRect(0, 0, 800, 50);
+        fondoPregunta = escenario->scene->addRect(0, 0, 850, 50);
         fondoPregunta->setBrush(QBrush(QColor(255, 193, 227, 200))); // #ffc1e3
         fondoPregunta->setPen(QPen(QColor(44, 14, 74), 2)); // #2c0e4a
-        fondoPregunta->setPos(50, 10);
+        fondoPregunta->setPos(70, 10);
         fondoPregunta->setZValue(5);
 
         textoPregunta = escenario->scene->addText("");
@@ -877,7 +878,7 @@ void juego2::cargarPregunta()
 
     PreguntaBurbuja& pregunta = preguntas[preguntaActual];
     textoPregunta->setPlainText(pregunta.textoPregunta);
-    textoPregunta->setPos(60, 20);
+    textoPregunta->setPos(75, 20);
 
     // Mostrar respuestas en las burbujas
     for (int i = 0; i < burbujas.size() && i < pregunta.opciones.size(); i++) {
@@ -899,6 +900,8 @@ void juego2::cargarPregunta()
         textosRespuestas.append(textoResp);
     }
 }
+
+
 
 void juego2::verificarRespuesta(int indiceBurbuja)
 {
@@ -997,14 +1000,21 @@ void juego2::finalizarJuego()
 void juego2::mostrarPuntuacion()
 {
     if (!textoPuntuacion) {
+        // Crear fondo morado pastel para la puntuación
+        fondoPuntuacion = escenario->scene->addRect(0, 0, 180, 40);
+        fondoPuntuacion->setBrush(QBrush(QColor(200, 162, 200))); // Morado pastel
+        fondoPuntuacion->setPen(QPen(QColor(44, 14, 74), 2)); // Borde oscuro
+        fondoPuntuacion->setPos(690, 545);
+        fondoPuntuacion->setZValue(9);
+
         textoPuntuacion = escenario->scene->addText("");
         QFont font("Arial", 14, QFont::Bold);
         textoPuntuacion->setFont(font);
-        textoPuntuacion->setDefaultTextColor(QColor(255, 215, 0)); // Dorado
+        textoPuntuacion->setDefaultTextColor(QColor(44, 14, 74)); // Letras oscuras
         textoPuntuacion->setZValue(10);
     }
 
     QString puntos = QString("Puntos: %1/%2").arg(puntosObtenidos).arg(preguntas.size());
     textoPuntuacion->setPlainText(puntos);
-    textoPuntuacion->setPos(700, 550);
+    textoPuntuacion->setPos(710, 550);
 }

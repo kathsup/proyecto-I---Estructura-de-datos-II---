@@ -274,8 +274,8 @@ void MainWindow::on_btnComenzar_clicked()
     ui->stackedWidget->setCurrentWidget(Mapa);
     Mapa->inicializarNivel();
 
-    /*ui->stackedWidget->setCurrentWidget(juegoCiencia);
-    juegoCiencia->inicializarNivel();*/
+    /*ui->stackedWidget->setCurrentWidget(juegoHistoria);
+    juegoHistoria->inicializarNivel();*/
 }
 
 Jugador* MainWindow::buscarJugador(const QString &nombre) {

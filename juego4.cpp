@@ -100,18 +100,34 @@ void juego4::mostrarPregunta()
 {
     // Verificar si ya se respondieron todas las preguntas
     if (preguntaActual >= preguntas.size()) {
-        // Fin del juego
+        // Crear fondo más pequeño y rosa
+        QGraphicsRectItem* fondoFinal = new QGraphicsRectItem(0, 0, 400, 150);
+        fondoFinal->setBrush(QBrush(QColor(255, 182, 193, 230))); // Rosa pastel
+        fondoFinal->setPen(QPen(QColor(219, 112, 147), 3)); // Borde rosa más oscuro
+        fondoFinal->setPos(300, 225); // Más centrado
+        fondoFinal->setZValue(100);
+        escenario->scene->addItem(fondoFinal);
+
+        // Crear mensaje de texto
         QGraphicsTextItem* mensajeFinal = new QGraphicsTextItem();
         if (respuestasCorrectas == 5) {
             emit estrellaObtenida();
-            mensajeFinal->setPlainText("¡FELICIDADES!\n¡Llegaste a la cima!");
-            mensajeFinal->setDefaultTextColor(QColor("#4CAF50"));
+            mensajeFinal->setPlainText("¡FELICIDADES!\n\n¡Llegaste a la cima!\n\nRespuestas: 5/5");
+            mensajeFinal->setDefaultTextColor(QColor("#4CAF50")); // Verde
         } else {
-            mensajeFinal->setPlainText(QString("¡Juego terminado!\nRespuestas correctas: %1/5").arg(respuestasCorrectas));
-            mensajeFinal->setDefaultTextColor(Qt::white);
+            mensajeFinal->setPlainText(QString("¡Juego terminado!\n\nRespuestas: %1/5\n\nSigue intentando").arg(respuestasCorrectas));
+            mensajeFinal->setDefaultTextColor(QColor("#C2185B")); // Rosa oscuro
         }
-        mensajeFinal->setFont(QFont("Arial", 18, QFont::Bold));
-        mensajeFinal->setPos(400, 300);
+        mensajeFinal->setFont(QFont("Arial", 14, QFont::Bold));
+        mensajeFinal->setTextWidth(380); // Ancho para centrar texto
+
+        // Centrar el texto dentro del cuadro
+        QRectF textRect = mensajeFinal->boundingRect();
+        mensajeFinal->setPos(
+            310 + (380 - textRect.width()) / 2,
+            235 + (130 - textRect.height()) / 2
+            );
+        mensajeFinal->setZValue(101);
         escenario->scene->addItem(mensajeFinal);
 
         // Volver a la ruleta después de 3 segundos
