@@ -350,6 +350,8 @@ ESTA ES LA CORRECTA ANTES DE CAMBIAR TIPO DE RETROALIMENTACIÓN DE PREGUNTAS
 #include "escenario.h"
 #include "personajebatalla.h"
 #include <QProcess>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 namespace Ui {
 class nivel3Batalla;
@@ -375,6 +377,7 @@ public:
 
     void configurarBatalla(QString bandoElegido, int vidas);
     void inicializarNivel();
+    void detenerMusica();
 
 signals:
     void batallaTerminada(QString ganador);
@@ -489,7 +492,11 @@ private:
     void deshabilitarBotones();
 
     // ========== MÚSICA ==========
-    QProcess* reproductorMusica;
+    QMediaPlayer* reproductorMusica;
+    QAudioOutput* salidaAudio;
+    //void reproducirMusicaFinal(QString ganador);
+
+    void reproducirMusica(const QString& ruta);
     void reproducirMusicaFinal(QString ganador);
 };
 

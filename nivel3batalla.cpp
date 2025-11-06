@@ -1440,6 +1440,9 @@ ESTA ES LA CORRECTA ANTES DE CAMBIAR TIPO DE RETROALIMENTACIÓN DE PREGUNTAS
 #include <QRandomGenerator>
 #include <QGraphicsDropShadowEffect>
 
+
+
+
 nivel3Batalla::nivel3Batalla(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::nivel3Batalla)
@@ -1467,15 +1470,22 @@ nivel3Batalla::nivel3Batalla(QWidget *parent)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
-    reproductorMusica = new QProcess(this);
+
+    salidaAudio = new QAudioOutput(this);
+    reproductorMusica = new QMediaPlayer(this);
+    reproductorMusica->setAudioOutput(salidaAudio);
+    salidaAudio->setVolume(0.5); // volumen medio
+
+
     cargarPreguntas();
 }
 
 nivel3Batalla::~nivel3Batalla()
 {
-    if (reproductorMusica && reproductorMusica->state() == QProcess::Running) {
-        reproductorMusica->kill();
+    if (reproductorMusica) {
+        reproductorMusica->stop();
     }
+
     delete ui;
 }
 
@@ -2206,6 +2216,31 @@ void nivel3Batalla::mostrarPantallaFinal(QString ganador)
     });
 }
 
+void nivel3Batalla::reproducirMusicaFinal(QString ganador)
+{
+    if (!reproductorMusica) return;
+
+    // Detener cualquier música que esté sonando
+    reproductorMusica->stop();
+
+    QString rutaMusica;
+
+    if (ganador == "JUGADOR") {
+        // Música según el bando del jugador
+        if (bandoJugador == "Empirista") {
+            rutaMusica = "C:/Users/Lenovo/Downloads/musicaEmpirista.mp3";
+        } else { // Racionalista
+            rutaMusica = "C:/Users/Lenovo/Downloads/musicaRacionalista.mp3";
+        }
+    } //else {
+    // Música de derrota (independiente del bando)
+    //rutaMusica = "C:/Users/Lenovo/Downloads/musica_derrota.mp3";
+    //}
+
+    reproductorMusica->setSource(QUrl::fromLocalFile(rutaMusica));
+    reproductorMusica->play();
+}
+
 QString nivel3Batalla::obtenerNombreCombate(int numero)
 {
     switch (numero) {
@@ -2280,24 +2315,17 @@ void nivel3Batalla::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void nivel3Batalla::reproducirMusicaFinal(QString ganador)
+
+
+void nivel3Batalla::reproducirMusica(const QString& ruta)
 {
-    if (reproductorMusica->state() == QProcess::Running) {
-        reproductorMusica->kill();
-    }
+    reproductorMusica->setSource(QUrl::fromLocalFile(ruta));
+    reproductorMusica->play();
+}
 
-    QString rutaMusica;
-
-    if (ganador == "JUGADOR") {
-        if (bandoJugador == "Empirista") {
-            rutaMusica = "C:/Users/Lenovo/Downloads/musicaEmpirista.mp3";
-        } else {
-            rutaMusica = "C:/Users/Lenovo/Downloads/musicaRacionalista.mp3";
-        }
-    } else {
-        rutaMusica = "C:/Users/Lenovo/Downloads/musicaRacionalista.mp3";
-    }
-
-    reproductorMusica->start("wmplayer", QStringList() << rutaMusica);
+void nivel3Batalla::detenerMusica()
+{
+    if (reproductorMusica->playbackState() == QMediaPlayer::PlayingState)
+        reproductorMusica->stop();
 }
 
