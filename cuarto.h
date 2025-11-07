@@ -30,6 +30,19 @@ private:
     Ui::Cuarto *ui;
     Escenario *escenario;
     Personaje *personaje;
+
+    QGraphicsPixmapItem* librero;
+    QGraphicsPixmapItem* plantaIzq;
+    QGraphicsPixmapItem* plantaDer;
+    QGraphicsPixmapItem* pizarra;
+    QGraphicsPixmapItem* sisSolar;
+    QGraphicsPixmapItem* plantaSuelo;
+    QGraphicsPixmapItem* mesaIzq;
+    QGraphicsPixmapItem* mesaDer;
+    QGraphicsPixmapItem* pedestal;
+    QGraphicsPixmapItem* estelarCompleto;
+    QGraphicsPixmapItem* kant;
+
 };
 
 #endif // CUARTO_H

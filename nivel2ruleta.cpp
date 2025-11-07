@@ -498,7 +498,7 @@ void nivel2Ruleta::elegirOpcionAleatoria() {
             anguloActual = anguloFinal % 360;
             ruletaItem->setRotation(anguloActual);
 
-            QMessageBox::information(this, "Ruleta", "La puerta elegida es: " + opcionElegida);
+            //QMessageBox::information(this, "Ruleta", "La puerta elegida es: " + opcionElegida);
 
 
             opcionesConAngulo.remove(anguloOpcion);

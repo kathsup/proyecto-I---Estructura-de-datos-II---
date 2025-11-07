@@ -2234,7 +2234,7 @@ void nivel3Batalla::reproducirMusicaFinal(QString ganador)
         }
     } //else {
     // Música de derrota (independiente del bando)
-    //rutaMusica = "C:/Users/Lenovo/Downloads/musica_derrota.mp3";
+    //rutaMusica = "C:/Users/Lenovo/Downloads/musicaEmpirista.mp3";
     //}
 
     reproductorMusica->setSource(QUrl::fromLocalFile(rutaMusica));
