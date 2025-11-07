@@ -23,6 +23,19 @@
     </rect>
    </property>
   </widget>
+  <widget class="QPushButton" name="btnInventario">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>41</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>O</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

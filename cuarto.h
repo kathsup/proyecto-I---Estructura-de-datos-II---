@@ -4,6 +4,8 @@
 #include <QWidget>
 #include "escenario.h"
 #include "personaje.h"
+#include <QPushButton>
+#include <QLabel>
 
 namespace Ui {
 class Cuarto;
@@ -26,11 +28,15 @@ protected:
 signals:
     void volverAlLobby();
 
+private slots:
+    void on_btnInventario_clicked();
+
 private:
     Ui::Cuarto *ui;
     Escenario *escenario;
     Personaje *personaje;
 
+    //========objetos interactivos ======
     QGraphicsPixmapItem* librero;
     QGraphicsPixmapItem* plantaIzq;
     QGraphicsPixmapItem* plantaDer;
@@ -43,6 +49,16 @@ private:
     QGraphicsPixmapItem* estelarCompleto;
     QGraphicsPixmapItem* kant;
 
+    //======inventario====
+    QPushButton *btnInventario;
+    QFrame *panelInventario;
+    QVector<QLabel*> slotsInventario;
+    bool inventarioVisible = false;
+    void inventario();
+
+    //====preguntas======
+    void verificarInteraccion();
+    void mostrarPregunta(const QString &objeto);
 };
 
 #endif // CUARTO_H
