@@ -1,6 +1,5 @@
 #ifndef CUARTO_H
 #define CUARTO_H
-
 #include <QWidget>
 #include "escenario.h"
 #include "personaje.h"
@@ -14,15 +13,13 @@ class Cuarto;
 class Cuarto : public QWidget
 {
     Q_OBJECT
-
 public:
     explicit Cuarto(QWidget *parent = nullptr);
     ~Cuarto();
-    void inicializarNivel(); //metodo para inicializar nivel
+    void inicializarNivel();
     void objetosInteractivos();
 
 protected:
-    // Declarar aquí que se sobrescribe keyPressEvent
     void keyPressEvent(QKeyEvent *event) override;
 
 signals:
@@ -30,6 +27,7 @@ signals:
 
 private slots:
     void on_btnInventario_clicked();
+    void on_btnRompecabezas_clicked();
 
 private:
     Ui::Cuarto *ui;
@@ -54,7 +52,28 @@ private:
     QFrame *panelInventario;
     QVector<QLabel*> slotsInventario;
     bool inventarioVisible = false;
+    int piezasRecolectadas = 0;
     void inventario();
+    void agregarPiezaInventario(const QString &objeto, QGraphicsPixmapItem* obj);
+
+    //======rompecabezas====
+    QPushButton *btnRompecabezas;
+    QFrame *panelRompecabezas;
+    bool rompecabezasVisible = false;
+    QLabel *labelBase;
+    QVector<QLabel*> piezasColocadas; // Piezas ya colocadas en el rompecabezas
+    QVector<bool> slotOcupado;
+    QLabel *imagenArrastrada = nullptr; // QLabel temporal para la imagen que se arrastra
+    QString piezaArrastradaNombre;
+    QPoint posInicialArrastre;
+
+    void inicializarRompecabezas();
+    bool eventFilter(QObject *obj, QEvent *event) override;
+    QPoint obtenerPosicionCorrecta(const QString &nombrePieza);
+    bool verificarCercaDePosicion(const QPoint &posActual, const QPoint &posCorrecta);
+    void verificarRompecabezasCompleto();
+    QString obtenerRutaPieza(const QString &nombrePieza);
+    QSize obtenerTamanoPieza(const QString &nombrePieza);
 
     //====preguntas======
     void verificarInteraccion();
