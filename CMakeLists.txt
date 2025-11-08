@@ -33,6 +33,7 @@ qt_add_executable(proyectoUno-EstruII
     mensajewidget.h mensajewidget.cpp
     preguntaBurbuja.h
     personajebatalla.h personajebatalla.cpp
+    npccasa.h npccasa.cpp
 )
 
 target_link_libraries(proyectoUno-EstruII

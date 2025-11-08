@@ -11,13 +11,34 @@ Cuarto::Cuarto(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Cuarto)
     , escenario(new Escenario(this))
+    ,npcKant(nullptr)
+    , nivelCompletado(false)
+    , dialogoVisible(false)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
+
+    //indicador
+    timerParpadeo = new QTimer(this);
+    connect(timerParpadeo, &QTimer::timeout, this, &Cuarto::actualizarIndicadores);
+
+    // Timer para verificar proximidad con el NPC
+    timerProximidad = new QTimer(this);
+    connect(timerProximidad, &QTimer::timeout, this, &Cuarto::verificarProximidadNPC);
 }
 
 Cuarto::~Cuarto()
 {
+    if (timerParpadeo) {
+        timerParpadeo->stop();
+        delete timerParpadeo;
+    }
+
+    if (timerProximidad) {
+        timerProximidad->stop();
+        delete timerProximidad;
+    }
+
     delete ui;
 }
 
@@ -48,6 +69,11 @@ void Cuarto::inicializarNivel()
     escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(650, 490));
     inventario();
     inicializarRompecabezas();
+    inicializarNPC();
+
+    crearIndicadores();
+    timerParpadeo->start(500);
+    timerProximidad->start(100);
 
     this->setFocus();
 }
@@ -127,12 +153,16 @@ void Cuarto::objetosInteractivos() {
         pixEstelar.scaled(80, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation)
         );
     estelarCompleto->setPos(875, 440);
+    estelarCompleto->setVisible(false);  // OCULTO AL INICIO
 
-    QPixmap pixKant("C:/Users/Lenovo/Downloads/kant.png");
-    kant = escenario->scene->addPixmap(
-        pixKant.scaled(90, 90, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-    kant->setPos(780, 490);
+    // ====== SIGNO DE INTERROGACIÓN ======
+    interrogacion = escenario->scene->addText("?");
+    QFont fontInterrogacion("Arial", 60, QFont::Bold);
+    interrogacion->setFont(fontInterrogacion);
+    interrogacion->setDefaultTextColor(QColor(150, 150, 150)); // Gris
+    interrogacion->setPos(885, 440); // Misma posición que el mapa
+    interrogacion->setZValue(100); // Asegurar que esté al frente
+
 }
 
 void Cuarto::inventario(){
@@ -231,6 +261,7 @@ void Cuarto::verificarInteraccion()
     }
 
     if (obj) {
+
         mostrarPregunta(nombreObj);
     }
 }
@@ -288,7 +319,12 @@ void Cuarto::mostrarPregunta(const QString &objeto)
                         else if (objeto == "mesaIzq") objItem = mesaIzq;
                         else if (objeto == "mesaDer") objItem = mesaDer;
 
-                        if (objItem) agregarPiezaInventario(objeto, objItem);
+                        if (objItem) {
+                            agregarPiezaInventario(objeto, objItem);
+                            // AGREGAR ESTA LÍNEA:
+                            ocultarIndicador(objeto); // Quitar indicador al responder correctamente
+                        }
+
 
                     } else {
                         MensajeWidget* mensaje = new MensajeWidget(
@@ -497,6 +533,15 @@ void Cuarto::verificarRompecabezasCompleto()
     }
 
     if (completo) {
+        nivelCompletado = true;
+
+        if (estelarCompleto) {
+            estelarCompleto->setVisible(true);
+        }
+        if (interrogacion) {
+            interrogacion->setVisible(false);
+        }
+
         QTimer::singleShot(500, [this]() {
             QMessageBox::information(this, "¡Felicidades!",
                                      "¡Has completado el rompecabezas del misterio de Kant!\n\n"
@@ -505,10 +550,128 @@ void Cuarto::verificarRompecabezasCompleto()
     }
 }
 
+void Cuarto::crearIndicadores()
+{
+    // Crear indicadores para cada objeto interactivo
+    QMap<QString, QGraphicsPixmapItem*> objetos;
+    objetos["librero"] = librero;
+    objetos["pizarra"] = pizarra;
+    objetos["sisSolar"] = sisSolar;
+    objetos["planta"] = plantaSuelo;
+    objetos["mesaIzq"] = mesaIzq;
+    objetos["mesaDer"] = mesaDer;
+
+    for (auto it = objetos.begin(); it != objetos.end(); ++it) {
+        QString nombre = it.key();
+        QGraphicsPixmapItem* obj = it.value();
+
+        // Crear círculo parpadeante
+        QGraphicsEllipseItem* indicador = new QGraphicsEllipseItem(0, 0, 20, 20);
+
+        // Color amarillo brillante con transparencia
+        QBrush brush(QColor(255,255,255));
+        indicador->setBrush(brush);
+
+        // Borde más oscuro
+        QPen pen(QColor(200, 200, 0), 2);
+        indicador->setPen(pen);
+
+        // Posicionar encima del objeto (esquina superior derecha)
+        QRectF rect = obj->boundingRect();
+        qreal x = obj->pos().x() + (rect.width() / 2) - 10;  // Centrado horizontal
+        qreal y = obj->pos().y() + (rect.height() / 2) - 10; // Centrado vertical
+        indicador->setPos(x, y);
+
+        // Agregar a la escena
+        escenario->scene->addItem(indicador);
+        indicador->setZValue(1000); // Asegurar que esté al frente
+
+        // Guardar en el mapa
+        indicadores[nombre] = indicador;
+    }
+}
+
+// ============ NUEVA FUNCIÓN: actualizarIndicadores() ============
+void Cuarto::actualizarIndicadores()
+{
+    // Alternar visibilidad para crear efecto de parpadeo
+    indicadoresVisibles = !indicadoresVisibles;
+
+    for (auto indicador : indicadores.values()) {
+        if (indicador) {
+            indicador->setVisible(indicadoresVisibles);
+        }
+    }
+}
+
+// ============ NUEVA FUNCIÓN: ocultarIndicador() ============
+void Cuarto::ocultarIndicador(const QString &objeto)
+{
+    if (indicadores.contains(objeto)) {
+        QGraphicsEllipseItem* indicador = indicadores[objeto];
+        if (indicador) {
+            escenario->scene->removeItem(indicador);
+            delete indicador;
+            indicadores.remove(objeto);
+        }
+    }
+}
 
 
+void Cuarto::inicializarNPC()
+{
+    QPixmap pixKant("C:/Users/Lenovo/Downloads/kant.png");
+    npcKant = new npcCasa(pixKant.scaled(90, 90, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    npcKant->setPos(780, 490);
 
+    // Configurar diálogos del NPC
+    QVector<QString> dialogosInicio = {
+        "¡Bienvenido! Soy Kant.\nMi conocimiento está fragmentado.",
+        "Responde las preguntas\npara obtener las 6 piezas.",
+        "Demuestra tu sabiduría\nfilosófica, joven estudiante.",
+        "El conocimiento verdadero\nrequiere razón y experiencia.",
+        "¡Sapere aude!\n¡Atrévete a saber!"
+    };
 
+    QVector<QString> dialogosFinal = {
+        "¡Excelente trabajo!\nHas completado el rompecabezas.",
+        "Comprendes mi filosofía.\nEl criticismo es la clave.",
+        "Has demostrado verdadera\nsabiduría, mi estudiante.",
+        "La razón pura te ha guiado\nhacia el conocimiento.",
+        "¡Sapere aude!\nSigue tu camino filosófico."
+    };
 
+    npcKant->establecerDialogos(dialogosInicio, dialogosFinal);
 
+    // Agregar a la escena e iniciar animación
+    escenario->scene->addItem(npcKant);
+    npcKant->iniciarAnimacion();
+}
 
+void Cuarto::verificarProximidadNPC()
+{
+    if (!escenario || !escenario->personaje || !npcKant) return;
+
+    // Calcular distancia entre personaje y NPC
+    QPointF posPersonaje = escenario->personaje->pos();
+    QPointF posNpc = npcKant->pos();
+
+    qreal distanciaX = qAbs(posPersonaje.x() - posNpc.x());
+    qreal distanciaY = qAbs(posPersonaje.y() - posNpc.y());
+    qreal distancia = qSqrt(distanciaX * distanciaX + distanciaY * distanciaY);
+
+    // Radio de activación (cuando está cerca)
+    qreal radioActivacion = 150.0;
+
+    if (distancia < radioActivacion && !dialogoVisible) {
+        // El personaje está cerca, mostrar diálogo
+        QString dialogo = npcKant->obtenerDialogoActual(nivelCompletado);
+        npcKant->mostrarDialogo(dialogo);
+        dialogoVisible = true;
+    }
+    else if (distancia >= radioActivacion && dialogoVisible) {
+        // El personaje se alejó, ocultar diálogo
+        npcKant->ocultarDialogo();
+        dialogoVisible = false;
+    }
+}

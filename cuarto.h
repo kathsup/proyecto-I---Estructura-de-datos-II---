@@ -5,6 +5,7 @@
 #include "personaje.h"
 #include <QPushButton>
 #include <QLabel>
+#include "npccasa.h"
 
 namespace Ui {
 class Cuarto;
@@ -28,6 +29,8 @@ signals:
 private slots:
     void on_btnInventario_clicked();
     void on_btnRompecabezas_clicked();
+    void actualizarIndicadores(); //indicador parpadeante
+    void verificarProximidadNPC();
 
 private:
     Ui::Cuarto *ui;
@@ -45,6 +48,7 @@ private:
     QGraphicsPixmapItem* mesaDer;
     QGraphicsPixmapItem* pedestal;
     QGraphicsPixmapItem* estelarCompleto;
+    QGraphicsTextItem* interrogacion;
     QGraphicsPixmapItem* kant;
 
     //======inventario====
@@ -78,6 +82,20 @@ private:
     //====preguntas======
     void verificarInteraccion();
     void mostrarPregunta(const QString &objeto);
+
+    //====== Indicadores parpadeantes ======
+    QMap<QString, QGraphicsEllipseItem*> indicadores; // Mapa de indicadores por objeto
+    QTimer *timerParpadeo;
+    bool indicadoresVisibles = true;
+    void crearIndicadores();
+    void ocultarIndicador(const QString &objeto);
+
+    //====== NPC Kant ======
+    npcCasa* npcKant;
+    QTimer* timerProximidad;  // Timer para verificar proximidad
+    bool nivelCompletado;
+    bool dialogoVisible;
+    void inicializarNPC();
 };
 
 #endif // CUARTO_H
