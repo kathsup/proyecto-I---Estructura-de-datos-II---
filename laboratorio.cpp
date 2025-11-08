@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QPropertyAnimation>
 
 Laboratorio::Laboratorio(QWidget *parent)
     : QWidget(parent)
@@ -225,6 +226,7 @@ void Laboratorio::crearIndicadores()
 {
     QMap<QString, QGraphicsPixmapItem*> objetos;
     objetos["mesa1"] = mesa1;
+    objetos["mesa4"] = mesa4;
 
     for (auto it = objetos.begin(); it != objetos.end(); ++it) {
         QString nombre = it.key();
@@ -290,7 +292,12 @@ void Laboratorio::verificarInteraccion()
         obj = mesa3;
         nombreMesa = "mesa3";
     }
-    else if (mesa3Completada && !mesa4Completada &&
+    /*else if (mesa3Completada && !mesa4Completada &&
+             escenario->personaje->collidesWithItem(mesa4)) {
+        obj = mesa4;
+        nombreMesa = "mesa4";
+    }*/
+    else if (mesa2Completada && !mesa4Completada &&
              escenario->personaje->collidesWithItem(mesa4)) {
         obj = mesa4;
         nombreMesa = "mesa4";
@@ -341,7 +348,7 @@ void Laboratorio::mostrarMesaSuperior(const QString &mesa)
         //configurarMesa3();
     }
     else if (mesa == "mesa4") {
-       // configurarMesa4();
+        configurarMesa4();
     }
 
     // 6. Mostrar el panel
@@ -560,7 +567,7 @@ void Laboratorio::animarBrilloBoton(QPushButton* boton)
     timerBrillo->start(50);
 }
 
-void Laboratorio::cerrarMesaSuperior()
+/*void Laboratorio::cerrarMesaSuperior()
 {
     // Detener animaciones
     if (timerBrillo) {
@@ -572,6 +579,28 @@ void Laboratorio::cerrarMesaSuperior()
     botonesOpcionesMesa2.clear();
     lblPreguntaMesa1 = nullptr;
     lblPreguntaMesa2 = nullptr;
+    botonCorrecto = nullptr;
+    mesaActual = "";
+
+    // Ocultar panel
+    panelMesaSuperior->hide();
+}*/
+
+void Laboratorio::cerrarMesaSuperior()
+{
+    // Detener animaciones
+    if (timerBrillo) {
+        timerBrillo->stop();
+    }
+
+    // Limpiar referencias
+    botonesBotellas.clear();
+    botonesOpcionesMesa2.clear();
+    botonesTarjetasMesa4.clear();      // ← AGREGAR
+    tarjetasVolteadas.clear();          // ← AGREGAR
+    lblPreguntaMesa1 = nullptr;
+    lblPreguntaMesa2 = nullptr;
+    lblPreguntaMesa4 = nullptr;         // ← AGREGAR
     botonCorrecto = nullptr;
     mesaActual = "";
 
@@ -781,6 +810,273 @@ void Laboratorio::verificarRespuestaMesa2(const QString& opcion)
                 "border: none;"
                 "padding: 10px;"
                 );
+        });
+    }
+}
+
+
+// ==================== MESA 4: TARJETAS GIRATORIAS ====================
+
+void Laboratorio::configurarMesa4()
+{
+    QVBoxLayout* layout = new QVBoxLayout(panelMesaSuperior);
+    layout->setSpacing(15);
+    layout->setContentsMargins(15, 15, 20, 15);
+
+    // 🌟 TÍTULO
+    QLabel* lblTitulo = new QLabel("🎴 MESA DE LA EVIDENCIA", panelMesaSuperior);
+    lblTitulo->setAlignment(Qt::AlignCenter);
+    lblTitulo->setStyleSheet(
+        "font-size: 22px;"
+        "font-weight: bold;"
+        "color: #8B6F47;"
+        "background: transparent;"
+        "border: none;"
+        );
+    layout->addWidget(lblTitulo);
+
+    // 🌟 CONTENEDOR VISUAL
+    QWidget* contenedorVisual = new QWidget(panelMesaSuperior);
+    contenedorVisual->setFixedHeight(280);
+    contenedorVisual->setStyleSheet("background: transparent; border: none;");
+    QHBoxLayout* layoutVisual = new QHBoxLayout(contenedorVisual);
+    layoutVisual->setContentsMargins(0, 0, 0, 0);
+    layoutVisual->setSpacing(0);
+
+    // 🌟 IMAGEN DE LA MESA
+    QLabel* lblMesa = new QLabel(contenedorVisual);
+    QPixmap pixMesa("C:/Users/Lenovo/Downloads/mesaSuperior.png");
+    lblMesa->setPixmap(pixMesa.scaled(600, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    lblMesa->setAlignment(Qt::AlignCenter);
+    lblMesa->setStyleSheet("border: none; background: transparent;");
+    layoutVisual->addWidget(lblMesa);
+    layout->addWidget(contenedorVisual);
+
+    // 🌟 PREGUNTA SOBRE LA MESA
+    lblPreguntaMesa4 = new QLabel(
+        "Solo debemos aceptar como verdadero aquel conocimiento\nque sea EVIDENTE, CLARO Y DISTINTO:",
+        lblMesa
+        );
+    lblPreguntaMesa4->setGeometry(80, 20, 450, 60);
+    lblPreguntaMesa4->setAlignment(Qt::AlignCenter);
+    lblPreguntaMesa4->setStyleSheet(
+        "font-size: 15px;"
+        "font-weight: bold;"
+        "color: #3B2F2F;"
+        "background: transparent;"
+        );
+
+    // 🌟 TARJETAS SOBRE LA MESA
+    botonesTarjetasMesa4.clear();
+    tarjetasVolteadas = {false, false, false, false};
+
+    QStringList respuestas = {
+        "René\nDescartes",
+        "David\nHume",
+        "George\nBerkeley",
+        "Aristóteles"
+    };
+
+    int startX = 20;
+    int startY = 90;
+    int cardWidth = 110;
+    int cardSpacing = 20;
+
+    for (int i = 0; i < 4; i++) {
+        QPushButton* btnTarjeta = new QPushButton("💮", lblMesa);
+        btnTarjeta->setFixedSize(cardWidth, 140);
+        btnTarjeta->move(startX + i * (cardWidth + cardSpacing), startY);
+
+        btnTarjeta->setStyleSheet(
+            "QPushButton {"
+            "  background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+            "    stop:0 #f8d9e0, stop:1 #f0b6c3);"  // tonos rosados suaves
+            "  border: 3px solid #c48a91;"
+            "  border-radius: 15px;"
+            "  font-size: 42px;"
+            "  color: white;"
+            "  font-weight: bold;"
+            "  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);"
+            "}"
+            "QPushButton:hover {"
+            "  background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+            "    stop:0 #fbd1dc, stop:1 #eca5b6);"
+            "  border: 3px solid #e0a3aa;"
+            "}"
+            );
+
+
+        btnTarjeta->setProperty("indice", i);
+        btnTarjeta->setProperty("respuesta", respuestas[i]);
+
+        connect(btnTarjeta, &QPushButton::clicked, this, [this, i]() {
+            voltearTarjeta(i);
+        });
+
+        botonesTarjetasMesa4.append(btnTarjeta);
+    }
+
+    // 🌟 BOTÓN CERRAR
+    QPushButton* btnCerrar = new QPushButton("❌ Cerrar [ESC]", panelMesaSuperior);
+    btnCerrar->setStyleSheet(
+        "QPushButton {"
+        "  background-color: #E8E8E8;"
+        "  border: 2px solid #AAA;"
+        "  border-radius: 10px;"
+        "  padding: 10px;"
+        "  font-size: 13px;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: #D0D0D0;"
+        "}"
+        );
+    connect(btnCerrar, &QPushButton::clicked, this, &Laboratorio::cerrarMesaSuperior);
+    layout->addWidget(btnCerrar, 0, Qt::AlignCenter);
+}
+
+void Laboratorio::voltearTarjeta(int indice)
+{
+    if (indice < 0 || indice >= botonesTarjetasMesa4.size()) return;
+    if (tarjetasVolteadas[indice]) return; // Ya está volteada
+
+    QPushButton* tarjeta = botonesTarjetasMesa4[indice];
+    QString respuesta = tarjeta->property("respuesta").toString();
+
+    // Animación de volteo (efecto visual simple con escala)
+    QPropertyAnimation* animShrink = new QPropertyAnimation(tarjeta, "maximumWidth");
+    animShrink->setDuration(150);
+    animShrink->setStartValue(tarjeta->width());
+    animShrink->setEndValue(0);
+
+    QPropertyAnimation* animGrow = new QPropertyAnimation(tarjeta, "maximumWidth");
+    animGrow->setDuration(150);
+    animGrow->setStartValue(0);
+    animGrow->setEndValue(110);
+
+    connect(animShrink, &QPropertyAnimation::finished, this, [this, tarjeta, respuesta, indice, animGrow]() {
+        // Cambiar el contenido de la tarjeta
+        tarjeta->setText(respuesta);
+        tarjeta->setStyleSheet(
+            "QPushButton {"
+            "  background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+            "    stop:0 #ffeaf0, stop:1 #fcd9e3);"  // rosa muy claro tipo “papel de carta”
+            "  border: 3px solid #c98b93;"
+            "  border-radius: 15px;"
+            "  font-size: 15px;"
+            "  font-weight: bold;"
+            "  color: #5b3b3b;"
+            "  padding: 8px;"
+            "  box-shadow: 0px 3px 6px rgba(0,0,0,0.2);"
+            "}"
+            "QPushButton:hover {"
+            "  background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+            "    stop:0 #ffe0eb, stop:1 #fbc1d1);"
+            "}"
+            );
+        animGrow->start(QAbstractAnimation::DeleteWhenStopped);
+    });
+
+    connect(animGrow, &QPropertyAnimation::finished, this, [this, indice]() {
+        verificarRespuestaMesa4(indice);
+    });
+
+    animShrink->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void Laboratorio::verificarRespuestaMesa4(int indice)
+{
+    if (indice == 0) { // René Descartes es la correcta
+        tarjetasVolteadas[indice] = true;
+        QPushButton* tarjetaCorrecta = botonesTarjetasMesa4[indice];
+
+        lblPreguntaMesa4->setText("✅ ¡Correcto! René Descartes - Cuarto ingrediente obtenido");
+        lblPreguntaMesa4->setStyleSheet(
+            "font-size: 15px;"
+            "font-weight: bold;"
+            "color: #2E7D32;"
+            "background: transparent;"
+            );
+
+        // Deshabilitar todas las tarjetas
+        for (QPushButton* btn : botonesTarjetasMesa4) {
+            btn->setEnabled(false);
+        }
+
+        // Animar brillo dorado en tarjeta correcta
+        botonCorrecto = tarjetaCorrecta;
+        animarBrilloBoton(botonCorrecto);
+
+        // Completar mesa después de 2 segundos
+        QTimer::singleShot(2000, this, [this]() {
+            mesa4Completada = true;
+            ocultarIndicador("mesa4");
+            nivelCompletado = true; // Nivel completo
+            cerrarMesaSuperior();
+
+            // Aquí puedes agregar lógica adicional cuando se completa el nivel
+            QMessageBox::information(this, "¡Felicidades!",
+                                     "Has completado todas las mesas del laboratorio.\n"
+                                     "¡La Poción de la Verdad Absoluta está lista!");
+        });
+
+    } else {
+        // Respuesta incorrecta
+        lblPreguntaMesa4->setText("❌ Incorrecto. Intenta nuevamente.");
+        lblPreguntaMesa4->setStyleSheet(
+            "font-size: 15px;"
+            "font-weight: bold;"
+            "color: #C62828;"
+            "background: transparent;"
+            );
+
+        QPushButton* tarjetaIncorrecta = botonesTarjetasMesa4[indice];
+
+        // Voltear de nuevo la tarjeta después de 1 segundo
+        QTimer::singleShot(1000, this, [this, tarjetaIncorrecta, indice]() {
+            QPropertyAnimation* animShrink = new QPropertyAnimation(tarjetaIncorrecta, "maximumWidth");
+            animShrink->setDuration(150);
+            animShrink->setStartValue(tarjetaIncorrecta->width());
+            animShrink->setEndValue(0);
+
+            QPropertyAnimation* animGrow = new QPropertyAnimation(tarjetaIncorrecta, "maximumWidth");
+            animGrow->setDuration(150);
+            animGrow->setStartValue(0);
+            animGrow->setEndValue(110);
+
+            connect(animShrink, &QPropertyAnimation::finished, this, [this, tarjetaIncorrecta, animGrow]() {
+                tarjetaIncorrecta->setText("❓");
+                tarjetaIncorrecta->setStyleSheet(
+                    "QPushButton {"
+                    "  background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+                    "    stop:0 #8B7355, stop:1 #6B5345);"
+                    "  border: 3px solid #5D4E37;"
+                    "  border-radius: 10px;"
+                    "  font-size: 48px;"
+                    "  color: white;"
+                    "  font-weight: bold;"
+                    "}"
+                    "QPushButton:hover {"
+                    "  border: 3px solid #FFD700;"
+                    "  background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
+                    "    stop:0 #9B8365, stop:1 #7B6355);"
+                    "}"
+                    );
+                animGrow->start(QAbstractAnimation::DeleteWhenStopped);
+            });
+
+            connect(animGrow, &QPropertyAnimation::finished, this, [this]() {
+                lblPreguntaMesa4->setText(
+                    "Solo debemos aceptar como verdadero aquel conocimiento\nque sea EVIDENTE, CLARO Y DISTINTO:"
+                    );
+                lblPreguntaMesa4->setStyleSheet(
+                    "font-size: 15px;"
+                    "font-weight: bold;"
+                    "color: #3B2F2F;"
+                    "background: transparent;"
+                    );
+            });
+
+            animShrink->start(QAbstractAnimation::DeleteWhenStopped);
         });
     }
 }

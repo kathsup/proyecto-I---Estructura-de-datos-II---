@@ -6,7 +6,6 @@
 #include <QLabel>
 #include <QPushButton>
 
-
 namespace Ui {
 class Laboratorio;
 }
@@ -14,6 +13,7 @@ class Laboratorio;
 class Laboratorio : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit Laboratorio(QWidget *parent = nullptr);
     ~Laboratorio();
@@ -86,11 +86,19 @@ private:
     void verificarRespuestaMesa1(int numeroFrasco);
     void animarBrilloBoton(QPushButton* boton);
 
-    //mesa 2
+    // Mesa 2
     QVector<QPushButton*> botonesOpcionesMesa2;
     QLabel* lblPreguntaMesa2;
     void configurarMesa2();
     void verificarRespuestaMesa2(const QString& opcion);
+
+    // Mesa 4
+    QVector<QPushButton*> botonesTarjetasMesa4;
+    QLabel* lblPreguntaMesa4;
+    QVector<bool> tarjetasVolteadas;
+    void configurarMesa4();
+    void voltearTarjeta(int indice);
+    void verificarRespuestaMesa4(int indice);
 };
 
 #endif // LABORATORIO_H
