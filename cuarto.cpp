@@ -321,7 +321,6 @@ void Cuarto::mostrarPregunta(const QString &objeto)
 
                         if (objItem) {
                             agregarPiezaInventario(objeto, objItem);
-                            // AGREGAR ESTA LÍNEA:
                             ocultarIndicador(objeto); // Quitar indicador al responder correctamente
                         }
 
@@ -509,10 +508,6 @@ bool Cuarto::eventFilter(QObject *obj, QEvent *event)
 
 bool Cuarto::verificarCercaDePosicion(const QPoint &posActual, const QPoint &posCorrecta)
 {
-    /*int tolerancia = 50; // Píxeles de tolerancia
-    int distancia = (posActual - posCorrecta).manhattanLength();
-    return distancia < tolerancia;*/
-
     int toleranciaX = 80; // Tolerancia horizontal
     int toleranciaY = 80; // Tolerancia vertical
 
