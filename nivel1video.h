@@ -3,6 +3,11 @@
 
 #include <QWidget>
 #include "escenario.h"
+#include <QMediaPlayer>
+#include <QMediaPlayer>
+#include <QAudioOutput>
+
+
 
 namespace Ui {
 class nivel1Video;
@@ -29,6 +34,21 @@ signals:
 private:
     Ui::nivel1Video *ui;
     Escenario *escenario; //la base de cada nivel
+
+    //=====video======
+    QFrame* panelVideo = nullptr;
+    QGraphicsRectItem* cuadro = nullptr;
+
+    void inicializarVideoPanel();
+    bool personajeCercaDeCuadro();
+    void mostrarPanelVideo();
+
+    //-----------
+
+
+    QMediaPlayer* player = nullptr;  // 🎵 reproductor multimedia
+    QAudioOutput* audioOutput = nullptr;
+
 };
 
 #endif // NIVEL1VIDEO_H
