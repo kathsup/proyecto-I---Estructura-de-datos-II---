@@ -92,6 +92,14 @@ private:
     void configurarMesa2();
     void verificarRespuestaMesa2(const QString& opcion);
 
+    // Mesa 3
+    QVector<QPushButton*> botonesVelasMesa3;
+    QLabel* lblPreguntaMesa3;
+    void configurarMesa3();
+    void verificarRespuestaMesa3(int indiceVela);
+    void animarEncendidoVela(QPushButton* vela);
+
+
     // Mesa 4
     QVector<QPushButton*> botonesTarjetasMesa4;
     QLabel* lblPreguntaMesa4;
@@ -99,6 +107,18 @@ private:
     void configurarMesa4();
     void voltearTarjeta(int indice);
     void verificarRespuestaMesa4(int indice);
+
+    //caldero e ingredientes
+    int ingredientesCompletados;
+    QTimer* timerBurbujeo;
+    int frameActualBurbujeo;
+    qreal posicionYBaseCaldero;
+
+    void agregarIngredienteAlCaldero(int numeroMesa);
+    void actualizarCaldero(int numIngredientes);
+    void animarBurbujasCaldero();
 };
+
+
 
 #endif // LABORATORIO_H

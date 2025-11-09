@@ -25,6 +25,9 @@ Laboratorio::Laboratorio(QWidget *parent)
     , brilloAlpha(255)
     , brilloSubiendo(false)
     , botonCorrecto(nullptr)
+    , ingredientesCompletados(0)        // ← AGREGAR
+    , timerBurbujeo(nullptr)            // ← AGREGAR
+    , frameActualBurbujeo(0)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
@@ -53,6 +56,11 @@ Laboratorio::~Laboratorio()
     if (timerBrillo) {
         timerBrillo->stop();
         delete timerBrillo;
+    }
+
+    if (timerBurbujeo) {              // ← AGREGAR
+        timerBurbujeo->stop();        // ← AGREGAR
+        delete timerBurbujeo;         // ← AGREGAR
     }
 
     delete ui;
@@ -226,7 +234,6 @@ void Laboratorio::crearIndicadores()
 {
     QMap<QString, QGraphicsPixmapItem*> objetos;
     objetos["mesa1"] = mesa1;
-    objetos["mesa4"] = mesa4;
 
     for (auto it = objetos.begin(); it != objetos.end(); ++it) {
         QString nombre = it.key();
@@ -292,12 +299,7 @@ void Laboratorio::verificarInteraccion()
         obj = mesa3;
         nombreMesa = "mesa3";
     }
-    /*else if (mesa3Completada && !mesa4Completada &&
-             escenario->personaje->collidesWithItem(mesa4)) {
-        obj = mesa4;
-        nombreMesa = "mesa4";
-    }*/
-    else if (mesa2Completada && !mesa4Completada &&
+    else if (mesa3Completada && !mesa4Completada &&    // ← CAMBIAR ESTA LÍNEA
              escenario->personaje->collidesWithItem(mesa4)) {
         obj = mesa4;
         nombreMesa = "mesa4";
@@ -312,8 +314,6 @@ void Laboratorio::mostrarMesaSuperior(const QString &mesa)
 {
     mesaActual = mesa;
 
-    // 🔧 SOLUCIÓN MÍNIMA PERO EFECTIVA
-
     // 1. Detener animaciones
     if (timerBrillo) {
         timerBrillo->stop();
@@ -322,7 +322,7 @@ void Laboratorio::mostrarMesaSuperior(const QString &mesa)
     // 2. ELIMINAR FÍSICAMENTE todos los widgets hijos
     QList<QWidget*> widgets = panelMesaSuperior->findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly);
     for (QWidget* widget : widgets) {
-        widget->deleteLater(); // Esto destruye los botones de verdad
+        widget->deleteLater();
     }
 
     // 3. Eliminar el layout existente
@@ -333,8 +333,12 @@ void Laboratorio::mostrarMesaSuperior(const QString &mesa)
     // 4. Limpiar vectores de referencias
     botonesBotellas.clear();
     botonesOpcionesMesa2.clear();
+    botonesVelasMesa3.clear();      // ← AGREGAR ESTA LÍNEA
+    botonesTarjetasMesa4.clear();
     lblPreguntaMesa1 = nullptr;
     lblPreguntaMesa2 = nullptr;
+    lblPreguntaMesa3 = nullptr;     // ← AGREGAR ESTA LÍNEA
+    lblPreguntaMesa4 = nullptr;
     botonCorrecto = nullptr;
 
     // 5. Configurar la mesa correspondiente
@@ -345,7 +349,7 @@ void Laboratorio::mostrarMesaSuperior(const QString &mesa)
         configurarMesa2();
     }
     else if (mesa == "mesa3") {
-        //configurarMesa3();
+        configurarMesa3();          // ← DESCOMENTAR O AGREGAR ESTA LÍNEA
     }
     else if (mesa == "mesa4") {
         configurarMesa4();
@@ -491,10 +495,13 @@ void Laboratorio::verificarRespuestaMesa1(int numeroFrasco)
 
         // Marcar mesa como completada después de 2 segundos
         QTimer::singleShot(2000, this, [this]() {
-            mesa1Completada = true;
-            ocultarIndicador("mesa1");
-            desbloquearSiguienteMesa();
-            cerrarMesaSuperior();
+            cerrarMesaSuperior();                    // ← Mover primero
+            QTimer::singleShot(300, this, [this]() { // ← Esperar un poco
+                agregarIngredienteAlCaldero(1);      // ← AGREGAR ESTO
+                mesa1Completada = true;
+                ocultarIndicador("mesa1");
+                desbloquearSiguienteMesa();
+            });
         });
 
     } else {
@@ -567,25 +574,6 @@ void Laboratorio::animarBrilloBoton(QPushButton* boton)
     timerBrillo->start(50);
 }
 
-/*void Laboratorio::cerrarMesaSuperior()
-{
-    // Detener animaciones
-    if (timerBrillo) {
-        timerBrillo->stop();
-    }
-
-    // Limpiar referencias
-    botonesBotellas.clear();
-    botonesOpcionesMesa2.clear();
-    lblPreguntaMesa1 = nullptr;
-    lblPreguntaMesa2 = nullptr;
-    botonCorrecto = nullptr;
-    mesaActual = "";
-
-    // Ocultar panel
-    panelMesaSuperior->hide();
-}*/
-
 void Laboratorio::cerrarMesaSuperior()
 {
     // Detener animaciones
@@ -596,11 +584,13 @@ void Laboratorio::cerrarMesaSuperior()
     // Limpiar referencias
     botonesBotellas.clear();
     botonesOpcionesMesa2.clear();
-    botonesTarjetasMesa4.clear();      // ← AGREGAR
-    tarjetasVolteadas.clear();          // ← AGREGAR
+    botonesVelasMesa3.clear();          // ← AGREGAR ESTA LÍNEA
+    botonesTarjetasMesa4.clear();
+    tarjetasVolteadas.clear();
     lblPreguntaMesa1 = nullptr;
     lblPreguntaMesa2 = nullptr;
-    lblPreguntaMesa4 = nullptr;         // ← AGREGAR
+    lblPreguntaMesa3 = nullptr;         // ← AGREGAR ESTA LÍNEA
+    lblPreguntaMesa4 = nullptr;
     botonCorrecto = nullptr;
     mesaActual = "";
 
@@ -781,10 +771,13 @@ void Laboratorio::verificarRespuestaMesa2(const QString& opcion)
 
         // Marcar mesa como completada después de 2 segundos
         QTimer::singleShot(2000, this, [this]() {
-            mesa2Completada = true;
-            ocultarIndicador("mesa2");
-            desbloquearSiguienteMesa();
-            cerrarMesaSuperior();
+            cerrarMesaSuperior();                    // ← Mover primero
+            QTimer::singleShot(300, this, [this]() { // ← Esperar un poco
+                agregarIngredienteAlCaldero(2);      // ← AGREGAR ESTO
+                mesa2Completada = true;
+                ocultarIndicador("mesa2");
+                desbloquearSiguienteMesa();
+            });
         });
 
     } else {
@@ -812,6 +805,239 @@ void Laboratorio::verificarRespuestaMesa2(const QString& opcion)
                 );
         });
     }
+}
+
+// ==================== MESA 3: VELAS ENCENDIBLES ====================
+
+void Laboratorio::configurarMesa3()
+{
+    QVBoxLayout* layout = new QVBoxLayout(panelMesaSuperior);
+    layout->setSpacing(15);
+    layout->setContentsMargins(15, 15, 20, 15);
+
+    // Título
+    QLabel* lblTitulo = new QLabel("🕯️ MESA DEL MÉTODO", panelMesaSuperior);
+    lblTitulo->setAlignment(Qt::AlignCenter);
+    lblTitulo->setStyleSheet(
+        "font-size: 22px;"
+        "font-weight: bold;"
+        "color: #8B6F47;"
+        "background: transparent;"
+        "border: none;"
+        );
+    layout->addWidget(lblTitulo);
+
+    // Contenedor visual
+    QWidget* contenedorVisual = new QWidget(panelMesaSuperior);
+    contenedorVisual->setFixedHeight(280);
+    contenedorVisual->setStyleSheet("background: transparent; border: none;");
+    QHBoxLayout* layoutVisual = new QHBoxLayout(contenedorVisual);
+    layoutVisual->setContentsMargins(0, 0, 0, 0);
+    layoutVisual->setSpacing(0);
+
+    // Imagen de la mesa
+    QLabel* lblMesa = new QLabel(contenedorVisual);
+    QPixmap pixMesa("C:/Users/Lenovo/Downloads/mesaSuperior.png");
+    lblMesa->setPixmap(pixMesa.scaled(600, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    lblMesa->setAlignment(Qt::AlignCenter);
+    lblMesa->setStyleSheet("border: none; background: transparent;");
+    layoutVisual->addWidget(lblMesa);
+    layout->addWidget(contenedorVisual);
+
+    // Pregunta sobre la mesa
+    lblPreguntaMesa3 = new QLabel(
+        "Una de las siguientes es considerada de las\ncuatro reglas del método en Descartes:",
+        lblMesa
+        );
+    lblPreguntaMesa3->setGeometry(80, 20, 450, 60);
+    lblPreguntaMesa3->setAlignment(Qt::AlignCenter);
+    lblPreguntaMesa3->setStyleSheet(
+        "font-size: 15px;"
+        "font-weight: bold;"
+        "color: #3B2F2F;"
+        "background: transparent;"
+        );
+
+    // Velas sobre la mesa
+    botonesVelasMesa3.clear();
+
+    QStringList opciones = {"A) Hipótesis", "B) Deducción", "C) Evidencia", "D) Inducción"};
+
+    int startX = 50;
+    int startY = 90;
+    int velaWidth = 110;
+    int velaSpacing = 20;
+
+    for (int i = 0; i < 4; i++) {
+        QPushButton* btnVela = new QPushButton(lblMesa);
+        btnVela->setFixedSize(velaWidth, 150);
+        btnVela->move(startX + i * (velaWidth + velaSpacing), startY);
+
+        // Imagen de vela apagada
+        QLabel* lblImagenVela = new QLabel(btnVela);
+        QPixmap pixVela("C:/Users/Lenovo/Downloads/velaApagada.png");
+        lblImagenVela->setPixmap(pixVela.scaled(80, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        lblImagenVela->setGeometry(15, 10, 80, 100);
+        lblImagenVela->setAlignment(Qt::AlignCenter);
+        lblImagenVela->setObjectName("imagenVela");
+
+        // Texto de la opción debajo de la vela
+        QLabel* lblOpcion = new QLabel(opciones[i], btnVela);
+        lblOpcion->setGeometry(5, 115, 100, 30);
+        lblOpcion->setAlignment(Qt::AlignCenter);
+        lblOpcion->setWordWrap(true);
+        lblOpcion->setStyleSheet(
+            "font-size: 13px;"
+            "font-weight: bold;"
+            "color: #3B2F2F;"
+            "background: transparent;"
+            "border: none;"
+            );
+
+        btnVela->setStyleSheet(
+            "QPushButton {"
+            "  background: transparent;"
+            "  border: 2px solid #8B7355;"
+            "  border-radius: 12px;"
+            "}"
+            "QPushButton:hover {"
+            "  border: 3px solid #DAA520;"
+            "  background-color: rgba(255, 215, 0, 30);"
+            "}"
+            );
+
+        btnVela->setProperty("indiceVela", i);
+        connect(btnVela, &QPushButton::clicked, this, [this, i]() {
+            verificarRespuestaMesa3(i);
+        });
+
+        botonesVelasMesa3.append(btnVela);
+    }
+
+    // Botón cerrar
+    QPushButton* btnCerrar = new QPushButton("❌ Cerrar [ESC]", panelMesaSuperior);
+    btnCerrar->setStyleSheet(
+        "QPushButton {"
+        "  background-color: #E8E8E8;"
+        "  border: 2px solid #AAA;"
+        "  border-radius: 10px;"
+        "  padding: 10px;"
+        "  font-size: 13px;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: #D0D0D0;"
+        "}"
+        );
+    connect(btnCerrar, &QPushButton::clicked, this, &Laboratorio::cerrarMesaSuperior);
+    layout->addWidget(btnCerrar, 0, Qt::AlignCenter);
+}
+
+void Laboratorio::verificarRespuestaMesa3(int indiceVela)
+{
+    if (indiceVela == 2) { // C) Evidencia es la correcta
+        // Encender la vela correcta
+        QPushButton* velaCorrecta = botonesVelasMesa3[indiceVela];
+        animarEncendidoVela(velaCorrecta);
+
+        lblPreguntaMesa3->setText("✅ ¡Correcto! Evidencia - Tercer ingrediente obtenido");
+        lblPreguntaMesa3->setStyleSheet(
+            "font-size: 15px;"
+            "font-weight: bold;"
+            "color: #2E7D32;"
+            "background: transparent;"
+            );
+
+        // Deshabilitar todas las velas
+        for (QPushButton* btn : botonesVelasMesa3) {
+            btn->setEnabled(false);
+        }
+
+        // Completar mesa después de 2 segundos
+        QTimer::singleShot(2000, this, [this]() {
+            cerrarMesaSuperior();                    // ← Mover primero
+            QTimer::singleShot(300, this, [this]() { // ← Esperar un poco
+                agregarIngredienteAlCaldero(3);      // ← AGREGAR ESTO
+                mesa3Completada = true;
+                ocultarIndicador("mesa3");
+                desbloquearSiguienteMesa();
+            });
+        });
+
+    } else {
+        // Respuesta incorrecta
+        lblPreguntaMesa3->setText("❌ Incorrecto. La vela no se enciende. Intenta nuevamente.");
+        lblPreguntaMesa3->setStyleSheet(
+            "font-size: 15px;"
+            "font-weight: bold;"
+            "color: #C62828;"
+            "background: transparent;"
+            );
+
+        // Restaurar texto original después de 1 segundo
+        QTimer::singleShot(1000, this, [this]() {
+            lblPreguntaMesa3->setText(
+                "Una de las siguientes es considerada de las\ncuatro reglas del método en Descartes:"
+                );
+            lblPreguntaMesa3->setStyleSheet(
+                "font-size: 15px;"
+                "font-weight: bold;"
+                "color: #3B2F2F;"
+                "background: transparent;"
+                );
+        });
+    }
+}
+
+void Laboratorio::animarEncendidoVela(QPushButton* vela)
+{
+    if (!vela) return;
+
+    // Encontrar el QLabel de la imagen dentro del botón
+    QLabel* lblImagenVela = vela->findChild<QLabel*>("imagenVela");
+    if (lblImagenVela) {
+        // Cambiar a imagen de vela encendida
+        QPixmap pixVelaEncendida("C:/Users/Lenovo/Downloads/velaEncendida.png");
+        lblImagenVela->setPixmap(pixVelaEncendida.scaled(80, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    }
+
+    // Animar con brillo dorado
+    botonCorrecto = vela;
+    brilloAlpha = 255;
+    brilloSubiendo = false;
+
+    if (!timerBrillo) {
+        timerBrillo = new QTimer(this);
+        connect(timerBrillo, &QTimer::timeout, this, [this]() {
+            if (!botonCorrecto) {
+                timerBrillo->stop();
+                return;
+            }
+
+            if (brilloSubiendo) {
+                brilloAlpha += 15;
+                if (brilloAlpha >= 255) {
+                    brilloAlpha = 255;
+                    brilloSubiendo = false;
+                }
+            } else {
+                brilloAlpha -= 15;
+                if (brilloAlpha <= 100) {
+                    brilloAlpha = 100;
+                    brilloSubiendo = true;
+                }
+            }
+
+            botonCorrecto->setStyleSheet(
+                QString("QPushButton {"
+                        "  background-color: rgba(255, 215, 0, %1);"
+                        "  border: 3px solid #FFD700;"
+                        "  border-radius: 12px;"
+                        "}").arg(brilloAlpha)
+                );
+        });
+    }
+
+    timerBrillo->start(50);
 }
 
 
@@ -1008,15 +1234,22 @@ void Laboratorio::verificarRespuestaMesa4(int indice)
 
         // Completar mesa después de 2 segundos
         QTimer::singleShot(2000, this, [this]() {
-            mesa4Completada = true;
-            ocultarIndicador("mesa4");
-            nivelCompletado = true; // Nivel completo
-            cerrarMesaSuperior();
+            cerrarMesaSuperior();                    // ← Mover primero
+            QTimer::singleShot(300, this, [this]() { // ← Esperar un poco
+                agregarIngredienteAlCaldero(4);      // ← AGREGAR ESTO
+                mesa4Completada = true;
+                ocultarIndicador("mesa4");
+                nivelCompletado = true;
 
-            // Aquí puedes agregar lógica adicional cuando se completa el nivel
-            QMessageBox::information(this, "¡Felicidades!",
-                                     "Has completado todas las mesas del laboratorio.\n"
-                                     "¡La Poción de la Verdad Absoluta está lista!");
+                // Esperar a que termine la animación del ingrediente
+                QTimer::singleShot(1500, this, [this]() {
+                    if (npcDes) {
+                        QString dialogoFinal = npcDes->obtenerDialogoActual(true); // true = nivel completado
+                        npcDes->mostrarDialogo(dialogoFinal);
+                        dialogoVisible = true; // Mostrar diálogos finales
+                    }
+                });
+            });
         });
 
     } else {
@@ -1080,3 +1313,123 @@ void Laboratorio::verificarRespuestaMesa4(int indice)
         });
     }
 }
+
+// ==================== SISTEMA DE CALDERO E INGREDIENTES ====================
+
+void Laboratorio::agregarIngredienteAlCaldero(int numeroMesa)
+{
+    // Definir rutas de sprites de ingredientes
+    QMap<int, QString> rutasIngredientes;
+    rutasIngredientes[1] = "C:/Users/Lenovo/Downloads/r1.png";
+    rutasIngredientes[2] = "C:/Users/Lenovo/Downloads/estrella.jpg";
+    rutasIngredientes[3] = "C:/Users/Lenovo/Downloads/r3.png";
+    rutasIngredientes[4] = "C:/Users/Lenovo/Downloads/flor5.png";
+
+    // Crear sprite del ingrediente
+    QPixmap pixIngrediente(rutasIngredientes[numeroMesa]);
+    QGraphicsPixmapItem* ingrediente = escenario->scene->addPixmap(
+        pixIngrediente.scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        );
+
+    // Posición inicial (más cerca del caldero, como flotando hacia él)
+    QPointF posicionInicial(caldero1->pos().x() - 80, caldero1->pos().y() + 10);
+    ingrediente->setPos(posicionInicial);
+    ingrediente->setZValue(1000);
+
+    // Posición final (centro del caldero)
+    QPointF posicionFinal(caldero1->pos().x() + 25, caldero1->pos().y() + 40);
+
+    // Animación hacia el caldero
+    QVariantAnimation* animCaida = new QVariantAnimation();
+    animCaida->setDuration(1200);
+    animCaida->setStartValue(posicionInicial);
+    animCaida->setEndValue(posicionFinal);
+    animCaida->setEasingCurve(QEasingCurve::InOutQuad);
+
+    connect(animCaida, &QVariantAnimation::valueChanged, this, [ingrediente](const QVariant &value) {
+        ingrediente->setPos(value.toPointF());
+    });
+
+    connect(animCaida, &QVariantAnimation::finished, this, [this, ingrediente]() {
+        escenario->scene->removeItem(ingrediente);
+        delete ingrediente;
+
+        ingredientesCompletados++;
+        actualizarCaldero(ingredientesCompletados);
+        animarBurbujasCaldero();
+    });
+
+    animCaida->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+
+// ==================== ACTUALIZAR SPRITE DEL CALDERO ====================
+
+void Laboratorio::actualizarCaldero(int numIngredientes)
+{
+    QString rutaCaldero;
+    QSize tamanoCaldero;
+
+    // Cambiar sprite según la cantidad de ingredientes
+    if (numIngredientes == 1) {
+        rutaCaldero = "C:/Users/Lenovo/Downloads/caldero1.png";
+        tamanoCaldero = QSize(100, 100);
+    }
+    else if (numIngredientes == 2) {
+        rutaCaldero = "C:/Users/Lenovo/Downloads/caldero2.png";
+        tamanoCaldero = QSize(90, 90);
+    }
+    else if (numIngredientes >= 3) {
+        rutaCaldero = "C:/Users/Lenovo/Downloads/caldero3.png";
+        tamanoCaldero = QSize(150, 150);
+    }
+
+    QPixmap pixCaldero(rutaCaldero);
+    if (!pixCaldero.isNull()) {
+        caldero1->setPixmap(pixCaldero.scaled(tamanoCaldero, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
+    }
+}
+
+
+// ==================== EFECTO DE BURBUJAS (CAMBIO DE SPRITES) ====================
+
+void Laboratorio::animarBurbujasCaldero()
+{
+    if (timerBurbujeo) {
+        timerBurbujeo->stop();
+        delete timerBurbujeo;
+        timerBurbujeo = nullptr;
+    }
+
+    frameActualBurbujeo = 0;
+    timerBurbujeo = new QTimer(this);
+
+    connect(timerBurbujeo, &QTimer::timeout, this, [this]() {
+        static bool alternar = false;
+
+        // Alternar entre los dos sprites de burbujeo
+        QString ruta = alternar
+                           ? "C:/Users/Lenovo/Downloads/caldero3.png"
+                           : "C:/Users/Lenovo/Downloads/caldero2.png";
+
+        QPixmap pix(ruta);
+        if (!pix.isNull()) {
+            caldero1->setPixmap(pix.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        }
+
+        alternar = !alternar;
+        frameActualBurbujeo++;
+
+        // Después de unas alternancias, dejarlo en el último estado (caldero 3)
+        if (frameActualBurbujeo >= 10) {
+            timerBurbujeo->stop();
+            QPixmap pixFinal("C:/Users/Lenovo/Downloads/caldero3.png");
+            caldero1->setPixmap(pixFinal.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        }
+    });
+
+    timerBurbujeo->start(200);
+}
+
+

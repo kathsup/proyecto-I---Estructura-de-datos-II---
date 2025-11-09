@@ -18,7 +18,7 @@ nivel1Video::~nivel1Video()
 void nivel1Video::inicializarNivel()
 {
     // Configurar el escenario dentro del QGraphicsView del UI
-    QPixmap pixFondo("C:/Users/Lenovo/Downloads/fondo.png");
+    QPixmap pixFondo("C:/Users/Lenovo/Downloads/fondoVideo.png");
     escenario->inicializar(ui->graphicsViewVideo, pixFondo);
 
     ui->graphicsViewVideo->setFocusPolicy(Qt::NoFocus);
@@ -64,12 +64,6 @@ void nivel1Video::keyPressEvent(QKeyEvent *event)
 
 void nivel1Video::objetosInteractivos() {
 
-        QPixmap pixBaseVid("C:/Users/Lenovo/Downloads/video.png");
-        QGraphicsPixmapItem* baseVideo = escenario->scene->addPixmap(
-            pixBaseVid.scaled(500, 500, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-            );
-        baseVideo->setPos(300, 160);
-        escenario->zonasInteractivas.append(baseVideo);
     }
 
 
