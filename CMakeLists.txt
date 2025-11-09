@@ -35,6 +35,7 @@ qt_add_executable(proyectoUno-EstruII
     personajebatalla.h personajebatalla.cpp
     npccasa.h npccasa.cpp
     ranking.h ranking.cpp
+    grafoniveles.h grafoniveles.cpp
 )
 
 target_link_libraries(proyectoUno-EstruII

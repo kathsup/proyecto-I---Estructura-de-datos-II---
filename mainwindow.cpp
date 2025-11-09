@@ -67,10 +67,24 @@ MainWindow::MainWindow(QWidget *parent)
 
     Mapa = new mapa(this);
     ui->stackedWidget->addWidget(Mapa);
-
     Mapa->setRanking(ranking);
+    grafoNiveles = new GrafoNiveles(this);
+    Mapa->setGrafoNiveles(grafoNiveles);
+
+    connect(grafoNiveles, &GrafoNiveles::nivelDesbloqueado, this,
+            [this](int nivelId) {
+                Mapa->actualizarVisualesNiveles();
+            });
 
     connect(Mapa, &mapa::solicitarCambioNivel, this, [this](int nivel){
+
+        if (!grafoNiveles->estaDesbloqueado(nivel)) {
+            QMessageBox::warning(this, "Nivel Bloqueado",
+                                 QString("Este nivel aún está bloqueado.\n\n"
+                                         "Completa los niveles anteriores para desbloquearlo."));
+            return;
+        }
+
         if (nivel == 1) {
             cambiarDeNivel(nivel1);
         } else if (nivel == 2) {
@@ -116,10 +130,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     //regresar al mapa
     connect(nivel1, &nivel1Video::volverAlMapa, this, [this](){
+        grafoNiveles->completarNivel(1);
         cambiarDeNivel(Mapa);
     });
 
     connect(nivel2, &nivel2Ruleta::volverAlMapa, this, [this](){
+        grafoNiveles->completarNivel(2);
         cambiarDeNivel(Mapa);
     });
 
@@ -128,6 +144,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(nivel4, &nivel4Casa::volverAlMapa, this, [this](){
+        grafoNiveles->completarNivel(4);
         cambiarDeNivel(Mapa);
     });
 
@@ -195,7 +212,7 @@ MainWindow::MainWindow(QWidget *parent)
                                              QString("😔 Derrota\n\n"
                                                      "🏆 Puntaje: %1 pts").arg(puntaje));
                 }
-
+                grafoNiveles->completarNivel(3);
                 cambiarDeNivel(Mapa);
             });
 

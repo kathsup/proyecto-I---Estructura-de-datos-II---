@@ -16,6 +16,7 @@
 #include "juego3.h"
 #include "juego4.h"
 #include "ranking.h"
+#include "grafoniveles.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -58,6 +59,7 @@ private:
     juego3* juegoPolitica;
     juego4* juegoCiencia;
     Ranking* ranking;
+    GrafoNiveles* grafoNiveles;
 
 public slots:
     void cambiarDeNivel(QWidget* nuevoNivel);

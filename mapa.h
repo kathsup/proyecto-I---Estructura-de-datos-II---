@@ -6,6 +6,7 @@
 #include <QKeyEvent>
 #include "jugador.h"
 #include "ranking.h"
+#include "grafoniveles.h"
 
 namespace Ui {
 class mapa;
@@ -24,9 +25,9 @@ public:
     void botones();
     void setRanking(Ranking* r) { rankingRef = r; }
     QString nombreJugadorActual;
-    void setJugadorActual(const QString& nombre) {
-        nombreJugadorActual = nombre;
-    }
+    void setJugadorActual(const QString& nombre) {nombreJugadorActual = nombre;}
+    void setGrafoNiveles(GrafoNiveles* grafo) { grafoNiveles = grafo; }
+    void actualizarVisualesNiveles();
 
 
 protected:
@@ -43,6 +44,11 @@ private:
     void crearPanelRanking();
     void crearPanelInstrucciones();
     Ranking* rankingRef;
+    GrafoNiveles* grafoNiveles;
+    QGraphicsPixmapItem* objetoNivel1;
+    QGraphicsPixmapItem* objetoNivel2;
+    QGraphicsPixmapItem* objetoNivel3;
+    QGraphicsPixmapItem* objetoNivel4;
 
 signals:
     void solicitarCambioNivel(int numeroNivel); // señal para pedir cambio de nivel

@@ -110,15 +110,18 @@ void mapa::keyPressEvent(QKeyEvent *event)
     }
 }
 
+
+
 void mapa::objetosInteractivos() {
 
     // ---- NIVEL 1: VIDEO ----
     QPixmap pixVideo("C:/Users/Lenovo/Downloads/objetoVideoMapa.png");
-    QGraphicsPixmapItem* video = escenario->scene->addPixmap(
+    objetoNivel1 = escenario->scene->addPixmap(
         pixVideo.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
         );
-    video->setPos(140, 320);
-    video->setData(0, "nivel1"); // 🔹 Etiqueta para identificarlo
+    objetoNivel1->setPos(140, 320);
+    objetoNivel1->setData(0, "nivel1");
+    objetoNivel1->setOpacity(1.0);  // Siempre visible
 
     // Bandera del nivel 1
     QPixmap pixBanderaVid("C:/Users/Lenovo/Downloads/banderaVid.png");
@@ -130,11 +133,12 @@ void mapa::objetosInteractivos() {
 
     // ---- NIVEL 2: RULETA ----
     QPixmap pixRuleta("C:/Users/Lenovo/Downloads/objetoRuletaMapa.png");
-    QGraphicsPixmapItem* ruleta = escenario->scene->addPixmap(
+    objetoNivel2 = escenario->scene->addPixmap(
         pixRuleta.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
         );
-    ruleta->setPos(250, 85);
-    ruleta->setData(0, "nivel2"); // 🔹 Etiqueta para identificarlo
+    objetoNivel2->setPos(250, 85);
+    objetoNivel2->setData(0, "nivel2");
+    objetoNivel2->setOpacity(1.0);  // Siempre visible
 
     // Bandera del nivel 2
     QPixmap pixRuletaVid("C:/Users/Lenovo/Downloads/banderaRuleta.png");
@@ -146,11 +150,18 @@ void mapa::objetosInteractivos() {
 
     // ---- NIVEL 3: BATALLA ----
     QPixmap pixBatalla("C:/Users/Lenovo/Downloads/objetoBatallaMapa.png");
-    QGraphicsPixmapItem* batalla = escenario->scene->addPixmap(
+    objetoNivel3 = escenario->scene->addPixmap(
         pixBatalla.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation)
         );
-    batalla->setPos(530, 430);
-    batalla->setData(0, "nivel3"); // 🔹 Etiqueta para identificarlo
+    objetoNivel3->setPos(530, 430);
+    objetoNivel3->setData(0, "nivel3");
+
+    // Establecer opacidad según si está desbloqueado
+    if (grafoNiveles && grafoNiveles->estaDesbloqueado(3)) {
+        objetoNivel3->setOpacity(1.0);  // Totalmente visible
+    } else {
+        objetoNivel3->setOpacity(0.4);  // Oscurecido
+    }
 
     // Bandera del nivel 3
     QPixmap pixBatallaVid("C:/Users/Lenovo/Downloads/banderaCombate.png");
@@ -162,11 +173,18 @@ void mapa::objetosInteractivos() {
 
     // ---- NIVEL 4: CASA ----
     QPixmap pixCasa("C:/Users/Lenovo/Downloads/objetoCasaMapa.png");
-    QGraphicsPixmapItem* casa = escenario->scene->addPixmap(
+    objetoNivel4 = escenario->scene->addPixmap(
         pixCasa.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
         );
-    casa->setPos(650, 140);
-    casa->setData(0, "nivel4"); // 🔹 Etiqueta para identificarlo
+    objetoNivel4->setPos(650, 140);
+    objetoNivel4->setData(0, "nivel4");
+
+    // Establecer opacidad según si está desbloqueado
+    if (grafoNiveles && grafoNiveles->estaDesbloqueado(4)) {
+        objetoNivel4->setOpacity(1.0);  // Totalmente visible
+    } else {
+        objetoNivel4->setOpacity(0.4);  // Oscurecido
+    }
 
     // Bandera del nivel 4
     QPixmap pixCasaVid("C:/Users/Lenovo/Downloads/banderaCasa.png");
@@ -177,19 +195,26 @@ void mapa::objetosInteractivos() {
 
 
     // ---- Agregar a la lista de interacciones ----
-    escenario->zonasInteractivas.append(video);
-    escenario->zonasInteractivas.append(ruleta);
-    escenario->zonasInteractivas.append(batalla);
-    escenario->zonasInteractivas.append(casa);
+    escenario->zonasInteractivas.append(objetoNivel1);
+    escenario->zonasInteractivas.append(objetoNivel2);
+    escenario->zonasInteractivas.append(objetoNivel3);
+    escenario->zonasInteractivas.append(objetoNivel4);
 }
-
-
 
 //=====botones========0
 
 void mapa::on_btnInstrucciones_clicked() {
-    if (panelRanking) panelRanking->hide(); // siempre ocultar el otro
-    if (panelInstrucciones) panelInstrucciones->setVisible(!panelInstrucciones->isVisible()); // toggle
+    if (panelRanking) panelRanking->hide();
+
+    if (panelInstrucciones) {
+        bool estabaVisible = panelInstrucciones->isVisible();
+        panelInstrucciones->setVisible(!estabaVisible);
+
+        // ✅ Si se cierra el panel, restaurar el foco
+        if (estabaVisible) {
+            this->setFocus();
+        }
+    }
 }
 
 void mapa::crearPanelInstrucciones() {
@@ -283,10 +308,34 @@ void mapa::on_btnRanking_clicked() {
 
     if (panelRanking->isVisible()) {
         panelRanking->hide();
+        // ✅ Restaurar el foco al cerrar
+        this->setFocus();
     } else {
         if (rankingRef) {
-            actualizarRanking(rankingRef->obtenerRanking()); // ⬅️ Cambiar nombre
+            actualizarRanking(rankingRef->obtenerRanking());
         }
         panelRanking->show();
+    }
+}
+
+void mapa::actualizarVisualesNiveles() {
+    if (!grafoNiveles) return;
+
+    // Actualizar nivel 3
+    if (objetoNivel3) {
+        if (grafoNiveles->estaDesbloqueado(3)) {
+            objetoNivel3->setOpacity(1.0);  // Ahora se ve completamente
+        } else {
+            objetoNivel3->setOpacity(0.4);  // Oscurecido
+        }
+    }
+
+    // Actualizar nivel 4
+    if (objetoNivel4) {
+        if (grafoNiveles->estaDesbloqueado(4)) {
+            objetoNivel4->setOpacity(1.0);  // Ahora se ve completamente
+        } else {
+            objetoNivel4->setOpacity(0.4);  // Oscurecido
+        }
     }
 }
