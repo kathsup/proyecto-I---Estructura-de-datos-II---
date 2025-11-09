@@ -12,6 +12,9 @@ mapa::mapa(QWidget *parent)
     ,escenario(new Escenario(this))
 {
     ui->setupUi(this);
+    botones();
+    crearPanelRanking();
+    crearPanelInstrucciones();
     setFocusPolicy(Qt::StrongFocus);
 }
 
@@ -42,7 +45,8 @@ void mapa::inicializarNivel()
     QVector<QPixmap> spritesArriba = {
         QPixmap("C:/Users/Lenovo/Downloads/hada4Ar.png").scaled(100,100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
 };
-objetosInteractivos();
+    objetosInteractivos();
+
 
 escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(450, 300));
 this->setFocus();
@@ -50,21 +54,36 @@ this->setFocus();
 
 }
 
-/*void mapa::keyPressEvent(QKeyEvent *event)
-{
-    if(escenario) {
-        escenario->manejarTecla(event);
-    }
 
-    if(event->key() == Qt::Key_G) {
-        for(auto* obj : escenario->zonasInteractivas) {
-            if(escenario->personaje->collidingItems().contains(obj)) {
-                emit solicitarCambioNivel();
-                break;
-            }
-        }
-    }
-}*/
+void mapa::botones()
+{
+    // 🔹 Botón de Ranking
+    ui->btnRanking->setStyleSheet(
+        "QPushButton {"
+        "   border-image: url('C:/Users/Lenovo/Downloads/btnRanking.png');"
+        "   border-radius: 50px;"       // Ajusta según el tamaño del botón
+        "   background-color: transparent;"
+        "}"
+        "QPushButton:hover {"
+        "   border-image: url('C:/Users/Lenovo/Downloads/btnRanking.png');"
+        "   opacity: 0.4;"
+        "}"
+        );
+
+    // 🔹 Botón de Instrucciones
+    ui->btnInstrucciones->setStyleSheet(
+        "QPushButton {"
+        "   border-image: url('C:/Users/Lenovo/Downloads/btnInstruccion.png');"
+        "   border-radius: 50px;"
+        "   background-color: transparent;"
+        "}"
+        "QPushButton:hover {"
+        "   border-image: url('C:/Users/Lenovo/Downloads/btnInstruccion.png');"
+        "   opacity: 0.4;"
+        "}"
+        );
+}
+
 
 void mapa::keyPressEvent(QKeyEvent *event)
 {
@@ -90,78 +109,6 @@ void mapa::keyPressEvent(QKeyEvent *event)
         }
     }
 }
-
-
-/*void mapa::objetosInteractivos(){
-
-    //nivel 1 video
-    QPixmap pixVideo("C:/Users/Lenovo/Downloads/objetoVideoMapa.png");
-    QGraphicsPixmapItem* video = escenario->scene->addPixmap(
-        pixVideo.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-    video->setPos(140, 320);
-
-    //bandera video
-    QPixmap pixBanderaVid("C:/Users/Lenovo/Downloads/banderaVid.png");
-    QGraphicsPixmapItem* videoBandera = escenario->scene->addPixmap(
-        pixBanderaVid.scaled(120, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-    videoBandera->setPos(260, 310);
-
-
-    //nivel 2 ruleta
-    QPixmap pixRuleta("C:/Users/Lenovo/Downloads/objetoRuletaMapa.png");
-    QGraphicsPixmapItem* ruleta = escenario->scene->addPixmap(
-        pixRuleta.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-            ruleta->setPos(250, 85);
-
-    //bandera ruleta
-    QPixmap pixRuletaVid("C:/Users/Lenovo/Downloads/banderaRuleta.png");
-    QGraphicsPixmapItem* ruletaBandera = escenario->scene->addPixmap(
-        pixRuletaVid.scaled(140, 140, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-    ruletaBandera->setPos(220, 115);
-
-
-    //nivel 3 batalla
-    QPixmap pixBatalla("C:/Users/Lenovo/Downloads/objetoBatallaMapa.png");
-    QGraphicsPixmapItem* batalla = escenario->scene->addPixmap(
-        pixBatalla.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-    batalla->setPos(530, 430);
-
-    //bandera batalla
-    QPixmap pixBatallaVid("C:/Users/Lenovo/Downloads/banderaCombate.png");
-    QGraphicsPixmapItem* batallaBandera = escenario->scene->addPixmap(
-        pixBatallaVid.scaled(140, 140, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-    batallaBandera->setPos(640, 420);
-
-
-    //nivel 4 casa
-    QPixmap pixCasa("C:/Users/Lenovo/Downloads/objetoCasaMapa.png");
-    QGraphicsPixmapItem* casa = escenario->scene->addPixmap(
-        pixCasa.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-    casa->setPos(650, 140);
-
-    //bandera casa
-    QPixmap pixCasaVid("C:/Users/Lenovo/Downloads/banderaCasa.png");
-    QGraphicsPixmapItem* casaBandera = escenario->scene->addPixmap(
-        pixCasaVid.scaled(140, 140, Qt::KeepAspectRatio, Qt::SmoothTransformation)
-        );
-    casaBandera->setPos(800, 160);
-
-
-    // agregar a lista de interacciones
-    escenario->zonasInteractivas.append(video);
-    escenario->zonasInteractivas.append(ruleta);
-    escenario->zonasInteractivas.append(batalla);
-    escenario->zonasInteractivas.append(casa);
-
-}*/
-
 
 void mapa::objetosInteractivos() {
 
@@ -238,3 +185,108 @@ void mapa::objetosInteractivos() {
 
 
 
+//=====botones========0
+
+void mapa::on_btnInstrucciones_clicked() {
+    if (panelRanking) panelRanking->hide(); // siempre ocultar el otro
+    if (panelInstrucciones) panelInstrucciones->setVisible(!panelInstrucciones->isVisible()); // toggle
+}
+
+void mapa::crearPanelInstrucciones() {
+    panelInstrucciones = new QFrame(this);
+    panelInstrucciones->setGeometry(150, 100, 500, 400);
+    panelInstrucciones->setStyleSheet(
+        "background-color: rgba(255, 255, 255, 220);"
+        "border: 3px solid #8B6F47;"
+        "border-radius: 15px;"
+        );
+
+    QLabel* lblTitulo = new QLabel("📖 Instrucciones", panelInstrucciones);
+    lblTitulo->setGeometry(120, 20, 260, 50);
+    lblTitulo->setAlignment(Qt::AlignCenter);
+    lblTitulo->setStyleSheet("font-size: 22px; font-weight: bold; color: #8B6F47;");
+
+    panelInstrucciones->hide();
+}
+
+
+void mapa::crearPanelRanking() {
+    panelRanking = new QFrame(this);
+    panelRanking->setGeometry(200, 80, 600, 500); // ⬅️ MÁS GRANDE
+    panelRanking->setStyleSheet(
+        "background-color: rgba(255, 255, 255, 240);"
+        "border: 3px solid #8B6F47;"
+        "border-radius: 15px;"
+        );
+
+    QLabel* lblTitulo = new QLabel("🏆 RANKING GENERAL", panelRanking);
+    lblTitulo->setGeometry(150, 15, 300, 40);
+    lblTitulo->setAlignment(Qt::AlignCenter);
+    lblTitulo->setStyleSheet("font-size: 22px; font-weight: bold; color: #8B6F47;");
+
+    // ⭐ CREAR SCROLL AREA PARA TODOS LOS JUGADORES
+    QScrollArea* scrollArea = new QScrollArea(panelRanking);
+    scrollArea->setGeometry(20, 70, 560, 400);
+    scrollArea->setStyleSheet("background-color: transparent; border: none;");
+
+    QWidget* contenedor = new QWidget();
+    scrollArea->setWidget(contenedor);
+    scrollArea->setWidgetResizable(true);
+
+    panelRanking->hide();
+}
+
+void mapa::actualizarRanking(const QVector<Jugador>& ranking) {
+    // Buscar el scroll area
+    QScrollArea* scrollArea = panelRanking->findChild<QScrollArea*>();
+    if (!scrollArea) return;
+
+    // Limpiar contenido anterior
+    QWidget* contenedor = new QWidget();
+    scrollArea->setWidget(contenedor);
+
+    // ⭐ MOSTRAR TODOS LOS JUGADORES
+    int y = 10;
+    for (int i = 0; i < ranking.size(); i++) {
+        QString texto = QString("%1. %2 - %3 pts")
+        .arg(i + 1)
+            .arg(ranking[i].getNombre())
+            .arg(ranking[i].getPuntos());
+
+        QLabel* lblRank = new QLabel(texto, contenedor);
+        lblRank->setGeometry(20, y, 500, 30);
+
+        // ⭐ RESALTAR AL JUGADOR ACTUAL
+        if (ranking[i].getNombre() == nombreJugadorActual) {
+            lblRank->setStyleSheet(
+                "font-size: 16px; "
+                "color: white; "
+                "background-color: #f39c12; "
+                "font-weight: bold; "
+                "padding: 5px; "
+                "border-radius: 5px;"
+                );
+        } else {
+            lblRank->setStyleSheet("font-size: 16px; color: #2c3e50;");
+        }
+
+        lblRank->show();
+        y += 40;
+    }
+
+    // Ajustar tamaño del contenedor
+    contenedor->setMinimumHeight(y);
+}
+
+void mapa::on_btnRanking_clicked() {
+    if (panelInstrucciones) panelInstrucciones->hide();
+
+    if (panelRanking->isVisible()) {
+        panelRanking->hide();
+    } else {
+        if (rankingRef) {
+            actualizarRanking(rankingRef->obtenerRanking()); // ⬅️ Cambiar nombre
+        }
+        panelRanking->show();
+    }
+}

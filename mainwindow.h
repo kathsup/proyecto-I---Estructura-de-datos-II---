@@ -15,6 +15,7 @@
 #include "juego2.h"
 #include "juego3.h"
 #include "juego4.h"
+#include "ranking.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,6 +30,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    Ranking* obtenerRanking() { return ranking; }
 
 private slots:
     void on_btnComenzar_clicked();
@@ -55,6 +57,7 @@ private:
     juego2* juegoHistoria;
     juego3* juegoPolitica;
     juego4* juegoCiencia;
+    Ranking* ranking;
 
 public slots:
     void cambiarDeNivel(QWidget* nuevoNivel);

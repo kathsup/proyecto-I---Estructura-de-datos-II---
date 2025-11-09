@@ -44,7 +44,7 @@ public:
 
 
 signals:
-    void batallaTerminada(QString ganador);
+    void batallaTerminada(QString ganador,  int puntaje);
     void volverAlMapa();
 
 protected:
@@ -159,6 +159,11 @@ private:
     QMediaPlayer* reproductorMusica;
     QAudioOutput* audioOutput;
     void reproducirMusicaFinal(QString ganador);
+
+    //========RANKING ==========
+    int respuestasCorrectas;
+    int combatesGanados;
+    int calcularPuntajeFinal();
 };
 
 #endif // NIVEL3BATALLA_H

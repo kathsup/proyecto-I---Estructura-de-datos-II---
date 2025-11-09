@@ -34,6 +34,8 @@ nivel3Batalla::nivel3Batalla(QWidget *parent)
     , indicadorComputadora(nullptr)
     , reproductorMusica(new QMediaPlayer(this))
     , audioOutput(new QAudioOutput(this))
+    , respuestasCorrectas(0)
+    , combatesGanados(0)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
@@ -553,7 +555,10 @@ void nivel3Batalla::evaluarRonda()
         QString ganadorRonda;
         if (jugadorMasRapido) {
             ganadorRonda = acerto ? "JUGADOR" : "COMPUTADORA";
-            if (acerto) vidasComputadora--;
+            if (acerto) {
+                vidasComputadora--;
+                respuestasCorrectas++;
+            }
             else vidasJugador--;
         } else {
             ganadorRonda = acerto ? "COMPUTADORA" : "JUGADOR";
@@ -708,11 +713,12 @@ void nivel3Batalla::mostrarResultado(QString ganadorRonda, bool acerto)
 void nivel3Batalla::verificarFinDeBatalla()
 {
     if (vidasJugador == 0) {
-        ("COMPUTADORA");
+        mostrarPantallaFinal("COMPUTADORA");
         return;
     }
 
     if (vidasComputadora == 0) {
+        combatesGanados++;
         mostrarPantallaFinal("JUGADOR");
         return;
     }
@@ -771,18 +777,25 @@ void nivel3Batalla::mostrarPantallaFinal(QString ganador)
         escenario->scene->addItem(textoDerrota);
     }
 
+    // CALCULAR PUNTAJE ANTES DE MOSTRARLO
+    int puntajeFinal = calcularPuntajeFinal();
+
+    //MOSTRAR ESTADÍSTICAS CON PUNTAJE
     QGraphicsTextItem* stats = new QGraphicsTextItem(
-        QString("Vidas finales:\nTú: %1  |  Oponente: %2")
+        QString("Vidas finales:\nTú: %1  |  Oponente: %2\n\n🏆 Puntaje obtenido: %3 pts\n✅ Respuestas correctas: %4")
             .arg(vidasJugador)
             .arg(vidasComputadora)
+            .arg(puntajeFinal)              // ⬅️ MOSTRAR PUNTAJE
+            .arg(respuestasCorrectas)        // ⬅️ MOSTRAR ACIERTOS
         );
-    stats->setFont(QFont("Arial", 18));
+    stats->setFont(QFont("Arial", 16, QFont::Bold));
     stats->setDefaultTextColor(Qt::white);
-    stats->setPos(370, 350);
+    stats->setPos(300, 330);  // Ajustar posición para que quepa todo
     escenario->scene->addItem(stats);
 
-    QTimer::singleShot(5000, this, [this, ganador]() {
-        emit batallaTerminada(ganador);
+    //EMITIR SEÑAL CON PUNTAJE (siempre, ganes o pierdas)
+    QTimer::singleShot(5000, this, [this, ganador, puntajeFinal]() {
+        emit batallaTerminada(ganador, puntajeFinal);
     });
 }
 
@@ -893,3 +906,19 @@ void nivel3Batalla::reproducirMusicaFinal(QString ganador)
     qDebug() << "🎵 Reproduciendo música:" << rutaMusica;
 }
 
+int nivel3Batalla::calcularPuntajeFinal() {
+    int puntaje = 0;
+
+    // 50 puntos por vida restante
+    puntaje += vidasJugador * 50;
+
+    // 100 puntos por respuesta correcta
+    puntaje += respuestasCorrectas * 100;
+
+    // 500 bonus por victoria total
+    if (vidasJugador > 0 && vidasComputadora == 0) {
+        puntaje += 500;
+    }
+
+    return puntaje;
+}

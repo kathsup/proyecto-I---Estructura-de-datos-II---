@@ -20,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     iniciarConfiguracion();
 
+    ranking = new Ranking();
+
     //nivel 1
     nivel1 = new nivel1Video(this);
     ui->stackedWidget->addWidget(nivel1);
@@ -65,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     Mapa = new mapa(this);
     ui->stackedWidget->addWidget(Mapa);
+
+    Mapa->setRanking(ranking);
 
     connect(Mapa, &mapa::solicitarCambioNivel, this, [this](int nivel){
         if (nivel == 1) {
@@ -158,9 +162,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(nivel2, &nivel2Ruleta::irABatalla, this, &MainWindow::irABatalla);
 
     // ========== ✅ NUEVA CONEXIÓN: Batalla terminada ==========
-    connect(nivel3, &nivel3Batalla::batallaTerminada, this, [this](QString ganador) {
+    /*connect(nivel3, &nivel3Batalla::batallaTerminada, this, [this](QString ganador,int puntaje) {
         //nivel3->detenerMusica();
         if (ganador == "JUGADOR") {
+            ranking->agregarPuntaje(jugadorActual.nombre, puntaje);
             QMessageBox::information(this, "¡Victoria!",
                                      "¡Has ganado la batalla filosófica!\n\n"
                                      "Has demostrado tu dominio del conocimiento.");
@@ -170,7 +175,29 @@ MainWindow::MainWindow(QWidget *parent)
                                      "Estudia más y vuelve a intentarlo.");
         }
         cambiarDeNivel(Mapa);
-    });
+    });*/
+
+    connect(nivel3, &nivel3Batalla::batallaTerminada, this,
+            [this](QString ganador, int puntaje) {
+
+                // ⭐ GUARDAR NOMBRE PARA RESALTARLO
+               Mapa->setJugadorActual(jugadorActual.nombre);
+
+                // ⭐ AGREGAR AL RANKING (ahora sin límite)
+                ranking->agregarPuntaje(jugadorActual.nombre, puntaje);
+
+                if (ganador == "JUGADOR") {
+                    QMessageBox::information(this, "¡Victoria!",
+                                             QString("🎉 ¡Has ganado!\n\n"
+                                                     "🏆 Puntaje: %1 pts").arg(puntaje));
+                } else {
+                    QMessageBox::information(this, "Derrota",
+                                             QString("😔 Derrota\n\n"
+                                                     "🏆 Puntaje: %1 pts").arg(puntaje));
+                }
+
+                cambiarDeNivel(Mapa);
+            });
 
 }
 

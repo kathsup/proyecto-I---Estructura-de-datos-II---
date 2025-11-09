@@ -34,6 +34,7 @@ qt_add_executable(proyectoUno-EstruII
     preguntaBurbuja.h
     personajebatalla.h personajebatalla.cpp
     npccasa.h npccasa.cpp
+    ranking.h ranking.cpp
 )
 
 target_link_libraries(proyectoUno-EstruII
