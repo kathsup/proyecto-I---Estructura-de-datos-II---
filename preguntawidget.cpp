@@ -93,16 +93,7 @@ PreguntaWidget::PreguntaWidget(QString pregunta, QStringList opciones, QString r
     setEnabled(true);
     setZValue(1000); // Poner al frente
 
-   // qDebug() << "PreguntaWidget creado con" << botones.size() << "botones";
-    //qDebug() << "Posición del grupo:" << pos();
-    //qDebug() << "Grupo visible:" << isVisible() << "habilitado:" << isEnabled();
 
-    // Verificar que los botones estén habilitados
-    /*for (int i = 0; i < botones.size(); ++i) {
-        qDebug() << "Botón" << i << ":" << botones[i]->text()
-        << "habilitado:" << botones[i]->isEnabled()
-        << "visible:" << botones[i]->isVisible();
-    }*/
 }
 
 void PreguntaWidget::verificarRespuesta() {

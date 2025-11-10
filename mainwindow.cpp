@@ -156,21 +156,25 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(juegoArte, &juego1::volverARuleta, this, [this]() {
         nivel2->onJuegoCompletado(); // ← AGREGAR ESTO
+        grafoNiveles->completarNivel(2);
         cambiarDeNivel(nivel2);
     });
 
     connect(juegoHistoria, &juego2::volverARuleta, this, [this]() {
         nivel2->onJuegoCompletado(); // ← AGREGAR ESTO
+        grafoNiveles->completarNivel(2);
         cambiarDeNivel(nivel2);
     });
 
     connect(juegoPolitica, &juego3::volverARuleta, this, [this]() {
         nivel2->onJuegoCompletado(); // ← AGREGAR ESTO
+        grafoNiveles->completarNivel(2);
         cambiarDeNivel(nivel2);
     });
 
     connect(juegoCiencia, &juego4::volverARuleta, this, [this]() {
         nivel2->onJuegoCompletado(); // ← AGREGAR ESTO
+        grafoNiveles->completarNivel(2);
         cambiarDeNivel(nivel2);
     });
 

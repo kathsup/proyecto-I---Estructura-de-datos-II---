@@ -18,11 +18,12 @@ public:
     void mover(QKeyEvent* event, const QList<QGraphicsItem*>& obstaculos, const QRectF& limites);
 
     //void setDireccionActual(const QString& direccion);
-
-private:
     QVector<QPixmap> spritesDer;
     QVector<QPixmap> spritesIzq;
     QVector<QPixmap> spritesArriba;
+
+private:
+
 
     QString direccionActual = "derecha"; // por defecto
     int spriteActual = 0;

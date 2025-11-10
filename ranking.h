@@ -21,6 +21,8 @@ public:
     QVector<Jugador> obtenerRanking() const; // Cambiar nombre
     void limpiarRanking();
     void ordenarRanking();
+    void quickSortDescendente(int bajo, int alto);
+    int particion(int bajo, int alto);
 };
 
 

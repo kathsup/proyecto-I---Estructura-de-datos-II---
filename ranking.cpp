@@ -72,23 +72,47 @@ bool Ranking::guardarEnArchivo() {
     return true;
 }
 
-// ⭐ FUNCIÓN DE ORDENAMIENTO (Bubble Sort simple)
+// ⭐ QUICK SORT DESCENDENTE (de mayor a menor)
 void Ranking::ordenarRanking() {
-    // Ordenar de mayor a menor usando Bubble Sort
-    for (int i = 0; i < jugadores.size() - 1; i++) {
-        for (int j = 0; j < jugadores.size() - i - 1; j++) {
-            if (jugadores[j].getPuntos() < jugadores[j + 1].getPuntos()) {
-                // Intercambiar
-                Jugador temp = jugadores[j];
-                jugadores[j] = jugadores[j + 1];
-                jugadores[j + 1] = temp;
-            }
+    if (jugadores.size() <= 1) return;
+    quickSortDescendente(0, jugadores.size() - 1);
+}
+
+// Función auxiliar de partición
+int Ranking::particion(int bajo, int alto) {
+    int pivote = jugadores[alto].getPuntos();
+    int i = bajo - 1;
+
+    for (int j = bajo; j < alto; j++) {
+        // Para orden DESCENDENTE: si es MAYOR que el pivote
+        if (jugadores[j].getPuntos() > pivote) {
+            i++;
+            // Intercambiar jugadores[i] y jugadores[j]
+            Jugador temp = jugadores[i];
+            jugadores[i] = jugadores[j];
+            jugadores[j] = temp;
         }
+    }
+
+    // Intercambiar jugadores[i+1] y jugadores[alto] (pivote)
+    Jugador temp = jugadores[i + 1];
+    jugadores[i + 1] = jugadores[alto];
+    jugadores[alto] = temp;
+
+    return i + 1;
+}
+
+// Función recursiva de Quick Sort
+void Ranking::quickSortDescendente(int bajo, int alto) {
+    if (bajo < alto) {
+        int pi = particion(bajo, alto);
+        quickSortDescendente(bajo, pi - 1);
+        quickSortDescendente(pi + 1, alto);
     }
 }
 
 // ⭐ SIMPLIFICADO: Solo agregar y ordenar
-void Ranking::agregarPuntaje(QString nombre, int puntos) {
+/*void Ranking::agregarPuntaje(QString nombre, int puntos) {
     jugadores.append(Jugador(nombre, puntos));
 
     // Ordenar después de agregar
@@ -96,6 +120,41 @@ void Ranking::agregarPuntaje(QString nombre, int puntos) {
 
     guardarEnArchivo();
     qDebug() << "🏆" << nombre << "agregado con" << puntos << "puntos. Total:" << jugadores.size();
+}*/
+
+// ⭐ MODIFICADO: Actualizar si existe, agregar si no existe
+void Ranking::agregarPuntaje(QString nombre, int puntos) {
+    // Buscar si el jugador ya existe
+    bool encontrado = false;
+    for (int i = 0; i < jugadores.size(); i++) {
+        if (jugadores[i].getNombre() == nombre) {
+            // ⭐ ACTUALIZAR puntaje existente (sumar o reemplazar)
+            // Opción 1: SUMAR puntos
+            // jugadores[i].setPuntos(jugadores[i].getPuntos() + puntos);
+
+            // Opción 2: REEMPLAZAR solo si es mayor (guardar mejor puntaje)
+            if (puntos > jugadores[i].getPuntos()) {
+                jugadores[i].setPuntos(puntos);
+                qDebug() << "🏆 Nuevo récord para" << nombre << ":" << puntos << "pts";
+            } else {
+                qDebug() << "📊" << nombre << "ya tiene un mejor puntaje:" << jugadores[i].getPuntos();
+            }
+
+            encontrado = true;
+            break;
+        }
+    }
+
+    // Si no existe, agregarlo
+    if (!encontrado) {
+        jugadores.append(Jugador(nombre, puntos));
+        qDebug() << "🆕" << nombre << "agregado al ranking con" << puntos << "puntos";
+    }
+
+    // Ordenar y guardar
+    ordenarRanking();
+    guardarEnArchivo();
+    qDebug() << "💾 Ranking actualizado. Total:" << jugadores.size() << "jugadores";
 }
 
 QVector<Jugador> Ranking::obtenerRanking() const {

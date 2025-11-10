@@ -182,7 +182,7 @@ void juego4::actualizarContador()
     }
 }
 
-void juego4::moverPersonajeAPosicion(int numeroPosicion)
+/*void juego4::moverPersonajeAPosicion(int numeroPosicion)
 {
     // Verificar que el número de posición sea válido
     if (numeroPosicion < 0 || numeroPosicion >= posiciones.size()) {
@@ -219,7 +219,75 @@ void juego4::moverPersonajeAPosicion(int numeroPosicion)
     // Iniciar animación
     timeLine->start();
 }
+*/
 
+void juego4::moverPersonajeAPosicion(int numeroPosicion)
+{
+    // Verificar que el número de posición sea válido
+    if (numeroPosicion < 0 || numeroPosicion >= posiciones.size()) {
+        return;
+    }
+
+    // Obtener posiciones
+    QPointF posInicial = escenario->personaje->pos();
+    QPointF posFinal = posiciones[numeroPosicion];
+
+    // ⭐ DETERMINAR QUÉ SPRITES USAR SEGÚN LA TRANSICIÓN
+    QVector<QPixmap>* spritesAUsar = nullptr;
+
+    if ((posicionActual == 0 && numeroPosicion == 1) ||
+        (posicionActual == 1 && numeroPosicion == 2) ||
+        (posicionActual == 3 && numeroPosicion == 4)) {
+        // Movimientos hacia la DERECHA
+        spritesAUsar = &(escenario->personaje->spritesDer);
+        qDebug() << "🏃➡️ Sprites DERECHA (pos" << posicionActual << "→" << numeroPosicion << ")";
+    }
+    else if ((posicionActual == 2 && numeroPosicion == 3) ||
+             (posicionActual == 4 && numeroPosicion == 5)) {
+        // Movimientos hacia la IZQUIERDA
+        spritesAUsar = &(escenario->personaje->spritesIzq);
+        qDebug() << "🏃⬅️ Sprites IZQUIERDA (pos" << posicionActual << "→" << numeroPosicion << ")";
+    }
+    else {
+        // Para cualquier otro movimiento
+        spritesAUsar = &(escenario->personaje->spritesArriba);
+    }
+
+    // ⭐ CONTADOR DE FRAMES PARA ANIMACIÓN
+    int frameActual = 0;
+
+    // Crear timeline para la animación
+    QTimeLine *timeLine = new QTimeLine(800); // 800ms
+    timeLine->setFrameRange(0, 100);
+
+    // Conectar la timeline al movimiento
+    connect(timeLine, &QTimeLine::frameChanged, this, [=](int frame) mutable {
+        qreal progreso = frame / 100.0;
+
+        // Aplicar easing (OutQuad)
+        qreal t = progreso;
+        qreal easedProgress = -t * (t - 2); // Fórmula OutQuad
+
+        // Calcular posición interpolada
+        QPointF nuevaPos = posInicial + (posFinal - posInicial) * easedProgress;
+        escenario->personaje->setPos(nuevaPos);
+
+        // ⭐ ANIMAR SPRITES (cambiar cada 10 frames)
+        if (frame % 10 == 0 && spritesAUsar && !spritesAUsar->isEmpty()) {
+            frameActual = (frameActual + 1) % spritesAUsar->size();
+            escenario->personaje->setPixmap((*spritesAUsar)[frameActual]);
+        }
+    });
+
+    // Cuando termine, eliminar el timeline
+    connect(timeLine, &QTimeLine::finished, timeLine, &QTimeLine::deleteLater);
+
+    // Actualizar posición actual
+    posicionActual = numeroPosicion;
+
+    // Iniciar animación
+    timeLine->start();
+}
 
 void juego4::keyPressEvent(QKeyEvent *event)
 {

@@ -152,52 +152,52 @@ void nivel3Batalla::inicializarNivel()
 void nivel3Batalla::cargarPreguntas()
 {
     // COMBATE 1: ORIGEN
-    bancoPreguntas.append({
+    colaPreguntas.push({
         "Para algunos de los siguientes filósofos, el criterio de verdad es la evidencia sensible:",
         "Empiristas", "Criticistas", "Racionalistas", "Dogmáticos",
         "A", "Origen"
     });
 
-    bancoPreguntas.append({
+    colaPreguntas.push({
         "De las siguientes, una de ellas es la corriente filosófica que en general tiende a negar la posibilidad de la metafísica y a sostener que hay conocimiento únicamente de los fenómenos.",
         "Racionalistas", "Empiristas", "Escolásticos", "Escépticos",
         "B", "Origen"
     });
 
     // COMBATE 2: VERDAD
-    bancoPreguntas.append({
+    colaPreguntas.push({
         "Para unos de los siguientes filósofos, la experiencia como única fuente del conocimiento.",
         "Epistemólogos", "Racionalistas", "Empiristas", "Escépticos",
         "C", "Verdad"
     });
 
-    bancoPreguntas.append({
+    colaPreguntas.push({
         "Filósofos para quienes la única fuente del conocimiento es la razón.",
         "Epistemólogos", "Racionalistas", "Empiristas", "Escépticos",
         "B", "Verdad"
     });
 
     // COMBATE 3: SUJETO
-    bancoPreguntas.append({
+    colaPreguntas.push({
         "Filósofos que postulan las ideas innatas en el sujeto:",
         "Empiristas", "Idealistas", "Racionalistas", "Innatistas",
         "C", "Sujeto"
     });
 
-    bancoPreguntas.append({
+    colaPreguntas.push({
         "De los siguientes filósofos selecciones el que no se considera Racionalista: ",
         "David Hume", "John Locke", "Nicolas Malebranch", "Francis Bacon",
         "C", "Sujeto"
     });
 
     // COMBATE 4: TRASCENDENTAL
-    bancoPreguntas.append({
+    colaPreguntas.push({
         "Es la doctrina que establece que todos nuestros conocimientos provienen de la razón:",
         "Empirismo", "Criticismo", "Racionalismo", "Epistemología",
         "C", "Trascendental"
     });
 
-    bancoPreguntas.append({
+    colaPreguntas.push({
         "Uno de los siguientes filósofos, postula las ideas innatas en el sujeto:",
         "George Berkeley", "David Hume", "Leibniz", "Hipatía",
         "C", "Trascendental"
@@ -346,7 +346,7 @@ void nivel3Batalla::mostrarIntroCombate(QString nombreCombate)
     escenario->scene->addItem(textoCombate);
 }
 
-void nivel3Batalla::mostrarPregunta()
+/*void nivel3Batalla::mostrarPregunta()
 {
     estadoActual = MOSTRANDO_PREGUNTA;
 
@@ -397,6 +397,85 @@ void nivel3Batalla::mostrarPregunta()
     actualizarIndicadorEstado(false, false);
 
     // ========== INICIAR CRONÓMETRO ==========
+    tiempoInicioRonda = QDateTime::currentMSecsSinceEpoch();
+    jugadorRespondio = false;
+    computadoraRespondio = false;
+
+    tiempoReaccionComputadora = 2000 + QRandomGenerator::global()->bounded(4000);
+
+    int porcentaje = obtenerPorcentajeAcierto();
+    int random = QRandomGenerator::global()->bounded(100);
+
+    if (random < porcentaje) {
+        respuestaComputadora = preguntaActualData.respuestaCorrecta;
+    } else {
+        QStringList incorrectas = {"A", "B", "C", "D"};
+        incorrectas.removeOne(preguntaActualData.respuestaCorrecta);
+        respuestaComputadora = incorrectas[QRandomGenerator::global()->bounded(incorrectas.size())];
+    }
+
+    timerComputadora->start(100);
+    timerBarraTiempo->start(50);
+
+    estadoActual = ESPERANDO_RESPUESTAS;
+}*/
+
+void nivel3Batalla::mostrarPregunta()
+{
+    estadoActual = MOSTRANDO_PREGUNTA;
+
+    if (textoCombate) {
+        escenario->scene->removeItem(textoCombate);
+        delete textoCombate;
+        textoCombate = nullptr;
+    }
+
+    // ⭐ OBTENER LA PREGUNTA DE LA COLA (y eliminarla)
+    if (colaPreguntas.empty()) {
+        qDebug() << "❌ No hay más preguntas disponibles";
+        return;
+    }
+
+    preguntaActualData = colaPreguntas.front(); // Obtener la primera
+    colaPreguntas.pop(); // Eliminarla de la cola
+
+    if (textoPregunta) {
+        escenario->scene->removeItem(textoPregunta);
+        delete textoPregunta;
+    }
+
+    textoPregunta = new QGraphicsTextItem(preguntaActualData.texto);
+    textoPregunta->setFont(QFont("Arial", 16, QFont::Bold));
+    textoPregunta->setDefaultTextColor(Qt::white);
+    textoPregunta->setTextWidth(700);
+    textoPregunta->setPos(180, 180);
+    escenario->scene->addItem(textoPregunta);
+
+    botonA->setText("A) " + preguntaActualData.opcionA);
+    botonB->setText("B) " + preguntaActualData.opcionB);
+    botonC->setText("C) " + preguntaActualData.opcionC);
+    botonD->setText("D) " + preguntaActualData.opcionD);
+
+    mostrarBotones();
+
+    // Resto del código sin cambios...
+    barraFondoTiempo->setVisible(true);
+    barraJugadorTiempo->setVisible(true);
+    barraComputadoraTiempo->setVisible(true);
+    tiempoJugadorTexto->setVisible(true);
+    tiempoComputadoraTexto->setVisible(true);
+
+    barraJugadorTiempo->setRect(200, 110, 0, 30);
+    barraComputadoraTiempo->setRect(800, 110, 0, 30);
+
+    tiempoJugadorTexto->setPlainText("");
+    tiempoComputadoraTexto->setPlainText("");
+
+    indicadorJugador->setVisible(true);
+    indicadorComputadora->setVisible(true);
+    actualizarIndicadorEstado(true, false);
+    actualizarIndicadorEstado(false, false);
+
     tiempoInicioRonda = QDateTime::currentMSecsSinceEpoch();
     jugadorRespondio = false;
     computadoraRespondio = false;
@@ -723,24 +802,11 @@ void nivel3Batalla::verificarFinDeBatalla()
         return;
     }
 
-    if (preguntaActual < 8) {
-        preguntaActual++;
-
-        if ((preguntaActual - 1) % 2 == 0 && preguntaActual > 1) {
-            combateActual++;
-            QTimer::singleShot(1000, this, [this]() {
-                iniciarCombate(combateActual);
-            });
-        } else {
-            QTimer::singleShot(1000, this, &nivel3Batalla::mostrarPregunta);
-        }
+    if (!colaPreguntas.empty()) {
+        QTimer::singleShot(1000, this, &nivel3Batalla::mostrarPregunta);
     } else {
+        // Si ya no hay preguntas, determinar ganador por vidas
         QString ganador = (vidasJugador > vidasComputadora) ? "JUGADOR" : "COMPUTADORA";
-
-        if (vidasJugador == vidasComputadora) {
-            ganador = "JUGADOR";
-        }
-
         mostrarPantallaFinal(ganador);
     }
 }

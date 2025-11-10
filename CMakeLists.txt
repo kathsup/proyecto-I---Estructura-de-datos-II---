@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(proyectoUno-EstruII LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Multimedia MultimediaWidgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia MultimediaWidgets)
 
 qt_standard_project_setup()
 

@@ -118,26 +118,25 @@ void nivel1Video::mostrarPanelInstrucciones()
     QVBoxLayout* layout = new QVBoxLayout(panelInstrucciones);
     layout->setContentsMargins(10, 10, 10, 10);
 
+    // Video
     QVideoWidget* videoWidget = new QVideoWidget(panelInstrucciones);
     layout->addWidget(videoWidget);
 
-    // 🔧 SOLUCIÓN: Configurar dispositivo de audio explícitamente
+    // 🔊 Audio + Video
     QMediaPlayer* player = new QMediaPlayer(panelInstrucciones);
     QAudioOutput* audioOutput = new QAudioOutput(panelInstrucciones);
 
-    // Obtener el dispositivo de audio por defecto
-    QAudioDevice defaultDevice = QMediaDevices::defaultAudioOutput();
-    if (defaultDevice.isNull()) {
-        qWarning() << "No hay dispositivo de audio disponible";
-    } else {
-        audioOutput->setDevice(defaultDevice);
-    }
+    // Opcional: asignar dispositivo de audio por defecto
+    audioOutput->setDevice(QMediaDevices::defaultAudioOutput());
 
-    audioOutput->setVolume(1.0);
+    audioOutput->setVolume(1.0); // volumen máximo
     player->setAudioOutput(audioOutput);
     player->setVideoOutput(videoWidget);
+
+    // Archivo de video
     player->setSource(QUrl::fromLocalFile("C:/Users/Lenovo/Downloads/videoNivel1.mp4"));
-    player->play();
+
+    player->play(); // reproducir inmediatamente
 
     panelInstrucciones->show();
 }

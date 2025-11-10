@@ -5,6 +5,7 @@
 #include <QRandomGenerator>
 #include <QDateTime>
 #include "mensajewidget.h"
+#include <QGraphicsDropShadowEffect>
 
 nivel2Ruleta::nivel2Ruleta(QWidget *parent)
     : QWidget(parent)
@@ -203,7 +204,7 @@ void nivel2Ruleta::mostrarEleccionBando()
 }
 
 // NUEVO: Ocultar elementos de la ruleta
-void nivel2Ruleta::ocultarRuleta()
+/*void nivel2Ruleta::ocultarRuleta()
 {
     ruletaItem->setVisible(false);
     indicadorTriangulo->setVisible(false);
@@ -223,6 +224,39 @@ void nivel2Ruleta::mostrarRuleta()
 
     for (auto puerta : puertas.values()) {
         puerta->setVisible(true);
+    }
+}
+*/
+
+void nivel2Ruleta::ocultarRuleta()
+{
+    ruletaItem->setVisible(false);
+    indicadorTriangulo->setVisible(false);
+    ui->btnGirarRuleta->setVisible(false);
+
+    for (auto puerta : puertas.values()) {
+        puerta->setVisible(false);
+    }
+
+    // ⭐ OCULTAR CARTELES
+    for (auto cartel : cartelesTomas.values()) {
+        cartel->setVisible(false);
+    }
+}
+
+void nivel2Ruleta::mostrarRuleta()
+{
+    ruletaItem->setVisible(true);
+    indicadorTriangulo->setVisible(true);
+    ui->btnGirarRuleta->setVisible(true);
+
+    for (auto puerta : puertas.values()) {
+        puerta->setVisible(true);
+    }
+
+    // ⭐ MOSTRAR CARTELES
+    for (auto cartel : cartelesTomas.values()) {
+        cartel->setVisible(true);
     }
 }
 
@@ -364,7 +398,7 @@ void nivel2Ruleta::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void nivel2Ruleta::objetosInteractivos() {
+/*void nivel2Ruleta::objetosInteractivos() {
     QPixmap pixPuertaCerrada("C:/Users/Lenovo/Downloads/puerta cerrada.png");
     QPixmap pixEscalada = pixPuertaCerrada.scaled(260, 260, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
@@ -393,6 +427,63 @@ void nivel2Ruleta::objetosInteractivos() {
     // Agregar a zonas interactivas
     for (auto puerta : puertas.values()) {
         escenario->zonasInteractivas.append(puerta);
+    }
+}*/
+
+void nivel2Ruleta::objetosInteractivos() {
+    QPixmap pixPuertaCerrada("C:/Users/Lenovo/Downloads/puerta cerrada.png");
+    QPixmap pixEscalada = pixPuertaCerrada.scaled(260, 260, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    // Estructura: {nombre, posX, posY}
+    struct PuertaInfo {
+        QString nombre;
+        int x;
+        int y;
+    };
+
+    QVector<PuertaInfo> infoPuertas = {
+        {"Arte", 35, 210},
+        {"Historia", 280, 210},
+        {"Política", 535, 210},
+        {"Ciencia", 775, 210}
+    };
+
+    // Crear puertas y carteles
+    for (const auto& info : infoPuertas) {
+        // Crear puerta
+        puertas[info.nombre] = escenario->scene->addPixmap(pixEscalada);
+        puertas[info.nombre]->setPos(info.x, info.y);
+        puertas[info.nombre]->setData(0, info.nombre);
+
+        // ⭐ CREAR CARTEL CON NOMBRE ARRIBA DE LA PUERTA
+        QGraphicsTextItem* cartel = new QGraphicsTextItem(info.nombre);
+        cartel->setFont(QFont("Arial", 20, QFont::Bold));
+        cartel->setDefaultTextColor(Qt::white);
+
+        // Agregar borde/sombra al texto para mejor visibilidad
+        QGraphicsDropShadowEffect* sombra = new QGraphicsDropShadowEffect();
+        sombra->setBlurRadius(10);
+        sombra->setColor(Qt::black);
+        sombra->setOffset(2, 2);
+        cartel->setGraphicsEffect(sombra);
+
+        // Centrar el cartel sobre la puerta
+        // Calcular posición centrada: x_puerta + (ancho_puerta - ancho_texto) / 2
+        qreal anchoPuerta = 260;
+        qreal anchoTexto = cartel->boundingRect().width();
+        qreal xCentrado = info.x + (anchoPuerta - anchoTexto) / 2;
+
+        // Posicionar arriba de la puerta (ajusta -60 según necesites)
+        cartel->setPos(xCentrado, info.y - 10);
+
+        escenario->scene->addItem(cartel);
+        cartelesTomas[info.nombre] = cartel;
+
+        // Inicializar estado de puerta
+        puertasAbiertas[info.nombre] = false;
+
+        // Agregar a zonas interactivas
+        escenario->zonasInteractivas.append(puertas[info.nombre]);
     }
 }
 

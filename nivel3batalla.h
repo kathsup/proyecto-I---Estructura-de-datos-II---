@@ -15,6 +15,7 @@
 #include "personajebatalla.h"
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <queue>
 
 
 namespace Ui {
@@ -72,7 +73,7 @@ private:
     int vidasComputadora;
 
     // ========== PREGUNTAS ==========
-    QVector<PreguntaBatalla> bancoPreguntas;
+    std::queue<PreguntaBatalla> colaPreguntas;
     PreguntaBatalla preguntaActualData;
     int preguntaActual;
     int combateActual;

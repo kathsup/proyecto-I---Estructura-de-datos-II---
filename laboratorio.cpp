@@ -69,7 +69,7 @@ Laboratorio::~Laboratorio()
 void Laboratorio::inicializarNivel()
 {
     // Configurar el escenario dentro del QGraphicsView del UI
-    QPixmap pixFondo("C:/Users/Lenovo/Downloads/cuarto.png");
+    QPixmap pixFondo("C:/Users/Lenovo/Downloads/labb.png");
     escenario->inicializar(ui->graphicsViewLab, pixFondo);
 
     ui->graphicsViewLab->setFocusPolicy(Qt::NoFocus);

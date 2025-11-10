@@ -84,6 +84,7 @@ private:
     QGraphicsTextItem* textoEleccion;
     QGraphicsTextItem* textoEmpirista;
     QGraphicsTextItem* textoRacionalista;
+    QMap<QString, QGraphicsTextItem*> cartelesTomas;
 
 
 };
