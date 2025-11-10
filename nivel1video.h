@@ -38,6 +38,8 @@ private:
     void mostrarPanelInstrucciones();
 
 
+
+
 };
 
 #endif // NIVEL1VIDEO_H
