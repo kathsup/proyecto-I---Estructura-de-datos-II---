@@ -367,7 +367,7 @@ void nivel3Batalla::mostrarPregunta()
     textoPregunta->setFont(QFont("Arial", 16, QFont::Bold));
     textoPregunta->setDefaultTextColor(Qt::white);
     textoPregunta->setTextWidth(700);
-    textoPregunta->setPos(150, 180);
+    textoPregunta->setPos(180, 180);
     escenario->scene->addItem(textoPregunta);
 
     botonA->setText("A) " + preguntaActualData.opcionA);
@@ -691,7 +691,7 @@ void nivel3Batalla::mostrarResultado(QString ganadorRonda, bool acerto)
 
     if (ganadorRonda == "JUGADOR") {
         mensaje = acerto ? "CORRECTO - GOLPEAS" : "OPONENTE FALLÓ";
-        colorMensaje = Qt::green;
+        colorMensaje = Qt::blue;
     } else {
         mensaje = acerto ? "OPONENTE ACERTÓ" : "INCORRECTO";
         colorMensaje = Qt::red;
@@ -782,7 +782,7 @@ void nivel3Batalla::mostrarPantallaFinal(QString ganador)
 
     //MOSTRAR ESTADÍSTICAS CON PUNTAJE
     QGraphicsTextItem* stats = new QGraphicsTextItem(
-        QString("Vidas finales:\nTú: %1  |  Oponente: %2\n\n🏆 Puntaje obtenido: %3 pts\n✅ Respuestas correctas: %4")
+        QString("Vidas finales:\nTú: %1  |  Oponente: %2\n\nPuntaje obtenido: %3 pts\nRespuestas correctas: %4")
             .arg(vidasJugador)
             .arg(vidasComputadora)
             .arg(puntajeFinal)              // ⬅️ MOSTRAR PUNTAJE
@@ -790,7 +790,7 @@ void nivel3Batalla::mostrarPantallaFinal(QString ganador)
         );
     stats->setFont(QFont("Arial", 16, QFont::Bold));
     stats->setDefaultTextColor(Qt::white);
-    stats->setPos(300, 330);  // Ajustar posición para que quepa todo
+    stats->setPos(330, 400);  // Ajustar posición para que quepa todo
     escenario->scene->addItem(stats);
 
     //EMITIR SEÑAL CON PUNTAJE (siempre, ganes o pierdas)

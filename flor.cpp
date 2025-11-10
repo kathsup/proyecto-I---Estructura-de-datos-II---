@@ -93,9 +93,11 @@ Flor::Flor(const QPixmap& pixmap, const QString& respuesta, bool esCorrecta, QGr
     qreal anchoFlor = pixmap.width();
     qreal altoFlor = pixmap.height();
     qreal anchoTexto = textoItem->boundingRect().width();
+    qreal altoTexto = textoItem->boundingRect().height();
 
-    // Posicionar el texto justo DEBAJO de la flor, centrado
-    textoItem->setPos((anchoFlor - anchoTexto) / 2, altoFlor + 8);
+    // Posicionar el texto justo arriba de la flor, centrado
+    //textoItem->setPos((anchoFlor - anchoTexto) / 2, altoFlor + 8);
+    textoItem->setPos((anchoFlor - anchoTexto) / 2, -altoTexto - 8);
 
     // Agregar sombra blanca al texto para que sea legible
     QGraphicsDropShadowEffect* sombra = new QGraphicsDropShadowEffect();

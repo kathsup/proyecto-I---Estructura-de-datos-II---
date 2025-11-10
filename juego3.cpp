@@ -19,7 +19,7 @@ juego3::~juego3()
     delete ui;
 }
 
-void juego3::inicializarNivel()
+/*void juego3::inicializarNivel()
 {
     // Configurar el escenario dentro del QGraphicsView del UI
     QPixmap pixFondo("C:/Users/Lenovo/Downloads/fondo.png");
@@ -28,14 +28,89 @@ void juego3::inicializarNivel()
     ui->graphicsViewJ3->setFocusPolicy(Qt::NoFocus);
 
 
-    ui->labelPregunta->setStyleSheet("background-color: #ffc1e3;"); // ya lo tienes
+
     QFont font;
     font.setFamily("Arial");
     font.setPointSize(8);
     font.setBold(true);
     ui->labelPregunta->setFont(font);
-    ui->labelPregunta->setStyleSheet("background-color: #ffc1e3; color: #2c0e4a;"); // mismo color que opciones
+    ui->labelPregunta->setStyleSheet(
+        "background-image: url('C:/Users/Lenovo/Downloads/preguntaNivel3.png');"
+        "background-repeat: no-repeat;"
+        "background-position: center;"
+        "background-size: cover;"
+        "color: #2c0e4a;"
+        "font-weight: bold;"
+        "border: none;"
+        );
 
+    // Crear el personaje con sus sprites
+    QVector<QPixmap> spritesDer = {
+        QPixmap("C:/Users/Lenovo/Downloads/hada1AD.png").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
+        QPixmap("C:/Users/Lenovo/Pictures/hada2AD.png").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
+        QPixmap("C:/Users/Lenovo/Downloads/hada3AD.png").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+    };
+
+    QVector<QPixmap> spritesIzq = {
+        QPixmap("C:/Users/Lenovo/Pictures/hada1Iz.png").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
+        QPixmap("C:/Users/Lenovo/Pictures/hada2Iz.png").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
+        QPixmap("C:/Users/Lenovo/Pictures/hada3Iz.png").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+    };
+
+    QVector<QPixmap> spritesArriba = {
+        QPixmap("C:/Users/Lenovo/Downloads/hada4Ar.png").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation),
+        QPixmap("C:/Users/Lenovo/Downloads/hada5Ar.png").scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+    };
+
+    objetosInteractivos();
+    escenario->crearPersonaje(spritesDer, spritesIzq, spritesArriba, QPointF(350, 530));
+
+    inicializarPreguntas();
+    cargarPregunta();
+
+    this->setFocus();
+}*/
+
+void juego3::inicializarNivel()
+{
+    // Configurar el escenario dentro del QGraphicsView del UI
+    QPixmap pixFondo("C:/Users/Lenovo/Downloads/fondo.png");
+    escenario->inicializar(ui->graphicsViewJ3, pixFondo);
+
+    ui->graphicsViewJ3->setFocusPolicy(Qt::NoFocus);
+
+    // MÉTODO QPALETTE - Más confiable que stylesheet
+    QPixmap fondoPregunta("C:/Users/Lenovo/Downloads/preguntaNivel3.png");
+
+    if (!fondoPregunta.isNull()) {
+        // Escalar la imagen al tamaño exacto del label
+        QPixmap fondoEscalado = fondoPregunta.scaled(
+            ui->labelPregunta->size(),
+            Qt::IgnoreAspectRatio,
+            Qt::SmoothTransformation
+            );
+
+        QPalette palette;
+        palette.setBrush(QPalette::Window, QBrush(fondoEscalado));
+        ui->labelPregunta->setAutoFillBackground(true);
+        ui->labelPregunta->setPalette(palette);
+    } else {
+        qDebug() << "ERROR: No se pudo cargar preguntaNivel3.png";
+    }
+
+    // Configurar fuente del texto
+    QFont font;
+    font.setFamily("Arial");
+    font.setPointSize(8);
+    font.setBold(true);
+    ui->labelPregunta->setFont(font);
+    ui->labelPregunta->setAlignment(Qt::AlignCenter);
+    ui->labelPregunta->setWordWrap(true);
+
+    // Establecer color del texto
+    QPalette textPalette = ui->labelPregunta->palette();
+    textPalette.setColor(QPalette::WindowText, QColor("#2c0e4a"));
+    ui->labelPregunta->setPalette(textPalette);
 
     // Crear el personaje con sus sprites
     QVector<QPixmap> spritesDer = {
@@ -215,10 +290,10 @@ void juego3::depositarFlor()
         } else {
             MensajeWidget* mensaje = new MensajeWidget(
                 "Esa no es la respuesta correcta.",
-                "C:/Users/Lenovo/Downloads/restanguloPreg.png",
-                this
+
+                this,200,100,3000
                 );
-            mensaje->move((width() - mensaje->width()) / 2 + 250, (height() - mensaje->height()) / 2);
+            mensaje->move(650,300);
             mensaje->show();
 
             florEnMano->mostrarTexto(true);
@@ -235,10 +310,9 @@ void juego3::depositarFlor()
     } else {
         MensajeWidget* mensaje = new MensajeWidget(
             "Debes estar más cerca de la canasta\npara depositar la flor.",
-            "C:/Users/Lenovo/Downloads/restanguloPreg.png",
-            this
+            this,200,100,3000
             );
-        mensaje->move((width() - mensaje->width()) / 2 + 250, (height() - mensaje->height()) / 2);
+        mensaje->move(650,300);
         mensaje->show();
     }
 }
@@ -251,19 +325,17 @@ void juego3::finalizarJuego()
         MensajeWidget* mensaje = new MensajeWidget(
             "¡FELICIDADES! Has completado la canasta con las 5 flores correctas.\n\n"
             "¡Has ganado el punto del minijuego!",
-            "C:/Users/Lenovo/Downloads/restanguloPreg.png",
-            this
+            this,200,100,3000
             );
-        mensaje->move((width() - mensaje->width()) / 2 + 250, (height() - mensaje->height()) / 2);
+        mensaje->move(650,300);
         mensaje->show();
     } else {
         MensajeWidget* mensaje = new MensajeWidget(
             "Has recolectado " + QString::number(floresCorrectas) + " de 5 flores correctas.\n\n"
                                                                     "Necesitas las 5 flores correctas para ganar el punto.",
-            "C:/Users/Lenovo/Downloads/restanguloPreg.png",
-            this
+            this,200,100,3000
             );
-        mensaje->move((width() - mensaje->width()) / 2 + 250, (height() - mensaje->height()) / 2);
+        mensaje->move(650,300);
         mensaje->show();
     }
 

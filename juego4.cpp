@@ -16,11 +16,11 @@ juego4::juego4(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
 
     preguntas = {
-        {"Entre los siguientes renacentistas seleccione, uno de los precursores filósofo-científico\ndel heliocentrismo (teoría que afirma que el sol es el centro del universo): ",
+        {"Entre los siguientes renacentistas seleccione, uno de los precursores\nfilósofo-científico del heliocentrismo (teoría que afirma que\nel sol es el centro del universo): ",
          {"Tomas Moro", "Galileo", "Platón", "Arquimedes"},
          "Galileo"},
 
-        {"El método científico se introduce por el interés de tres filósofos. Entre los siguientes uno\nde los mencionados no es precursor del método científico:",
+        {"El método científico se introduce por el interés de tres filósofos. Entre\nlos siguientes unode los mencionados no es\nprecursor del método científico:",
          {"Francis Bacon", "Galileo Galilei", "Nicolas Maquiavelo", "René Descartes"},
          "Nicolas Maquiavelo"},
 
@@ -28,7 +28,7 @@ juego4::juego4(QWidget *parent)
          {"Isaac Newton", "René Descartes", "Erasmo de Roterdam", "Francis Bacon"},
          "René Descartes"},
 
-        {"De los siguientes filósofos niega el geocentrismo (teoría que afirma\nque el centro de nuestro sistema solar es la tierra): ",
+        {"De los siguientes filósofos niega el geocentrismo (teoría que afirma que\nel centro de nuestro sistema solar es la tierra): ",
          {"Aristóteles", "Nicolás Copérnico", "Tomás de Aquino", "Isaac Newton"},
          "Nicolás Copérnico"},
 

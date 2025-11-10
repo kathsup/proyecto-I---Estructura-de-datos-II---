@@ -190,15 +190,15 @@ void Laboratorio::inicializarNPC()
         "Estoy creando la Poción\nde la Verdad Absoluta,\nuna esencia que revela\nel conocimiento certero.",
         "Pero para crearla necesito\n4 ingredientes mágicos\nque solo aparecerán si aplicas\ncorrectamente mi método filosófico.",
         "Debes visitar cada mesa y\nresponder las preguntas para\nobtener los ingredientes necesarios.",
-        "¡ATREVETE A SABER!"
+        "¡Atrévete a dudar de todo\npara encontrar la verdad!"
     };
 
     QVector<QString> dialogosFinal = {
-        "¡Excelente trabajo!\nHas completado el rompecabezas.",
-        "Comprendes mi filosofía.\nEl criticismo es la clave.",
-        "Has demostrado verdadera\nsabiduría, mi estudiante.",
-        "La razón pura te ha guiado\nhacia el conocimiento.",
-        "¡Sapere aude!\nSigue tu camino filosófico."
+        "¡Excelente trabajo!\nHas completado la poción.",
+        "Has aplicado correctamente\nmi método de la duda metódica.",
+        "Comprendes que solo mediante\nla razón encontramos certezas.",
+        "Cogito, ergo sum.\nPienso, luego existo.",
+        "Has demostrado que la razón\nes el camino hacia la verdad absoluta."
     };
 
     npcDes->establecerDialogos(dialogosInicio, dialogosFinal);
@@ -863,8 +863,8 @@ void Laboratorio::configurarMesa3()
 
     QStringList opciones = {"A) Hipótesis", "B) Deducción", "C) Evidencia", "D) Inducción"};
 
-    int startX = 50;
-    int startY = 90;
+    int startX = 30;
+    int startY = 75;
     int velaWidth = 110;
     int velaSpacing = 20;
 
@@ -1277,21 +1277,22 @@ void Laboratorio::verificarRespuestaMesa4(int indice)
             animGrow->setEndValue(110);
 
             connect(animShrink, &QPropertyAnimation::finished, this, [this, tarjetaIncorrecta, animGrow]() {
-                tarjetaIncorrecta->setText("❓");
+                tarjetaIncorrecta->setText("💮");
                 tarjetaIncorrecta->setStyleSheet(
                     "QPushButton {"
                     "  background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-                    "    stop:0 #8B7355, stop:1 #6B5345);"
-                    "  border: 3px solid #5D4E37;"
-                    "  border-radius: 10px;"
-                    "  font-size: 48px;"
+                    "    stop:0 #f8d9e0, stop:1 #f0b6c3);"  // tonos rosados suaves
+                    "  border: 3px solid #c48a91;"
+                    "  border-radius: 15px;"
+                    "  font-size: 42px;"
                     "  color: white;"
                     "  font-weight: bold;"
+                    "  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);"
                     "}"
                     "QPushButton:hover {"
-                    "  border: 3px solid #FFD700;"
                     "  background: qlineargradient(x1:0, y1:0, x2:0, y2:1,"
-                    "    stop:0 #9B8365, stop:1 #7B6355);"
+                    "    stop:0 #fbd1dc, stop:1 #eca5b6);"
+                    "  border: 3px solid #e0a3aa;"
                     "}"
                     );
                 animGrow->start(QAbstractAnimation::DeleteWhenStopped);

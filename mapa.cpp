@@ -114,6 +114,12 @@ void mapa::keyPressEvent(QKeyEvent *event)
 
 void mapa::objetosInteractivos() {
 
+    QPixmap pixCamino("C:/Users/Lenovo/Downloads/camino.png");
+    QGraphicsPixmapItem* camino = escenario->scene->addPixmap(
+        pixCamino.scaled(820, 820, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        );
+    camino->setPos(100, 110);
+
     // ---- NIVEL 1: VIDEO ----
     QPixmap pixVideo("C:/Users/Lenovo/Downloads/objetoVideoMapa.png");
     objetoNivel1 = escenario->scene->addPixmap(
@@ -194,6 +200,8 @@ void mapa::objetosInteractivos() {
     casaBandera->setPos(800, 160);
 
 
+
+
     // ---- Agregar a la lista de interacciones ----
     escenario->zonasInteractivas.append(objetoNivel1);
     escenario->zonasInteractivas.append(objetoNivel2);
@@ -219,20 +227,29 @@ void mapa::on_btnInstrucciones_clicked() {
 
 void mapa::crearPanelInstrucciones() {
     panelInstrucciones = new QFrame(this);
-    panelInstrucciones->setGeometry(150, 100, 500, 400);
+    panelInstrucciones->setGeometry(200, 80, 500, 400);
     panelInstrucciones->setStyleSheet(
         "background-color: rgba(255, 255, 255, 220);"
         "border: 3px solid #8B6F47;"
         "border-radius: 15px;"
         );
 
+    // 📖 Título
     QLabel* lblTitulo = new QLabel("📖 Instrucciones", panelInstrucciones);
     lblTitulo->setGeometry(120, 20, 260, 50);
     lblTitulo->setAlignment(Qt::AlignCenter);
     lblTitulo->setStyleSheet("font-size: 22px; font-weight: bold; color: #8B6F47;");
 
+    // 🖼️ Imagen del instructivo
+    QLabel* lblImagen = new QLabel(panelInstrucciones);
+    lblImagen->setGeometry(50, 80, 400, 280);  // puedes ajustar tamaño/posición
+    QPixmap pix("C:/Users/Lenovo/Downloads/instructivo.png");
+    lblImagen->setPixmap(pix.scaled(lblImagen->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    lblImagen->setAlignment(Qt::AlignCenter);
+
     panelInstrucciones->hide();
 }
+
 
 
 void mapa::crearPanelRanking() {

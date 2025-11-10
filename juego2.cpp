@@ -916,20 +916,15 @@ void juego2::verificarRespuesta(int indiceBurbuja)
         puntosObtenidos++;
 
         MensajeWidget* mensaje = new MensajeWidget(
-            "¡Correcto! +1 punto",
-            "C:/Users/Lenovo/Downloads/restanguloPreg.png",
-            this
-            );
-        mensaje->move((width() - mensaje->width()) / 2, (height() - mensaje->height()) / 2);
+            "¡Correcto! +1 punto",this,200,100,2000);
+        mensaje->move(650,300);
         mensaje->show();
     } else {
         // ❌ Respuesta incorrecta
         MensajeWidget* mensaje = new MensajeWidget(
             "Respuesta incorrecta.\nLa correcta era: " + pregunta.opciones[pregunta.indiceCorrecta],
-            "C:/Users/Lenovo/Downloads/restanguloPreg.png",
-            this
-            );
-        mensaje->move((width() - mensaje->width()) / 2, (height() - mensaje->height()) / 2);
+            this,200,100,2000);
+        mensaje->move(650,300);
         mensaje->show();
     }
 
@@ -986,11 +981,8 @@ void juego2::finalizarJuego()
     }
 
     MensajeWidget* mensajeFinal = new MensajeWidget(
-        mensaje,
-        "C:/Users/Lenovo/Downloads/restanguloPreg.png",
-        this
-        );
-    mensajeFinal->move((width() - mensajeFinal->width()) / 2, (height() - mensajeFinal->height()) / 2);
+        mensaje,this,200,100,3000);
+    mensajeFinal->move(650,300);
     mensajeFinal->show();
 
     // Volver a la ruleta después de 3 segundos

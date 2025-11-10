@@ -4,8 +4,7 @@
 #include <QMessageBox>
 #include <QRandomGenerator>
 #include <QDateTime>
-
-
+#include "mensajewidget.h"
 
 nivel2Ruleta::nivel2Ruleta(QWidget *parent)
     : QWidget(parent)
@@ -91,12 +90,12 @@ void nivel2Ruleta::inicializarNivel()
     ruletaItem = escenario->scene->addPixmap(pixRuleta);
 
     // Colocar la ruleta en el centro de la pantalla (ajusta según tu fondo)
-    ruletaItem->setPos(450, 450);
+    ruletaItem->setPos(450, 470);
     ruletaItem->setTransformOriginPoint(pixRuleta.width() / 2, pixRuleta.height() / 2);
 
     // Triángulo indicador
     QPixmap pixIndicador("C:/Users/Lenovo/Downloads/indicador.png");
-    pixIndicador = pixIndicador.scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    pixIndicador = pixIndicador.scaled(50, 70, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     indicadorTriangulo = escenario->scene->addPixmap(pixIndicador);
 
     // Posiciónalo sobre la ruleta, apuntando hacia arriba (ajusta según tu ruleta)
@@ -159,7 +158,7 @@ void nivel2Ruleta::mostrarEleccionBando()
     ocultarRuleta();
 
     // Texto principal: "Elige tu bando:"
-    textoEleccion = new QGraphicsTextItem("¡Has completado los desafíos!\n\nElige tu bando:");
+    textoEleccion = new QGraphicsTextItem("¡Has completado los desafíos!\n\n             Elige tu bando:");
     textoEleccion->setFont(QFont("Arial", 20, QFont::Bold));
     textoEleccion->setDefaultTextColor(Qt::white);
     textoEleccion->setPos(300, 100);
@@ -170,28 +169,28 @@ void nivel2Ruleta::mostrarEleccionBando()
     QPixmap pixEmpirista("C:/Users/Lenovo/Downloads/insigniaEmpirista.png");
     pixEmpirista = pixEmpirista.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     insigniaEmpirista = escenario->scene->addPixmap(pixEmpirista);
-    insigniaEmpirista->setPos(150, 280);
+    insigniaEmpirista->setPos(250, 280);
     insigniaEmpirista->setData(0, "Empirista");
 
     // Texto Empirista
     textoEmpirista = new QGraphicsTextItem("EMPIRISTA");
     textoEmpirista->setFont(QFont("Arial", 18, QFont::Bold));
     textoEmpirista->setDefaultTextColor(QColor("#4CAF50"));
-    textoEmpirista->setPos(160, 500);
+    textoEmpirista->setPos(260, 500);
     escenario->scene->addItem(textoEmpirista);
 
     // Insignia Racionalista (derecha)
     QPixmap pixRacionalista("C:/Users/Lenovo/Downloads/insigniaRacionalista.png");
     pixRacionalista = pixRacionalista.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     insigniaRacionalista = escenario->scene->addPixmap(pixRacionalista);
-    insigniaRacionalista->setPos(550, 280);
+    insigniaRacionalista->setPos(610, 280);
     insigniaRacionalista->setData(0, "Racionalista");
 
     // Texto Racionalista
     textoRacionalista = new QGraphicsTextItem("RACIONALISTA");
     textoRacionalista->setFont(QFont("Arial", 18, QFont::Bold));
     textoRacionalista->setDefaultTextColor(QColor("#2196F3"));
-    textoRacionalista->setPos(540, 500);
+    textoRacionalista->setPos(610, 500);
     escenario->scene->addItem(textoRacionalista);
 
     // Limpiar zonas interactivas y agregar insignias
@@ -263,7 +262,6 @@ void nivel2Ruleta::reiniciarRuleta()
     }
 }
 
-
 //VIDAS
 void nivel2Ruleta::inicializarEstrellas()
 {
@@ -305,38 +303,6 @@ void nivel2Ruleta::marcarEstrellaObtenida()
     }
 }
 
-
-
-/*void nivel2Ruleta::keyPressEvent(QKeyEvent *event)
-{
-    if(escenario) {
-        escenario->manejarTecla(event);
-    }
-
-    if (event->key() == Qt::Key_Escape) {
-        emit volverAlMapa();
-    }
-
-    //que se pueda entrar solo si estan abiertas:
-    if (event->key() == Qt::Key_G) {
-        for (auto* obj : escenario->zonasInteractivas) {
-            if (escenario->personaje->collidingItems().contains(obj)) {
-                QString etiqueta = obj->data(0).toString();
-
-                // Verificar si la puerta está abierta
-                if (puertasAbiertas.contains(etiqueta) && puertasAbiertas[etiqueta]) {
-                    emit solicitarCambioJuego(etiqueta);
-                    break;
-                } else if (puertasAbiertas.contains(etiqueta)) {
-                    //QMessageBox::warning(this, "Puerta cerrada",
-                                       //  "Esta puerta está cerrada. Debes girar la ruleta.");
-                }
-            }
-        }
-    }
-}*/
-
-
 void nivel2Ruleta::keyPressEvent(QKeyEvent *event)
 {
     if (eligiendoBando) {
@@ -346,8 +312,17 @@ void nivel2Ruleta::keyPressEvent(QKeyEvent *event)
                 if (escenario->personaje->collidingItems().contains(obj)) {
                     QString bando = obj->data(0).toString();
 
-                    QMessageBox::information(this, "Bando elegido",
-                                             "Has elegido el bando: " + bando + "\n\n¡Prepárate para la batalla!");
+                   /* QMessageBox::information(this, "Bando elegido",
+                                             "Has elegido el bando: " + bando + "\n\n¡Prepárate para la batalla!");*/
+
+                    // Mostrar mensaje personalizado en lugar de QMessageBox
+                    MensajeWidget* mensaje = new MensajeWidget(
+                        QString("Has elegido el bando"+bando+"\nPrepárate para la batalla!"),
+                        this, 200,100,3000);
+
+                    // Centrar el mensaje en la pantalla (ajusta si quieres moverlo un poco)
+                    mensaje->move(650,300);
+                    mensaje->show();
 
                     // Emitir señal para ir a batalla
                     emit irABatalla(bando, estrellasObtenidas);
@@ -420,9 +395,6 @@ void nivel2Ruleta::objetosInteractivos() {
         escenario->zonasInteractivas.append(puerta);
     }
 }
-
-
-
 
 //RULETA
 void nivel2Ruleta::rotarRuleta() {

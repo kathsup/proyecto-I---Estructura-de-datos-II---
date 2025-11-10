@@ -22,15 +22,16 @@ PreguntaWidget::PreguntaWidget(QString pregunta, QStringList opciones, QString r
     // Texto de la pregunta
     QGraphicsTextItem *texto = new QGraphicsTextItem(pregunta);
     texto->setFont(QFont("Arial", 10, QFont::Bold));
-    texto->setDefaultTextColor(Qt::white);
-    texto->setPos(400, 315);
+    QColor cafeOscuro(101, 67, 33);
+    texto->setDefaultTextColor(cafeOscuro);
+    texto->setPos(340, 315);
     texto->setTextWidth(520); // Para que el texto se ajuste
     addToGroup(texto);
 
     // Crear los 4 botones HORIZONTALMENTE
     int anchoBoton = 120;
     int espaciado = 10;
-    int xInicial = 240 + (600 - (4 * anchoBoton + 3 * espaciado)) / 2; // Centrar botones
+    int xInicial = 280 + (600 - (4 * anchoBoton + 3 * espaciado)) / 2; // Centrar botones
     int y = 380;
 
     for (int i = 0; i < opciones.size(); ++i) {
@@ -137,7 +138,7 @@ void PreguntaWidget::verificarRespuesta() {
         boton->setStyleSheet(
             "background-color: #4CAF50;"
             "border: 3px solid #2e7d32;"
-            "border-radius: 8px;"
+            "border-radius: 3px;"
             "font-size: 10px;"
             "font-weight: bold;"
             "color: white;"
@@ -191,18 +192,18 @@ void PreguntaWidget::mostrarResultado(bool esCorrecto) {
     mensajeResultado = new QGraphicsTextItem();
 
     if (esCorrecto) {
-        mensajeResultado->setPlainText("¡CORRECTO! +1 Llave");
-        mensajeResultado->setDefaultTextColor(QColor("#4CAF50"));
+        mensajeResultado->setPlainText("¡CORRECTO!");
+        mensajeResultado->setDefaultTextColor(QColor("#2e7d32"));
     } else {
         mensajeResultado->setPlainText("INCORRECTO");
-        mensajeResultado->setDefaultTextColor(QColor("#f44336"));
+        mensajeResultado->setDefaultTextColor(QColor("#934844"));
     }
 
     mensajeResultado->setFont(QFont("Arial", 14, QFont::Bold));
 
     // Centrar el mensaje
     QRectF bounds = mensajeResultado->boundingRect();
-    mensajeResultado->setPos(520 - bounds.width()/2, 440);
+    mensajeResultado->setPos(560 - bounds.width()/2, 420);
 
     addToGroup(mensajeResultado);
 }

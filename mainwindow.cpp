@@ -203,7 +203,7 @@ MainWindow::MainWindow(QWidget *parent)
                 // ⭐ AGREGAR AL RANKING (ahora sin límite)
                 ranking->agregarPuntaje(jugadorActual.nombre, puntaje);
 
-                if (ganador == "JUGADOR") {
+                /*if (ganador == "JUGADOR") {
                     QMessageBox::information(this, "¡Victoria!",
                                              QString("🎉 ¡Has ganado!\n\n"
                                                      "🏆 Puntaje: %1 pts").arg(puntaje));
@@ -211,7 +211,7 @@ MainWindow::MainWindow(QWidget *parent)
                     QMessageBox::information(this, "Derrota",
                                              QString("😔 Derrota\n\n"
                                                      "🏆 Puntaje: %1 pts").arg(puntaje));
-                }
+                }*/
                 grafoNiveles->completarNivel(3);
                 cambiarDeNivel(Mapa);
             });

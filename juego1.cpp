@@ -89,27 +89,27 @@ void juego1::keyPressEvent(QKeyEvent *event)
 
                 // 🧠 Preguntas
                 if (npc->nombre == "npc1") {
-                    p = new PreguntaWidget("Uno de los siguientes personajes fue\nel encargado de pintar la Capilla Sixtina:",
+                    p = new PreguntaWidget("Uno de los siguientes personajes fue el encargado de pintar la Capilla\nSixtina:",
                                            {"Miguel Ángel", "Donatello", "Leonardo Da Vinci", "Francis Bacon"},
                                            "Miguel Ángel", escenario->scene, npc->nombre);
                 }
                 else if (npc->nombre == "npc2") {
-                    p = new PreguntaWidget("Genio del renacimiento que esculpió\nel Moisés, el David y la Pietá:",
+                    p = new PreguntaWidget("Genio del renacimiento que esculpió el Moisés, el David y la Pietá:",
                                            {"Miguel Ángel Buonarroti", "Leonardo Da Vinci", "Rafael Sanzio", "Galileo Galilei"},
                                            "Miguel Ángel Buonarroti", escenario->scene, npc->nombre);
                 }
                 else if (npc->nombre == "npc3") {
-                    p = new PreguntaWidget("Durante el renacimiento el estilo artístico\nque impregnó el arte, la filosofía,\nla pintura y la escritura fue el:",
+                    p = new PreguntaWidget("Durante el renacimiento el estilo artístico que impregnó el arte, la filosofía,\nla pintura y la escritura fue el:",
                                            {"El Gótico", "El Barroco", "El Clasicismo", "El Romanticismo"},
                                            "El Clasicismo", escenario->scene, npc->nombre);
                 }
                 else if (npc->nombre == "npc4") {
-                    p = new PreguntaWidget("Durante el renacimiento surge una nueva\nvisión del hombre reflejada en el arte,\nla política y las ciencias, llamada:",
+                    p = new PreguntaWidget("Durante el renacimiento surge una nueva visión del hombre reflejada en el arte\n,la política y las ciencias, llamada:",
                                            {"Antropocentrismo", "Humanismo", "Paradigma antropológico", "Teocentrismo"},
                                            "Humanismo", escenario->scene, npc->nombre);
                 }
                 else if (npc->nombre == "npc5") {
-                    p = new PreguntaWidget("Cuatro genios del renacimiento fueron\nllevados a la pantalla en los comics de:",
+                    p = new PreguntaWidget("Cuatro genios del renacimiento fueron llevados a la pantalla en los comics de:",
                                            {"Las Tortugas Ninjas", "Los Caballeros del Zodiaco", "Los Cuatro Fantásticos", "Attack on Titan"},
                                            "Las Tortugas Ninjas", escenario->scene, npc->nombre);
                 }
@@ -189,8 +189,7 @@ void juego1::verificarCofre()
                 MensajeWidget* mensaje = new MensajeWidget(
                     "¡FELICIDADES! Has obtenido las 5 llaves.\n\n"
                     "¡Ganaste 1 punto!\n\n¡Nivel completado!",
-                    "C:/Users/Lenovo/Downloads/restanguloPreg.png",
-                    this
+                    this, 450,290,3000
                     );
 
                 // Centrar el mensaje en pantalla
@@ -206,9 +205,7 @@ void juego1::verificarCofre()
                 // Mostrar mensaje personalizado en lugar de QMessageBox
                 MensajeWidget* mensaje = new MensajeWidget(
                     QString("Necesitas 5 llaves para abrir el cofre.\n\nTienes: %1/5 llaves\n\nResponde correctamente todas las preguntas!").arg(llavesObtenidas),
-                    "C:/Users/Lenovo/Downloads/restanguloPreg.png",
-                    this
-                    );
+                    this, 450,290,3000);
 
                 // Centrar el mensaje en la pantalla (ajusta si quieres moverlo un poco)
                 mensaje->move((width() - mensaje->width()) / 2+250, (height() - mensaje->height()) / 2);

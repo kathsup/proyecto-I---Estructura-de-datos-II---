@@ -286,7 +286,7 @@ void Cuarto::mostrarPregunta(const QString &objeto)
                                "Atrévete a saber por ti mismo", escenario->scene, objeto);
     }
     else if (objeto == "planta") {
-        p = new PreguntaWidget("Kant (igual que Copérnico cambió el centro del universo de la tierra al sol), cambia el centro del conocimiento del objeto al sujeto, a esto se le llama: ",
+        p = new PreguntaWidget("Kant (igual que Copérnico cambió el centro del universo de la tierra al sol), cambia el centro del conocimiento del objeto al sujeto,\na esto se le llama: ",
                                {"Subjetivismo", "Prejuicio", "Suerte", "giro copernicano"},
                                "giro copernicano", escenario->scene, objeto);
     }
@@ -305,11 +305,13 @@ void Cuarto::mostrarPregunta(const QString &objeto)
         connect(p, &PreguntaWidget::preguntaRespondida, this,
                 [this, objeto](const QString &, bool esCorrecta) {
                     if (esCorrecta) {
-                        MensajeWidget* mensaje = new MensajeWidget(
-                            "¡Respuesta correcta!",
-                            "C:/Users/Lenovo/Downloads/restanguloPreg.png", this);
-                        mensaje->move((width()-mensaje->width())/2 + 250, (height()-mensaje->height())/2);
-                        mensaje->show();
+                MensajeWidget* mensaje = new MensajeWidget(
+                    "¡Respuesta correcta!",
+                    this,
+                    200,100,100  // duración en ms (4 segundos)
+                    );
+                mensaje->move(650,300);
+                mensaje->show();
 
                         QGraphicsPixmapItem* objItem = nullptr;
                         if (objeto == "librero") objItem = librero;
@@ -328,9 +330,9 @@ void Cuarto::mostrarPregunta(const QString &objeto)
                     } else {
                         MensajeWidget* mensaje = new MensajeWidget(
                             "Respuesta incorrecta",
-                            "C:/Users/Lenovo/Downloads/restanguloPreg.png", this);
-                        mensaje->move((width()-mensaje->width())/2 + 250, (height()-mensaje->height())/2);
-                        mensaje->show();
+                            this,
+                            200,100,100 // duración en ms (3 segundos)
+                            );
                     }
                 });
     }
@@ -490,8 +492,10 @@ bool Cuarto::eventFilter(QObject *obj, QEvent *event)
                 // Posición incorrecta
                 MensajeWidget* mensaje = new MensajeWidget(
                     "Esta pieza no va ahí",
-                    "C:/Users/Lenovo/Downloads/restanguloPreg.png", this);
-                mensaje->move((width()-mensaje->width())/2, (height()-mensaje->height())/2);
+                    this,
+                    200,100,100 // duración en ms (3 segundos)
+                    );
+                mensaje->move(650,300);
                 mensaje->show();
             }
         }
@@ -538,9 +542,14 @@ void Cuarto::verificarRompecabezasCompleto()
         }
 
         QTimer::singleShot(500, [this]() {
-            QMessageBox::information(this, "¡Felicidades!",
-                                     "¡Has completado el rompecabezas del misterio de Kant!\n\n"
-                                     "Has demostrado gran conocimiento sobre la filosofía kantiana.");
+
+            MensajeWidget* mensaje = new MensajeWidget(
+                "¡Has completado el rompecabezas del misterio de Kant!\n\nHas demostrado gran conocimiento sobre la filosofía kantiana.",
+                this,
+                200,100,100
+                );
+            mensaje->move(650,300);
+            mensaje->show();
         });
     }
 }
